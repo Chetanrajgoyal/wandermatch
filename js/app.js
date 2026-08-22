@@ -8,7 +8,7 @@ function getNavHTML(activePage = "", darkHero = false) {
   return `<header class="relative z-50 px-6 lg:px-12 flex justify-between items-center w-full max-w-7xl mx-auto pt-6 pb-4">
   
   <!-- Logo -->
-  <a href="index.html" class="flex items-center justify-center h-10 px-5 bg-white/90 backdrop-blur-md rounded-full text-slate-900 font-bold text-[1.1rem] tracking-wide hover:bg-white transition-colors shadow-sm border border-white/20">
+  <a href="index.html" class="flex items-center justify-center h-10 px-5 bg-white/90 backdrop-blur-md rounded-full font-heading font-bold text-[1.25rem] tracking-tight text-[#005da7] hover:bg-white transition-colors shadow-sm border border-white/20">
     Kibi
   </a>
 
@@ -30,7 +30,16 @@ function getNavHTML(activePage = "", darkHero = false) {
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
   </div>
-</header>`;
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-lg opacity-0 pointer-events-none transition-opacity duration-300 md:hidden flex flex-col items-center justify-center gap-6">
+  <a href="index.html" class="text-xl font-medium text-slate-800">Home</a>
+  <a href="discover.html" class="text-xl font-medium text-slate-700">Discover</a>
+  <a href="plan-trip.html" class="text-xl font-medium text-slate-700">Plan Trip</a>
+  <a href="my-trips.html" class="text-xl font-medium text-slate-700">My Trips</a>
+  <div id="mobile-auth-action-container"></div>
+</div>`;
 }
 
 /* --- Footer HTML Generator --- */
@@ -119,6 +128,27 @@ function getFooterHTML() {
   </footer>`;
 }
 
+/* --- Auth Action Buttons --- */
+function getAuthActionHTML(isMobile = false) {
+  const user = getCurrentUser();
+  if (user) {
+    return `
+      <div class="${isMobile ? 'flex flex-col items-center gap-4' : 'hidden md:flex items-center gap-3'}">
+        <a href="dashboard.html" class="${isMobile ? 'text-xl font-medium text-slate-800' : 'w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-sm hover:bg-primary-container transition-colors'}" title="Dashboard">
+          ${isMobile ? 'Dashboard' : user.avatar || user.name.charAt(0).toUpperCase()}
+        </a>
+        <button id="${isMobile ? 'mobileLogoutBtn' : 'logoutBtn'}" class="${isMobile ? 'text-xl font-medium text-error' : 'px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors text-sm font-medium'}">Log out</button>
+      </div>
+    `;
+  }
+  return `
+    <div class="${isMobile ? 'flex flex-col items-center gap-4' : 'hidden md:flex items-center gap-3'}">
+      <a href="login.html" class="${isMobile ? 'text-xl font-medium text-slate-700' : 'px-4 py-2 rounded-full text-slate-700 hover:bg-slate-100/50 transition-colors text-sm font-medium'}">Log in</a>
+      <a href="signup.html" class="${isMobile ? 'px-6 py-2 rounded-full bg-primary text-white font-medium' : 'px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-container transition-colors text-sm font-medium shadow-sm'}">Sign up</a>
+    </div>
+  `;
+}
+
 /* --- Initialize Navigation --- */
 function initNav(activePage = '', darkHero = false) {
   // Insert nav at the top
@@ -131,6 +161,16 @@ function initNav(activePage = '', darkHero = false) {
   const footerContainer = document.getElementById('footerContainer');
   if (footerContainer) {
     footerContainer.innerHTML = getFooterHTML();
+  }
+
+  // Render auth actions
+  const authContainer = document.getElementById('auth-action-container');
+  if (authContainer) {
+    authContainer.innerHTML = getAuthActionHTML(false);
+  }
+  const mobileAuthContainer = document.getElementById('mobile-auth-action-container');
+  if (mobileAuthContainer) {
+    mobileAuthContainer.innerHTML = getAuthActionHTML(true);
   }
 
   // Scroll handler — nav background

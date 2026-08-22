@@ -63,6 +63,12 @@ function getUserByEmail(email) {
 }
 
 function getCurrentUser() {
+  // Prefer unified auth session
+  try {
+    const session = JSON.parse(localStorage.getItem('kibi_auth_user'));
+    if (session && session.id) return getUserById(session.id);
+  } catch (e) {}
+
   const userId = getStore(STORAGE_KEYS.CURRENT_USER);
   if (!userId) return null;
   return getUserById(userId);
@@ -74,6 +80,7 @@ function setCurrentUser(userId) {
 
 function logoutUser() {
   localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+  localStorage.removeItem('kibi_auth_user');
 }
 
 function updateUser(userId, updates) {
