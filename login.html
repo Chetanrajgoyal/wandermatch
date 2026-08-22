@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Login to Kibi — your personalized travel planning platform.">
+  <title>Login — Kibi</title>
+  <script src="js/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="bg-cream text-text-main font-sans antialiased">
+  <div id="navContainer"></div>
+
+  <div class="split-layout min-h-screen flex">
+    <div class="split-image relative w-0 md:w-5/12 lg:w-[45%] hidden md:block">
+      <img src="https://images.unsplash.com/photo-1506905927185-0d3c0e4d3f4e?w=1200&q=80" alt="Mountain café with Himalayan view" loading="eager" class="w-full h-full object-cover">
+      <div class="split-image-overlay absolute inset-0 flex flex-col justify-end p-12 bg-gradient-to-t from-charcoal/80 via-charcoal/30 to-transparent text-white">
+        <h2 class="font-serif text-3xl md:text-4xl mb-2">Welcome back, explorer.</h2>
+        <p class="text-lg opacity-80">Your next adventure is just a login away.</p>
+      </div>
+    </div>
+
+    <div class="split-content flex-1 flex items-center justify-center p-6 md:p-12 bg-cream">
+      <div class="split-form w-full max-w-md page-enter">
+        <div class="bg-white rounded-2xl shadow-soft p-8 md:p-10">
+          <a href="index.html" class="nav-logo mb-8 inline-flex items-center gap-2 text-text-main">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7">
+              <path d="M14 2L4 10V26H24V10L14 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M14 2L8 26M14 2L20 26" stroke="#5B7B6A" stroke-width="1.5"/>
+              <circle cx="14" cy="10" r="3" fill="#5B7B6A"/>
+            </svg>
+            <span class="font-serif text-xl tracking-tight">Kibi</span>
+          </a>
+
+          <h1 class="heading-2 mb-2 text-text-main">Welcome back</h1>
+          <p class="text-large mb-8">Sign in to continue your travel journey.</p>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" class="form-input" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" class="form-input" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+            <div class="form-group flex items-center justify-between">
+              <label class="form-checkbox">
+                <input type="checkbox"> Remember me
+              </label>
+              <a href="#" class="text-sm text-sage hover:text-sage-dark transition-colors">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-full mb-6">Login</button>
+          </form>
+
+          <div class="form-divider">or</div>
+
+          <p class="text-center text-small mt-6">
+            Don't have an account? <a href="signup.html" class="text-sage font-semibold hover:text-sage-dark transition-colors">Create account</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footerContainer"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

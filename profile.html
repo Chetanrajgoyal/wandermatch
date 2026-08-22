@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your travel profile — Kibi">
+  <title>Profile — Kibi</title>
+  <script src="js/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body data-page="profile" class="font-sans bg-cream text-text-main antialiased">
+  <div id="navContainer"></div>
+
+  <main class="page">
+    <div class="container max-w-3xl">
+      <div class="page-header">
+        <div id="profileHeader" class="profile-header"></div>
+      </div>
+
+      <!-- Profile Details -->
+      <div id="profileDetails" class="mb-10"></div>
+
+      <!-- Edit Profile -->
+      <div class="card bg-white rounded-2xl shadow-soft p-8">
+        <h3 class="heading-4 font-serif text-charcoal mb-6">Edit Profile</h3>
+        <form id="editProfileForm" class="space-y-5">
+          <div class="form-group">
+            <label for="editName" class="form-label">Name</label>
+            <input type="text" id="editName" class="form-input rounded-xl focus:ring-2 focus:ring-sage/20" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="editEmail" class="form-label">Email</label>
+            <input type="email" id="editEmail" class="form-input rounded-xl focus:ring-2 focus:ring-sage/20" autocomplete="email">
+          </div>
+          <div class="pt-2">
+            <button type="submit" class="btn btn-accent shadow-soft hover:shadow-card transition-shadow">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div id="footerContainer"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/matching.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/trips.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Backup archive
+backup.zip
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# IDE
+.vscode/settings.json

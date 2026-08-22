@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Trips - Kibi</title>
+<!-- Material Symbols -->
+
+<!-- Google Fonts -->
+
+
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#fcfcff",
+                        "on-secondary-container": "#005a7e",
+                        "surface-tint": "#0060ac",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f9f9fc",
+                        "surface-dim": "#dadadc",
+                        "tertiary-fixed": "#dce3eb",
+                        "on-secondary-fixed-variant": "#004c6b",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#004883",
+                        "outline-variant": "#c1c7d3",
+                        "secondary-fixed": "#c6e7ff",
+                        "on-surface-variant": "#414751",
+                        "on-tertiary-fixed": "#151c22",
+                        "tertiary": "#555d63",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#6e757c",
+                        "inverse-on-surface": "#f0f0f3",
+                        "primary-container": "#2976c7",
+                        "surface-container": "#eeeef0",
+                        "on-background": "#1a1c1e",
+                        "on-primary-container": "#fdfcff",
+                        "surface-bright": "#f9f9fc",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#88cffb",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#d4e3ff",
+                        "outline": "#717783",
+                        "inverse-primary": "#a4c9ff",
+                        "secondary-container": "#8bd2fe",
+                        "primary-fixed-dim": "#a4c9ff",
+                        "background": "#f9f9fc",
+                        "surface-container-highest": "#e2e2e5",
+                        "on-tertiary-fixed-variant": "#40484e",
+                        "tertiary-fixed-dim": "#c0c7cf",
+                        "on-primary-fixed": "#001c39",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1a1c1e",
+                        "surface-container-high": "#e8e8ea",
+                        "primary": "#005da7",
+                        "surface-variant": "#e2e2e5",
+                        "secondary": "#01658c",
+                        "on-secondary-fixed": "#001e2d",
+                        "surface-container-low": "#f3f3f6",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "brand": { "blue": "#5C9CE6", "dark": "#0A1B29", "light": "#F8F9FA" }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 93, 167, 0.06);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #005da7, #8bd2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-surface text-on-surface min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container" data-page="my-trips">
+<!-- Header -->
+<header class="relative z-50 px-6 lg:px-12 flex justify-between items-center w-full max-w-7xl mx-auto pt-6 pb-4">
+  
+  <!-- Logo -->
+  <a href="index.html" class="flex items-center justify-center h-10 px-5 bg-white/90 backdrop-blur-md rounded-full text-slate-900 font-bold text-[1.1rem] tracking-wide hover:bg-white transition-colors shadow-sm border border-white/20">
+    Kibi
+  </a>
+
+  <!-- Center Nav Pill -->
+  <nav class="hidden md:flex items-center bg-white/85 backdrop-blur-md rounded-full px-2 py-1.5 border border-white/40 shadow-sm">
+    <ul class="flex items-center gap-1 lg:gap-2 text-[14px]">
+      <li><a href="index.html" class="bg-white shadow-sm border border-slate-50 text-slate-900 px-5 py-2 rounded-full block transition-colors font-medium">Home</a></li>
+      <li><a href="discover.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Discover</a></li>
+      <li><a href="plan-trip.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Plan Trip</a></li>
+      <li><a href="my-trips.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">My Trips</a></li>
+      <li><a href="#blogs" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Blog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Right Action -->
+  <div class="flex items-center gap-3">
+    <div id="auth-action-container"></div>
+    <button id="mobile-menu-btn" class="md:hidden w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-800 hover:bg-white transition-colors shadow-sm border border-white/20">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Main Content Canvas -->
+<main class="pt-[100px] pb-16 px-6 max-w-[1280px] mx-auto">
+<!-- Page Header -->
+<div class="mb-12 mt-8 md:mt-12 text-center md:text-left">
+<h1 class="text-4xl md:text-5xl font-bold text-gradient mb-4">Your Journeys</h1>
+<p class="text-lg text-slate-600 max-w-2xl">Revisit past memories and prepare for upcoming adventures. Every trip is a new story.</p>
+</div>
+<!-- Upcoming Trips Section -->
+<section class="mb-16">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                    Upcoming Trips
+                </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Trip Card 1 -->
+<div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<div class="relative h-48 w-full">
+<img alt="Amalfi Coast" class="w-full h-full object-cover" data-alt="A breathtaking view of the Amalfi coast in Italy during late afternoon. Pastel colored houses cling to the steep cliffs overlooking the deep blue Tyrrhenian Sea. The scene is bathed in warm, golden hour sunlight, creating a highly aspirational and serene travel aesthetic suited for a modern UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR5HkLCx3qkerhCbM-ocb7OOPm5llld8Q-wY7aAXnvH3p1MSPaMsvJcmaoiuKGTqVeFIQL-xtqT8XaeLfHudAdxzyy_Cgk_OAmBf0YmrpXImYxPUYDUxMQgNUZU8JGyg-s5vx70A6ZbH4ipFNI5QFdV6scykBaRkSqr2HRxCegpUhFnr1YvT1tys8THwYDZmL6x9nh21EyofwcxBH9c3eaLvz_3a7K8St7fHQlpW59SuE-7BjSoKhY"/>
+<div class="absolute top-4 right-4">
+<span class="bg-secondary-fixed/90 backdrop-blur-md text-on-secondary-fixed text-xs px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">flight</span> Upcoming
+                            </span>
+</div>
+</div>
+<div class="p-[24px]">
+<h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">Amalfi Coast Escape</h3>
+<p class="text-slate-500 text-sm mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">schedule</span> Oct 12 - Oct 20, 2024
+                        </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Relaxation</span>
+<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Coastal</span>
+</div>
+<button class="w-full py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">View Itinerary</button>
+</div>
+</div>
+<!-- Trip Card 2 (In Progress) -->
+<div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 ring-2 ring-primary/20">
+<div class="relative h-48 w-full">
+<img alt="Kyoto" class="w-full h-full object-cover" data-alt="A serene temple garden in Kyoto during cherry blossom season. Soft pink petals fall gently around a traditional wooden pavilion reflecting in a calm koi pond. The lighting is soft and ethereal, matching a light-mode, peaceful travel app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZVBSMjb36EZ8uqprSdsyK4ZWnB-9P3SxuCIpkJscg6PWaEietQVNcGWtMlLiifXigFpj5LHysKJziU_m3jfMnnx-pdmnPITjH9g7zrkrrSWMQEbXRGue69p8bF8POCYceTfVnxrIm85zTYJ9hOWu7BmT41bdAabheEnfC6OK3PyQQPbpaFKM8fb0Cj2f3N37ZNJkHXqwTeAEOFlmgYwTKRKBC1699BHxKWoJdG7gi2_UjWHm_JINm"/>
+<div class="absolute top-4 right-4">
+<span class="bg-primary-container/90 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm font-semibold animate-pulse">
+<span class="material-symbols-outlined text-[14px]">explore</span> In Progress
+                            </span>
+</div>
+</div>
+<div class="p-[24px]">
+<h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">Kyoto Cherry Blossoms</h3>
+<p class="text-slate-500 text-sm mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">schedule</span> Apr 2 - Apr 14, 2024
+                        </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Culture</span>
+<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Nature</span>
+</div>
+<button class="w-full py-3 rounded-full bg-primary text-white font-bold text-sm hover:bg-surface-tint transition-colors shadow-[0_8px_16px_rgba(0,93,167,0.2)]">Open Live Guide</button>
+</div>
+</div>
+<!-- Plan New Trip CTA Card -->
+<div class="glass-card rounded-[16px] overflow-hidden flex flex-col items-center justify-center p-[24px] min-h-[400px] border-dashed border-2 border-outline-variant hover:border-primary/50 transition-colors bg-surface-container-low/50 cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-[32px] text-primary">add</span>
+</div>
+<h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2 text-center">Plan a New Journey</h3>
+<p class="text-slate-500 text-sm text-center mb-6 max-w-[200px]">Where will the wind take you next?</p>
+<button class="px-6 py-3 rounded-full bg-surface text-primary border border-outline-variant font-bold text-sm group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                        Start Exploring
+                    </button>
+</div>
+</div>
+</section>
+<!-- Past Memories Section -->
+<section>
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">photo_library</span>
+                    Past Memories
+                </h2>
+</div>
+<!-- Horizontal Scroll / Grid for Past Trips -->
+<div class="flex overflow-x-auto pb-8 -mx-6 px-6 gap-6 md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible md:pb-0 md:px-0 md:mx-0 snap-x">
+<!-- Past Trip 1 -->
+<div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start">
+<div class="relative h-40 w-full">
+<img alt="Swiss Alps" class="w-full h-full object-cover grayscale-[30%]" data-alt="A stunning view of the Swiss Alps, snow-capped peaks against a clear blue sky. A small, cozy wooden chalet sits in the foreground surrounded by green alpine meadows. Bright, crisp light underscores a clean, airy UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCmKvpgXM_CWGjuJDI8G02pwwyC9iKSDpqZEFQlVIGH2vafxXwxb2gj9DVVfuZqB8g4W4jmsfcUp5NqUbEb3M-lYC3Q_RHV_hxRh9W-XlekOGoP27LiMmt_EbNfQRNLMzXLOmz7DPfsvdtiqmSml7BRXRqEASDyFwGVfPV56hGOsVyk6FenqT-hLj3Z1Mhom9TKD7QS2TAsYkbbAtZW5ZsWw3I5mT2a7fd6zr3YvwvEUxYNUp2ReZt"/>
+<div class="absolute top-3 right-3">
+<span class="bg-surface-container/90 backdrop-blur-md text-slate-600 font-semibold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Completed
+                            </span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="text-md font-bold text-slate-800 mb-1">Swiss Alps Retreat</h3>
+<p class="text-sm text-slate-500">Dec 2023</p>
+</div>
+</div>
+<!-- Past Trip 2 -->
+<div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start">
+<div class="relative h-40 w-full">
+<img alt="Marrakesh" class="w-full h-full object-cover grayscale-[30%]" data-alt="A vibrant street scene in Marrakesh, Morocco. Colorful spices in woven baskets, intricate tile work on the walls, and soft dappled sunlight filtering through overhead canopies. The color palette is warm and rich, yet presented cleanly within a modern interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTgz69mtxFz0KFT3w_KNWInxqLFtm2lDemZt4zLPFi7Y9xANhTRdEdP_-0jISRDwaC-sD-g4M93vdJprFc2m2RwaTuOSAqL1T8Jo9Wt6wLH5lFIU2p2YWcOwP7k7noLaVZmR6EehVsw_tpq--dwZ7Mbn6065RiO_mAqD7wTskxlIVKcN6CUY44fYKg3d-rbVdBGSQ_9rEOLmub5ACMh2RC0Np-hjB62cmoyarGxNLLVIYLMa7AqCTo"/>
+</div>
+<div class="p-4">
+<h3 class="text-md font-bold text-slate-800 mb-1">Marrakesh Markets</h3>
+<p class="text-sm text-slate-500">Sep 2023</p>
+</div>
+</div>
+<!-- Past Trip 3 -->
+<div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start">
+<div class="relative h-40 w-full">
+<img alt="Maldives" class="w-full h-full object-cover grayscale-[30%]" data-alt="A wide shot of a pristine white sand beach in the Maldives. Turquoise waters gently lap the shore. A single palm tree leans over the water. The image is bright and overexposed slightly to create a dreamy, cloud-like atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ0brFkTud69X5v73a7iH16-FWITiRuxCl0Zyjakisif7hW213hSX4xdX9zYnlNftAUUH90K_LDVGS1NLcUJ-hk0GytxREIMG0lhBQyh7Bs8nBiVOzlQjfLEjphySf1fE_x6qqwgj14fsRxWPSDTAyfl-EwP0nnSUVM8u1FBWq7ka5WbBeoxy7K-FiZuwB9mEjpFEToKV9KJRBx3MfHmAZk5MpgvqRtcpuCAhFPgm5AlBkpV6bZzK4"/>
+</div>
+<div class="p-4">
+<h3 class="text-md font-bold text-slate-800 mb-1">Maldives Honeymoon</h3>
+<p class="text-sm text-slate-500">Jun 2023</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BEGIN: Footer Section -->
+  <footer class="bg-brand-dark text-white pt-16 pb-8 px-6 lg:px-12 rounded-t-[3rem] mt-10">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-4 mb-12">
+
+      <!-- Brand Column -->
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-2 font-bold text-2xl tracking-tighter mb-4">
+          <div class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+            </svg>
+          </div>
+          kibi
+        </div>
+        <p class="text-white/60 text-xs mb-6 max-w-[200px] leading-relaxed">
+          Making travel planning effortless and personal for the modern explorer.
+        </p>
+        <!-- Socials -->
+        <div class="flex gap-4">
+          <a href="#" class="text-white/60 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
+            </svg>
+          </a>
+          <a href="#" class="text-white/60 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z" />
+            </svg>
+          </a>
+          <a href="#" class="text-white/60 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Links Column 1 -->
+      <div class="md:col-span-1 md:justify-self-center">
+        <ul class="space-y-3 text-sm">
+          <li><a href="index.html" class="text-white hover:text-brand-blue transition-colors">Home</a></li>
+          <li><a href="discover.html" class="text-white/60 hover:text-white transition-colors">Destinations</a></li>
+          <li><a href="plan-trip.html" class="text-white/60 hover:text-white transition-colors">Plan Trip</a></li>
+          <li><a href="#pricing" class="text-white/60 hover:text-white transition-colors">Pricing</a></li>
+          <li><a href="#faq" class="text-white/60 hover:text-white transition-colors">FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Links Column 2 -->
+      <div class="md:col-span-1 md:justify-self-center">
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="text-white/60 hover:text-white transition-colors">Support</a></li>
+          <li><a href="#" class="text-white/60 hover:text-white transition-colors">User Guide</a></li>
+          <li><a href="#" class="text-white/60 hover:text-white transition-colors">Terms of Service</a></li>
+          <li><a href="#" class="text-white/60 hover:text-white transition-colors">API Access</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Column -->
+      <div class="md:col-span-1 md:justify-self-end text-sm">
+        <ul class="space-y-3">
+          <li class="text-white/60">Contact Us</li>
+          <li class="text-white/80">info@kibi.io</li>
+          <li class="text-white/80">+1 (555) 123-4567</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div
+      class="max-w-7xl mx-auto pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-white/40 gap-4">
+      <p>&copy; 2024 Kibi. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
+        <a href="#" class="hover:text-white transition-colors">Manage Cookies</a>
+      </div>
+    </div>
+  </footer>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script src="js/trips.js"></script>
+</body></html>

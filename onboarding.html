@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Set up your travel profile — Kibi onboarding">
+  <title>Set Up Your Profile — Kibi</title>
+  <script src="js/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="bg-cream text-text-main font-sans antialiased">
+  <div id="navContainer"></div>
+
+  <main class="min-h-screen flex items-center justify-center px-6 py-20 bg-cream">
+    <div class="w-full max-w-3xl">
+      <div class="bg-white rounded-2xl shadow-soft p-8 md:p-12 page-enter">
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+          <div class="progress-step active"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+        </div>
+        <p class="text-small text-muted text-center mb-10">Step <span id="stepCounter">1 of 5</span></p>
+
+        <!-- Step 1: Travel Style -->
+        <div class="onboarding-step active" data-step="1">
+          <div class="text-center mb-8">
+            <h1 class="font-serif text-3xl md:text-4xl mb-4">How do you like to travel?</h1>
+            <p class="text-large">Select all the styles that feel like you.</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3" id="styleChips">
+            <button class="chip" data-value="Adventure">🏔️ Adventure</button>
+            <button class="chip" data-value="Nature">🌿 Nature</button>
+            <button class="chip" data-value="Relaxed">☀️ Relaxed</button>
+            <button class="chip" data-value="Culture">🏛️ Culture</button>
+            <button class="chip" data-value="Food">🍜 Food</button>
+            <button class="chip" data-value="Photography">📸 Photography</button>
+            <button class="chip" data-value="Wellness">🧘 Wellness</button>
+            <button class="chip" data-value="Nightlife">🌙 Nightlife</button>
+          </div>
+          <div class="flex justify-center gap-4 mt-10">
+            <button class="btn btn-primary btn-lg onboarding-next">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Budget -->
+        <div class="onboarding-step" data-step="2">
+          <div class="text-center mb-8">
+            <h1 class="font-serif text-3xl md:text-4xl mb-4">What's your travel budget?</h1>
+            <p class="text-large">Per trip, approximately.</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3" id="budgetChips">
+            <button class="chip" data-value="3000-8000">₹3K – ₹8K</button>
+            <button class="chip" data-value="5000-10000">₹5K – ₹10K</button>
+            <button class="chip" data-value="8000-15000">₹8K – ₹15K</button>
+            <button class="chip" data-value="10000-20000">₹10K – ₹20K</button>
+            <button class="chip" data-value="15000-30000">₹15K – ₹30K</button>
+            <button class="chip" data-value="20000+">₹20K+</button>
+          </div>
+          <div class="flex justify-center gap-4 mt-10">
+            <button class="btn btn-secondary btn-lg onboarding-back">← Back</button>
+            <button class="btn btn-primary btn-lg onboarding-next">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Social Comfort -->
+        <div class="onboarding-step" data-step="3">
+          <div class="text-center mb-8">
+            <h1 class="font-serif text-3xl md:text-4xl mb-4">How social do you want to be?</h1>
+            <p class="text-large">There's no wrong answer. Travel your way.</p>
+          </div>
+          <div class="max-w-lg mx-auto">
+            <div class="card p-8 md:p-10">
+              <div class="comfort-slider">
+                <input type="range" min="1" max="5" value="3" id="socialSlider">
+                <div class="slider-labels">
+                  <span>Solo</span>
+                  <span>1–2</span>
+                  <span>Small Group</span>
+                  <span>Social</span>
+                  <span>Very Social</span>
+                </div>
+              </div>
+              <div class="text-center mt-10">
+                <div class="heading-4 text-sage mb-2" id="socialLevel">Small Group</div>
+                <p class="comfort-description" id="socialDescription">Small groups (3–6 people) with similar interests. Comfortable, low-pressure social travel.</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-center gap-4 mt-10">
+            <button class="btn btn-secondary btn-lg onboarding-back">← Back</button>
+            <button class="btn btn-primary btn-lg onboarding-next">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Interests -->
+        <div class="onboarding-step" data-step="4">
+          <div class="text-center mb-8">
+            <h1 class="font-serif text-3xl md:text-4xl mb-4">What are you into?</h1>
+            <p class="text-large">Pick your interests so we can personalize your experience.</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3" id="interestChips">
+            <button class="chip" data-value="Nature">🌲 Nature</button>
+            <button class="chip" data-value="Photography">📷 Photography</button>
+            <button class="chip" data-value="Cafés">☕ Cafés</button>
+            <button class="chip" data-value="Trekking">🥾 Trekking</button>
+            <button class="chip" data-value="Local Food">🍲 Local Food</button>
+            <button class="chip" data-value="History">📜 History</button>
+            <button class="chip" data-value="Yoga">🧘 Yoga</button>
+            <button class="chip" data-value="Camping">⛺ Camping</button>
+            <button class="chip" data-value="Wildlife">🦅 Wildlife</button>
+            <button class="chip" data-value="Architecture">🏗️ Architecture</button>
+            <button class="chip" data-value="Beach">🏖️ Beach</button>
+            <button class="chip" data-value="Markets">🛍️ Markets</button>
+            <button class="chip" data-value="Meditation">🕉️ Meditation</button>
+            <button class="chip" data-value="Stargazing">⭐ Stargazing</button>
+          </div>
+          <div class="flex justify-center gap-4 mt-10">
+            <button class="btn btn-secondary btn-lg onboarding-back">← Back</button>
+            <button class="btn btn-primary btn-lg onboarding-next">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 5: Travel Pace -->
+        <div class="onboarding-step" data-step="5">
+          <div class="text-center mb-8">
+            <h1 class="font-serif text-3xl md:text-4xl mb-4">What's your pace?</h1>
+            <p class="text-large">How do you like to move through a trip?</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-4" id="paceChips">
+            <button class="chip" data-value="Slow">
+              <div>🐢 <strong>Slow</strong><br><span class="text-small text-muted">Fewer places, deeper experiences</span></div>
+            </button>
+            <button class="chip" data-value="Moderate">
+              <div>🚶 <strong>Moderate</strong><br><span class="text-small text-muted">Balanced exploration</span></div>
+            </button>
+            <button class="chip" data-value="Fast">
+              <div>⚡ <strong>Fast</strong><br><span class="text-small text-muted">See everything, max experiences</span></div>
+            </button>
+          </div>
+          <div class="flex justify-center gap-4 mt-10">
+            <button class="btn btn-secondary btn-lg onboarding-back">← Back</button>
+            <button class="btn btn-accent btn-lg onboarding-next">Complete Profile ✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Preview Card (floating) -->
+  <div class="fixed bottom-6 right-6 z-50" id="previewCard">
+    <div class="bg-white rounded-2xl shadow-card border border-border p-4 w-72">
+      <div class="preview-card-header">
+        <div class="preview-card-avatar">?</div>
+        <div>
+          <strong>Your Travel Profile</strong>
+          <div class="text-small text-accent">Getting started...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footerContainer"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/matching.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/onboarding.js"></script>
+</body>
+</html>
