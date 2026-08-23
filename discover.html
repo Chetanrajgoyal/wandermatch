@@ -175,6 +175,12 @@
         .ambient-shadow {
             box-shadow: 0 20px 40px -10px rgba(0, 93, 167, 0.08);
         }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
       </style>
 
   <link rel="stylesheet" href="css/style.css">
@@ -377,7 +383,271 @@
     </div>
   </footer>
 <!-- API Layer & Scripts -->
-<script src="js/storage.js"></script>
-<script src="js/app.js"></script>
+<script src="js/api/api-config.js?v=5"></script>
+<script src="js/api/api-cache.js?v=5"></script>
+<script src="js/api/geocoding-api.js?v=5"></script>
+<script src="js/api/weather-api.js?v=5"></script>
+<script src="js/api/places-api.js?v=5"></script>
+<script src="js/api/routing-api.js?v=5"></script>
+<script src="js/api/tripmate-api.js?v=5"></script>
+<script src="js/storage.js?v=5"></script>
+<script src="js/matching.js?v=5"></script>
+<script src="js/planner.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
 <script src="js/home.js"></script>
+<script>
+(function() {
+  const INDIA_TRIPS = [
+    {
+      id: 'india_manali',
+      name: 'Manali',
+      state: 'Himachal Pradesh',
+      duration: '3D/2N',
+      numDays: 3,
+      budget: 12000,
+      bestFor: 'Adventure, mountains, friends',
+      travelStyle: ['Adventure'],
+      interests: ['Nature', 'Trekking', 'Photography'],
+      socialPreference: 'Small Group',
+      pace: 'Moderate',
+      lat: 32.2396,
+      lon: 77.1887
+    },
+    {
+      id: 'india_jibhi',
+      name: 'Jibhi–Tirthan Valley',
+      state: 'Himachal Pradesh',
+      duration: '3D/2N',
+      numDays: 3,
+      budget: 9000,
+      bestFor: 'Introverts, nature, peace',
+      travelStyle: ['Nature'],
+      interests: ['Slow Travel', 'Peace', 'Riverside'],
+      socialPreference: 'Solo',
+      pace: 'Slow',
+      lat: 31.8092,
+      lon: 77.3523
+    },
+    {
+      id: 'india_kashmir',
+      name: 'Kashmir',
+      state: 'Jammu and Kashmir',
+      duration: '4D/3N',
+      numDays: 4,
+      budget: 18000,
+      bestFor: 'Scenic, photography, couples',
+      travelStyle: ['Nature'],
+      interests: ['Photography', 'Scenic', 'Romance'],
+      socialPreference: '1-2 People',
+      pace: 'Moderate',
+      lat: 34.0837,
+      lon: 74.7973
+    },
+    {
+      id: 'india_rishikesh',
+      name: 'Rishikesh',
+      state: 'Uttarakhand',
+      duration: '3D/2N',
+      numDays: 3,
+      budget: 10000,
+      bestFor: 'Adventure + social',
+      travelStyle: ['Adventure'],
+      interests: ['Rafting', 'Yoga', 'Camping'],
+      socialPreference: 'Social',
+      pace: 'Fast',
+      lat: 30.0869,
+      lon: 78.2676
+    },
+    {
+      id: 'india_leh',
+      name: 'Leh–Ladakh',
+      state: 'Ladakh',
+      duration: '5D/4N',
+      numDays: 5,
+      budget: 25000,
+      bestFor: 'Adventure, photography',
+      travelStyle: ['Adventure'],
+      interests: ['Road Trip', 'Mountains', 'Photography'],
+      socialPreference: 'Small Group',
+      pace: 'Moderate',
+      lat: 34.1526,
+      lon: 77.5771
+    },
+    {
+      id: 'india_goa',
+      name: 'Goa',
+      state: 'Goa',
+      duration: '4D/3N',
+      numDays: 4,
+      budget: 15000,
+      bestFor: 'Social, friends, nightlife',
+      travelStyle: ['Relaxation'],
+      interests: ['Beach', 'Nightlife', 'Food'],
+      socialPreference: 'Social',
+      pace: 'Slow',
+      lat: 15.2993,
+      lon: 74.1240
+    },
+    {
+      id: 'india_munnar',
+      name: 'Munnar',
+      state: 'Kerala',
+      duration: '3D/2N',
+      numDays: 3,
+      budget: 11000,
+      bestFor: 'Nature, relaxed travelers',
+      travelStyle: ['Nature'],
+      interests: ['Tea Gardens', 'Wildlife', 'Relaxation'],
+      socialPreference: 'Small Group',
+      pace: 'Slow',
+      lat: 10.0889,
+      lon: 77.0595
+    },
+    {
+      id: 'india_udaipur',
+      name: 'Udaipur',
+      state: 'Rajasthan',
+      duration: '3D/2N',
+      numDays: 3,
+      budget: 13000,
+      bestFor: 'Culture, photography, couples',
+      travelStyle: ['Culture'],
+      interests: ['Heritage', 'Palaces', 'Photography'],
+      socialPreference: '1-2 People',
+      pace: 'Moderate',
+      lat: 24.5854,
+      lon: 73.7125
+    },
+    {
+      id: 'india_andaman',
+      name: 'Andaman Islands',
+      state: 'Andaman and Nicobar',
+      duration: '5D/4N',
+      numDays: 5,
+      budget: 30000,
+      bestFor: 'Beaches, adventure',
+      travelStyle: ['Adventure'],
+      interests: ['Beach', 'Water Sports', 'Scuba'],
+      socialPreference: 'Small Group',
+      pace: 'Moderate',
+      lat: 11.7401,
+      lon: 92.6586
+    },
+    {
+      id: 'india_meghalaya',
+      name: 'Meghalaya',
+      state: 'Meghalaya',
+      duration: '5D/4N',
+      numDays: 5,
+      budget: 20000,
+      bestFor: 'Nature, offbeat, explorers',
+      travelStyle: ['Nature'],
+      interests: ['Waterfalls', 'Caves', 'Trekking'],
+      socialPreference: 'Small Group',
+      pace: 'Moderate',
+      lat: 25.4670,
+      lon: 91.3662
+    }
+  ];
+
+  function formatBudget(amount) {
+    return '₹' + amount.toLocaleString('en-IN');
+  }
+
+  function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result.toISOString().split('T')[0];
+  }
+
+  function renderCard(trip, place, idx) {
+    const isLarge = idx < 2;
+    const image = place?.image || `https://source.unsplash.com/800x600/?${encodeURIComponent(trip.name)},india,travel`;
+    const description = place?.description || `Explore ${trip.name}, ${trip.state}. Perfect for ${trip.bestFor}.`;
+    return `
+      <div class="${isLarge ? 'md:col-span-6' : 'md:col-span-4'} rounded-xl overflow-hidden relative group h-[360px] cursor-pointer ambient-shadow" onclick="window.generateIndiaTrip('${trip.id}')">
+        <img alt="${trip.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="${image}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+        <div class="absolute top-4 left-4">
+          <span class="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full font-label-sm text-label-sm">${trip.state}</span>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 w-full flex flex-col gap-3">
+          <h3 class="font-headline-md text-[22px] leading-[30px] font-semibold text-white">${trip.name}</h3>
+          <p class="text-white/80 text-sm line-clamp-2">${description.slice(0, 120)}</p>
+          <div class="flex flex-wrap items-center gap-4 text-white/90 text-label-sm">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">calendar_month</span> ${trip.duration}</span>
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">payments</span> ${formatBudget(trip.budget)}</span>
+          </div>
+          <div class="mt-1 flex items-center gap-2 text-primary text-label-sm font-semibold">
+            <span>View Itinerary</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function renderGrid() {
+    const grid = document.getElementById('indiaTripsGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '<div class="md:col-span-12 text-center py-12 text-on-surface-variant">Loading curated trips...</div>';
+
+    const placeInfos = await Promise.all(
+      INDIA_TRIPS.map(t => TripMateAPI.getPlaceInfo(t.name).catch(() => null))
+    );
+
+    grid.innerHTML = INDIA_TRIPS.map((trip, idx) => renderCard(trip, placeInfos[idx], idx)).join('');
+  }
+
+  window.generateIndiaTrip = async function(tripId) {
+    const trip = INDIA_TRIPS.find(t => t.id === tripId);
+    if (!trip) return;
+
+    const startDate = addDays(new Date(), 7);
+    const endDate = addDays(startDate, trip.numDays);
+
+    const btn = event?.currentTarget;
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+    }
+
+    try {
+      showToast(`Planning your ${trip.name} trip...`, 'default');
+      const result = await generateItinerary({
+        destinationId: trip.id,
+        destinationName: trip.name,
+        lat: trip.lat,
+        lon: trip.lon,
+        startDate,
+        endDate,
+        budget: trip.budget,
+        travelStyle: trip.travelStyle,
+        interests: trip.interests,
+        socialPreference: trip.socialPreference,
+        travelPace: trip.pace
+      });
+
+      if (!result) throw new Error('Itinerary generation failed');
+
+      sessionStorage.setItem('wm_generated_itinerary', JSON.stringify(result));
+      window.location.href = 'itinerary.html';
+    } catch (err) {
+      console.error('India trip generation error:', err);
+      showToast('Could not generate itinerary. Please try again.', 'error');
+      if (btn) {
+        btn.style.pointerEvents = '';
+        btn.style.opacity = '';
+      }
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderGrid);
+  } else {
+    renderGrid();
+  }
+})();
+</script>
 </body></html>
