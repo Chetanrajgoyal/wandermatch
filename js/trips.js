@@ -658,16 +658,20 @@ function renderLoadedItinerary(itinerary) {
           saveBtn.dataset.saving = 'true';
           saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
           setTimeout(() => {
+            const clone = deepClone(itinerary);
+            console.log('[Save] Cloning itinerary before save. Original id:', itinerary.id, 'dest:', itinerary.destination, 'days:', (itinerary.itinerary || []).length);
+            console.log('[Save] Cloned id:', clone.id, 'dest:', clone.destination, 'days:', (clone.itinerary || []).length);
             const newTrip = {
-              ...deepClone(itinerary),
-              title: `${itinerary.destination} Trip`,
+              ...clone,
+              title: `${clone.destination} Trip`,
               id: generateId(),
               createdBy: currentUser.id,
               createdAt: new Date().toISOString()
             };
+            console.log('[Save] New trip object id:', newTrip.id, 'dest:', newTrip.destination, 'days:', (newTrip.itinerary || []).length);
             const saved = saveTrip(newTrip);
             saveTripToUser(currentUser.id, saved.id);
-            showToast(`Your ${itinerary.destination} trip has been saved!`, 'success');
+            showToast(`Your ${newTrip.destination} trip has been saved!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');
           }, 800);

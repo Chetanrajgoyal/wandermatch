@@ -129,6 +129,7 @@ function saveTrip(trip) {
 
   trips.push(trip);
   setStore(STORAGE_KEYS.TRIPS, trips);
+  console.log('[Storage] saveTrip:', trip.id, trip.destination, 'days:', (trip.itinerary || []).length);
   return trip;
 }
 
@@ -138,7 +139,13 @@ function getTrips() {
 
 function getTripById(id) {
   const trips = getTrips();
-  return trips.find(t => t.id === id) || null;
+  const trip = trips.find(t => t.id === id) || null;
+  if (trip) {
+    console.log('[Storage] getTripById:', id, '->', trip.destination, 'days:', (trip.itinerary || []).length);
+  } else {
+    console.log('[Storage] getTripById:', id, '-> not found');
+  }
+  return trip;
 }
 
 function getUserTrips(userId) {
