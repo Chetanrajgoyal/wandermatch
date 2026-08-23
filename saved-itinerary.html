@@ -82,6 +82,7 @@
 <script>
 (function() {
   const params = new URLSearchParams(window.location.search);
+  const dataParam = params.get('data');
   const tripId = params.get('id');
   const debug = document.getElementById('savedItinDebug');
 
@@ -90,30 +91,38 @@
     console.log('[SavedItinerary]', msg);
   }
 
-  if (!tripId) {
-    showDebug('No trip ID in URL');
-    document.getElementById('savedItinHero').innerHTML = '<div class="text-white text-center w-full p-8">No trip selected. <a href="my-trips.html" class="underline">Go to My Trips</a></div>';
-    return;
-  }
-
-  // Load ONLY from isolated localStorage key — never from sessionStorage or wm_generated_itinerary
   let trip = null;
-  let source = 'isolated';
-  try {
-    const isolated = localStorage.getItem('wm_saved_itinerary_' + tripId);
-    if (isolated) trip = JSON.parse(isolated);
-  } catch (e) {
-    console.error('[SavedItinerary] Parse error:', e);
+  let source = 'url';
+
+  // 1. Try full trip data encoded in URL (most reliable)
+  if (dataParam) {
+    try {
+      trip = JSON.parse(atob(decodeURIComponent(dataParam)));
+    } catch (e) {
+      console.error('[SavedItinerary] URL data parse error:', e);
+      trip = null;
+    }
   }
 
-  if (!trip) {
-    // Legacy fallback for trips saved before isolated storage
-    trip = getTripById(tripId);
+  // 2. Fallback to isolated localStorage key
+  if (!trip && tripId) {
+    source = 'isolated';
+    try {
+      const isolated = localStorage.getItem('wm_saved_itinerary_' + tripId);
+      if (isolated) trip = JSON.parse(isolated);
+    } catch (e) {
+      console.error('[SavedItinerary] Parse error:', e);
+    }
+  }
+
+  // 3. Legacy fallback
+  if (!trip && tripId) {
     source = 'legacy';
+    trip = getTripById(tripId);
   }
 
   if (!trip || !trip.destination || !Array.isArray(trip.itinerary) || trip.itinerary.length === 0) {
-    showDebug('Trip not available: ' + tripId);
+    showDebug('Trip not available');
     document.getElementById('savedItinHero').innerHTML = `
       <div class="text-white text-center w-full p-8">
         <h2 class="text-2xl font-bold mb-4">Trip not available</h2>

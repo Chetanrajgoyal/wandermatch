@@ -306,9 +306,12 @@
         savedEmpty.classList.remove('hidden');
       } else {
         savedEmpty.classList.add('hidden');
-        savedGrid.innerHTML = savedTrips.map(trip => `
-          <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-saved-id="${trip.id}" onclick="if(event.target.closest('.delete-saved-btn')) return; window.location.href='saved-itinerary.html?id=${trip.id}'">
-            <div class="relative h-48 w-full">
+        savedGrid.innerHTML = savedTrips.map((trip, idx) => {
+          // Embed full trip data into the URL so the page never needs storage lookup
+          const encoded = encodeURIComponent(btoa(JSON.stringify(trip)));
+          return `
+          <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-saved-id="${trip.id}" data-encoded-trip="${encoded}">
+            <div class="relative h-48 w-full" onclick="window.location.href='saved-itinerary.html?data=' + encodeURIComponent(this.closest('[data-encoded-trip]').dataset.encodedTrip)">
               <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
               <div class="absolute top-4 right-4 bg-secondary-fixed/90 backdrop-blur-md text-on-secondary-fixed text-xs px-3 py-1.5 rounded-full font-semibold">Saved</div>
             </div>
@@ -318,12 +321,12 @@
                 <span class="material-symbols-outlined text-[18px] text-primary">schedule</span> ${formatDateRange(trip.startDate, trip.endDate)}
               </p>
               <div class="flex gap-2">
-                <button class="flex-1 py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">View Itinerary</button>
-                <button class="delete-saved-btn px-4 py-3 rounded-full bg-error/10 border border-error text-error font-bold text-sm hover:bg-error/20 transition-colors">Delete</button>
+                <button class="view-saved-btn flex-1 py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors" onclick="event.stopPropagation(); window.location.href='saved-itinerary.html?data=' + encodeURIComponent(this.closest('[data-encoded-trip]').dataset.encodedTrip)">View Itinerary</button>
+                <button class="delete-saved-btn px-4 py-3 rounded-full bg-error/10 border border-error text-error font-bold text-sm hover:bg-error/20 transition-colors" onclick="event.stopPropagation();">Delete</button>
               </div>
             </div>
           </div>
-        `).join('');
+        `}).join('');
 
         savedGrid.querySelectorAll('.delete-saved-btn').forEach((btn, idx) => {
           btn.addEventListener('click', (e) => {
