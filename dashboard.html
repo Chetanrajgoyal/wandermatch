@@ -380,10 +380,10 @@
         </div>
       `;
     } else {
-      grid.innerHTML = displayTrips.map(trip => `
+      grid.innerHTML = displayTrips.map((trip, idx) => `
         <div class="glass-panel rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-transform duration-300" onclick="window.location.href='itinerary.html?id=${trip.id}'">
           <div class="h-48 w-full relative">
-            <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'assets/images/hero-mountain.jpg'}"/>
+            <img id="tripImg-${idx}" alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'assets/images/hero-mountain.jpg'}"/>
             <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-label-sm text-label-sm text-primary shadow-sm">
               ${new Date(trip.startDate) > new Date() ? 'Upcoming' : 'Past'}
             </div>
@@ -400,6 +400,16 @@
           </div>
         </div>
       `).join('');
+
+      // Load place-specific images for trips that don't have one.
+      displayTrips.forEach((trip, idx) => {
+        if (!trip.image && typeof getDestinationImage === 'function') {
+          getDestinationImage(trip.destination).then(url => {
+            const img = document.getElementById(`tripImg-${idx}`);
+            if (img && url) img.src = url;
+          });
+        }
+      });
     }
 
     // Saved Trips
@@ -415,10 +425,10 @@
         </div>
       `;
     } else {
-      savedGrid.innerHTML = displaySaved.map(trip => `
+      savedGrid.innerHTML = displaySaved.map((trip, idx) => `
         <div class="glass-panel rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-transform duration-300" onclick="window.location.href='saved-itinerary.html?id=${trip.id}'">
           <div class="h-48 w-full relative">
-            <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
+            <img id="savedTripImg-${idx}" alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
             <div class="absolute top-4 right-4 bg-secondary-fixed/90 backdrop-blur-sm px-3 py-1 rounded-full font-label-sm text-label-sm text-on-secondary-fixed shadow-sm">Saved</div>
           </div>
           <div class="p-6">
@@ -433,6 +443,16 @@
           </div>
         </div>
       `).join('');
+
+      // Load place-specific images for saved trips that don't have one.
+      displaySaved.forEach((trip, idx) => {
+        if (!trip.image && typeof getDestinationImage === 'function') {
+          getDestinationImage(trip.destination).then(url => {
+            const img = document.getElementById(`savedTripImg-${idx}`);
+            if (img && url) img.src = url;
+          });
+        }
+      });
     }
 
     // Edit form defaults

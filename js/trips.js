@@ -3,6 +3,57 @@
    CRUD operations, tab management, trip cards
    ============================================ */
 
+// Curated Unsplash travel photos used when Wikipedia/TripMate has no image.
+const DESTINATION_FALLBACK_IMAGES = [
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&q=80',
+  'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&q=80',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80',
+  'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=1600&q=80',
+  'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1600&q=80',
+  'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&q=80',
+  'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1600&q=80',
+  'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=1600&q=80',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&q=80',
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&q=80',
+  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1600&q=80',
+  'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1600&q=80'
+];
+
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function deterministicFallbackImage(destination) {
+  const idx = hashString(destination) % DESTINATION_FALLBACK_IMAGES.length;
+  return DESTINATION_FALLBACK_IMAGES[idx];
+}
+
+async function getDestinationImage(destination) {
+  if (!destination) return deterministicFallbackImage('unknown');
+  if (typeof TripMateAPI === 'undefined') return deterministicFallbackImage(destination);
+
+  try {
+    const place = await TripMateAPI.getPlaceInfo(destination);
+    if (place && place.image) return place.image;
+  } catch (e) {
+    console.warn('[getDestinationImage] getPlaceInfo failed:', e);
+  }
+
+  try {
+    const img = await TripMateAPI.searchForImage(destination);
+    if (img) return img;
+  } catch (e) {
+    console.warn('[getDestinationImage] searchForImage failed:', e);
+  }
+
+  return deterministicFallbackImage(destination);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
 
@@ -690,15 +741,10 @@ function renderLoadedItinerary(itinerary) {
       }
     }
 
-    renderHero(null, null);
-
-    if (typeof TripMateAPI !== 'undefined') {
-      TripMateAPI.getPlaceInfo(itinerary.destination).then(place => {
-        if (place) renderHero(place.image, place.description);
-      }).catch(err => {
-        console.warn('Wikipedia fetch failed for itinerary hero:', err);
-      });
-    }
+    // Load a place-specific hero image, falling back to a deterministic image per destination.
+    getDestinationImage(itinerary.destination).then(url => {
+      if (url) renderHero(url, null);
+    });
   }
 
   // 2. Timeline
