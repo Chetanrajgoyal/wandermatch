@@ -856,6 +856,9 @@ function runInitItineraryPage() {
       console.warn('Gallery fetch failed:', err);
     });
   }
+
+  // 7. Map modal
+  initMapModal(itinerary);
 }
 
 function getWeatherIcon(code) {
@@ -868,6 +871,146 @@ function getWeatherIcon(code) {
   if (code >= 80 && code <= 82) return '🌦️';
   if (code >= 95) return '⛈️';
   return '🌡️';
+}
+
+function initMapModal(itinerary) {
+  const modal = document.getElementById('mapModal');
+  const openBtn = document.getElementById('viewMapBtn');
+  const closeBtn = document.getElementById('closeMapBtn');
+  const titleEl = document.getElementById('mapModalTitle');
+  if (!modal || !openBtn || !closeBtn) return;
+
+  if (titleEl && itinerary.destination) {
+    titleEl.innerHTML = `<span class="material-symbols-outlined text-primary">map</span> ${itinerary.destination} Map`;
+  }
+
+  let map = null;
+  let initialized = false;
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+
+    if (!initialized) {
+      setTimeout(() => {
+        initMap();
+        initialized = true;
+      }, 50);
+    } else if (map) {
+      setTimeout(() => map.invalidateSize(), 50);
+    }
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  function initMap() {
+    const lat = itinerary.lat;
+    const lon = itinerary.lon;
+    if (!lat || !lon) {
+      const mapContainer = document.getElementById('tripMap');
+      if (mapContainer) mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Location coordinates not available for this trip.</div>';
+      return;
+    }
+
+    map = L.map('tripMap').setView([lat, lon], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Destination marker
+    const destMarker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        className: 'custom-map-marker',
+        html: `<div class="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center shadow-lg border-2 border-white"><span class="material-symbols-outlined text-sm">location_on</span></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+      })
+    }).addTo(map);
+    destMarker.bindPopup(`<b>${itinerary.destination}</b>`).openPopup();
+
+    const bounds = [[lat, lon]];
+
+    // Accommodation markers
+    const accColors = ['#005da7', '#01658c', '#555d63'];
+    (itinerary.accommodations || []).forEach((acc, idx) => {
+      if (acc.lat && acc.lon) {
+        const marker = L.marker([acc.lat, acc.lon], {
+          icon: L.divIcon({
+            className: 'custom-map-marker',
+            html: `<div class="w-7 h-7 rounded-full text-white flex items-center justify-center shadow-md border-2 border-white" style="background:${accColors[idx % accColors.length]}"><span class="material-symbols-outlined text-xs">hotel</span></div>`,
+            iconSize: [28, 28],
+            iconAnchor: [14, 28]
+          })
+        }).addTo(map);
+        marker.bindPopup(`<b>${acc.name}</b><br>${acc.type || 'Stay'} · ₹${acc.costPerNight || 0}/nt`);
+        bounds.push([acc.lat, acc.lon]);
+      }
+    });
+
+    // Activity markers per day + polylines
+    const dayColors = ['#3b82f6', '#22c55e', '#f97316', '#a855f7', '#ec4899'];
+    (itinerary.itinerary || []).forEach((day, dIdx) => {
+      const color = dayColors[dIdx % dayColors.length];
+      const dayCoords = [];
+      (day.activities || []).forEach((act) => {
+        if (act.lat && act.lon) {
+          const marker = L.circleMarker([act.lat, act.lon], {
+            radius: 7,
+            fillColor: color,
+            color: '#fff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).addTo(map);
+          marker.bindPopup(`<b>Day ${day.day || (dIdx + 1)} · ${act.time || ''}</b><br>${act.name || 'Activity'}`);
+          dayCoords.push([act.lat, act.lon]);
+          bounds.push([act.lat, act.lon]);
+        }
+      });
+
+      if (dayCoords.length >= 2) {
+        // Try to get a routed polyline; fall back to straight line
+        drawRoute(dayCoords, color);
+      }
+    });
+
+    if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [40, 40] });
+    }
+  }
+
+  async function drawRoute(coords, color) {
+    if (!coords || coords.length < 2 || !map) return;
+    try {
+      const route = await RoutingAPI.getRoute(coords.map(c => [c[1], c[0]])); // RoutingAPI expects [lon, lat]
+      if (route && route.geometry && typeof L !== 'undefined' && L.Polyline && L.Polyline.fromEncoded) {
+        L.Polyline.fromEncoded(route.geometry, { color, weight: 4, opacity: 0.8 }).addTo(map);
+      } else if (route) {
+        L.polyline(coords, { color, weight: 4, opacity: 0.8 }).addTo(map);
+      } else {
+        L.polyline(coords, { color, weight: 4, opacity: 0.8, dashArray: '5, 10' }).addTo(map);
+      }
+    } catch (err) {
+      console.warn('Route draw failed, using straight line:', err);
+      L.polyline(coords, { color, weight: 4, opacity: 0.8, dashArray: '5, 10' }).addTo(map);
+    }
+  }
 }
 
 function renderWeatherCard(el, weather, sun = null) {

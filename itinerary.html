@@ -101,6 +101,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col overflow-x-hidden" data-page="itinerary">
 
@@ -228,7 +229,7 @@
                                 <h3 class="font-bold text-white text-xl drop-shadow-md">Explore Route</h3>
                                 <p class="text-sm font-medium text-white/90">View Map</p>
                             </div>
-                            <button class="w-12 h-12 rounded-full bg-white text-brand-blue flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                            <button id="viewMapBtn" class="w-12 h-12 rounded-full bg-white text-brand-blue flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
                                 <i class="fa-solid fa-expand"></i>
                             </button>
                         </div>
@@ -242,6 +243,22 @@
             </div> <!-- End of Main Content Grid -->
         </div> <!-- End of Scrollable Canvas -->
     </main> <!-- End of Main Content Area -->
+
+  <!-- Map Modal -->
+  <div id="mapModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-on-surface/40 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[80vh] flex flex-col overflow-hidden relative">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h3 id="mapModalTitle" class="font-bold text-gray-900 text-lg flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">map</span>
+          Trip Map
+        </h3>
+        <button id="closeMapBtn" class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div id="tripMap" class="flex-1 w-full h-full"></div>
+    </div>
+  </div>
 
   <!-- BEGIN: Footer Section -->
   <footer class="bg-brand-dark text-white pt-16 pb-8 px-6 lg:px-12 rounded-t-[3rem] mt-10">
@@ -327,17 +344,19 @@
     </div>
   </footer>
 
-<script src="js/api/api-config.js?v=3"></script>
-<script src="js/api/api-cache.js?v=3"></script>
-<script src="js/api/geocoding-api.js?v=3"></script>
-<script src="js/api/weather-api.js?v=3"></script>
-<script src="js/api/places-api.js?v=3"></script>
-<script src="js/api/routing-api.js?v=3"></script>
-<script src="js/api/tripmate-api.js?v=3"></script>
-<script src="js/storage.js?v=3"></script>
-<script src="js/matching.js?v=3"></script>
-<script src="js/planner.js?v=3"></script>
-<script src="js/app.js?v=3"></script>
-<script src="js/trips.js?v=3"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/polyline-encoded@0.0.3/Polyline.encoded.js"></script>
+<script src="js/api/api-config.js?v=4"></script>
+<script src="js/api/api-cache.js?v=4"></script>
+<script src="js/api/geocoding-api.js?v=4"></script>
+<script src="js/api/weather-api.js?v=4"></script>
+<script src="js/api/places-api.js?v=4"></script>
+<script src="js/api/routing-api.js?v=4"></script>
+<script src="js/api/tripmate-api.js?v=4"></script>
+<script src="js/storage.js?v=4"></script>
+<script src="js/matching.js?v=4"></script>
+<script src="js/planner.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
+<script src="js/trips.js?v=4"></script>
 </body>
 </html>
