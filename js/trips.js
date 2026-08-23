@@ -147,7 +147,7 @@ function renderSavedTripsTab(user) {
   }
 
   container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    ${trips.map(trip => renderTripCard(trip, true)).join('')}
+    ${trips.map(trip => renderTripCard(trip, true, null, true)).join('')}
   </div>`;
 
   // Attach delete handlers for saved trips
@@ -164,9 +164,10 @@ function renderSavedTripsTab(user) {
   });
 }
 
-function renderTripCard(trip, showDelete = false, status = null) {
+function renderTripCard(trip, showDelete = false, status = null, savedView = false) {
+  const detailUrl = savedView ? 'saved-itinerary.html' : 'itinerary.html';
   return `
-    <div class="trip-card bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='itinerary.html?id=${trip.id}'">
+    <div class="trip-card bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='${detailUrl}?id=${trip.id}'">
       <div class="card-image-container aspect-[16/10] overflow-hidden relative">
         <img src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}" alt="${trip.destination}" class="card-image w-full h-full object-cover" loading="lazy">
         ${status ? `<div class="absolute top-3 right-3">
@@ -183,7 +184,7 @@ function renderTripCard(trip, showDelete = false, status = null) {
       </div>
       ${showDelete ? `
         <div class="card-footer flex items-center justify-between px-5 pb-5">
-          <a href="itinerary.html?id=${trip.id}" class="btn btn-ghost btn-sm">View</a>
+          <a href="${detailUrl}?id=${trip.id}" class="btn btn-ghost btn-sm">View</a>
           <button class="btn btn-ghost btn-sm delete-trip text-error font-semibold" data-id="${trip.id}">Delete</button>
         </div>
       ` : ''}

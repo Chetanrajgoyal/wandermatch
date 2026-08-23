@@ -307,7 +307,7 @@
       } else {
         savedEmpty.classList.add('hidden');
         savedGrid.innerHTML = savedTrips.map(trip => `
-          <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-saved-id="${trip.id}" onclick="if(event.target.closest('.delete-saved-btn')) return; window.location.href='itinerary.html?id=${trip.id}'">
+          <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-saved-id="${trip.id}" onclick="if(event.target.closest('.delete-saved-btn')) return; window.location.href='saved-itinerary.html?id=${trip.id}'">
             <div class="relative h-48 w-full">
               <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
               <div class="absolute top-4 right-4 bg-secondary-fixed/90 backdrop-blur-md text-on-secondary-fixed text-xs px-3 py-1.5 rounded-full font-semibold">Saved</div>
