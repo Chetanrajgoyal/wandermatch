@@ -876,9 +876,10 @@ function getWeatherIcon(code) {
 function initMapModal(itinerary) {
   const modal = document.getElementById('mapModal');
   const openBtn = document.getElementById('viewMapBtn');
+  const panel = document.getElementById('mapPanel');
   const closeBtn = document.getElementById('closeMapBtn');
   const titleEl = document.getElementById('mapModalTitle');
-  if (!modal || !openBtn || !closeBtn) return;
+  if (!modal || !closeBtn) return;
 
   if (titleEl && itinerary.destination) {
     titleEl.innerHTML = `<span class="material-symbols-outlined text-primary">map</span> ${itinerary.destination} Map`;
@@ -894,8 +895,10 @@ function initMapModal(itinerary) {
 
     if (!initialized) {
       setTimeout(() => {
-        initMap();
-        initialized = true;
+        ensureCoords().then(() => {
+          initMap();
+          initialized = true;
+        });
       }, 50);
     } else if (map) {
       setTimeout(() => map.invalidateSize(), 50);
@@ -908,7 +911,8 @@ function initMapModal(itinerary) {
     document.body.style.overflow = '';
   }
 
-  openBtn.addEventListener('click', openModal);
+  if (openBtn) openBtn.addEventListener('click', openModal);
+  if (panel) panel.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
@@ -917,15 +921,50 @@ function initMapModal(itinerary) {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
+  async function ensureCoords() {
+    if (itinerary.lat && itinerary.lon) return;
+    if (!itinerary.destination) return;
+
+    // Try geocoding API first
+    if (typeof GeocodingAPI !== 'undefined') {
+      try {
+        const results = await GeocodingAPI.searchDestination(itinerary.destination);
+        if (results && results.length > 0) {
+          itinerary.lat = parseFloat(results[0].latitude);
+          itinerary.lon = parseFloat(results[0].longitude);
+          return;
+        }
+      } catch (e) {
+        console.warn('Geocoding failed for map:', e);
+      }
+    }
+
+    // Fallback to TripMate place info
+    if (typeof TripMateAPI !== 'undefined') {
+      try {
+        const place = await TripMateAPI.getPlaceInfo(itinerary.destination);
+        if (place && place.coordinates) {
+          itinerary.lat = parseFloat(place.coordinates.lat);
+          itinerary.lon = parseFloat(place.coordinates.lon);
+        }
+      } catch (e) {
+        console.warn('TripMate place info failed for map:', e);
+      }
+    }
+  }
+
   function initMap() {
     const lat = itinerary.lat;
     const lon = itinerary.lon;
+    const mapContainer = document.getElementById('tripMap');
+    if (!mapContainer) return;
+
     if (!lat || !lon) {
-      const mapContainer = document.getElementById('tripMap');
-      if (mapContainer) mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Location coordinates not available for this trip.</div>';
+      mapContainer.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Location coordinates not available for this trip.</div>';
       return;
     }
 
+    mapContainer.innerHTML = '';
     map = L.map('tripMap').setView([lat, lon], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

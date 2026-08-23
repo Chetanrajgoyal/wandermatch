@@ -222,14 +222,14 @@
                 <!-- Right Column: Sidebar Info (Span 4) -->
                 <div class="lg:col-span-4 flex flex-col gap-8">
                     <!-- Map / Location Panel -->
-                    <div class="glass-panel rounded-3xl overflow-hidden flex flex-col relative h-[350px] shadow-sm border border-gray-200/50">
-                        <div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Map background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJGWg1WW9ck00d0fSn-CtAK3OSsIyVjBxNX3z8WIYttPx0NDJrStX8bby_bKWrqzKIjF1NSGidP8nzv2tJ4zPN5thZRv4osh126T1L0AxI3nr-_vau8O2E3j5Yj_hphHBEMcy9hnjc2m3wgfDuJHK2gpjYjaYaGHJcWMq6ZhpQ0q_YTvWzytdW1MoUKe_CkjqWVBrG6SlB54uYvAWAImsQGQWjQoFvzKAjb1PXOQphi0_KhN_28oZ8')"></div>
+                    <div id="mapPanel" class="glass-panel rounded-3xl overflow-hidden flex flex-col relative h-[350px] shadow-sm border border-gray-200/50 cursor-pointer group">
+                        <div class="absolute inset-0 bg-cover bg-center opacity-80 transition-transform duration-700 group-hover:scale-105" data-alt="Map background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJGWg1WW9ck00d0fSn-CtAK3OSsIyVjBxNX3z8WIYttPx0NDJrStX8bby_bKWrqzKIjF1NSGidP8nzv2tJ4zPN5thZRv4osh126T1L0AxI3nr-_vau8O2E3j5Yj_hphHBEMcy9hnjc2m3wgfDuJHK2gpjYjaYaGHJcWMq6ZhpQ0q_YTvWzytdW1MoUKe_CkjqWVBrG6SlB54uYvAWAImsQGQWjQoFvzKAjb1PXOQphi0_KhN_28oZ8')"></div>
                         <div class="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-gray-900/80 to-transparent z-10 flex justify-between items-end">
                             <div>
                                 <h3 class="font-bold text-white text-xl drop-shadow-md">Explore Route</h3>
                                 <p class="text-sm font-medium text-white/90">View Map</p>
                             </div>
-                            <button id="viewMapBtn" class="w-12 h-12 rounded-full bg-white text-brand-blue flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                            <button id="viewMapBtn" class="w-12 h-12 rounded-full bg-white text-brand-blue flex items-center justify-center shadow-lg hover:scale-105 transition-transform pointer-events-none">
                                 <i class="fa-solid fa-expand"></i>
                             </button>
                         </div>
@@ -346,17 +346,17 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://unpkg.com/polyline-encoded@0.0.3/Polyline.encoded.js"></script>
-<script src="js/api/api-config.js?v=4"></script>
-<script src="js/api/api-cache.js?v=4"></script>
-<script src="js/api/geocoding-api.js?v=4"></script>
-<script src="js/api/weather-api.js?v=4"></script>
-<script src="js/api/places-api.js?v=4"></script>
-<script src="js/api/routing-api.js?v=4"></script>
-<script src="js/api/tripmate-api.js?v=4"></script>
-<script src="js/storage.js?v=4"></script>
-<script src="js/matching.js?v=4"></script>
-<script src="js/planner.js?v=4"></script>
-<script src="js/app.js?v=4"></script>
-<script src="js/trips.js?v=4"></script>
+<script src="js/api/api-config.js?v=5"></script>
+<script src="js/api/api-cache.js?v=5"></script>
+<script src="js/api/geocoding-api.js?v=5"></script>
+<script src="js/api/weather-api.js?v=5"></script>
+<script src="js/api/places-api.js?v=5"></script>
+<script src="js/api/routing-api.js?v=5"></script>
+<script src="js/api/tripmate-api.js?v=5"></script>
+<script src="js/storage.js?v=5"></script>
+<script src="js/matching.js?v=5"></script>
+<script src="js/planner.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
+<script src="js/trips.js?v=5"></script>
 </body>
 </html>
