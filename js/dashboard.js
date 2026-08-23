@@ -90,7 +90,7 @@ async function renderUpcomingTrips(user) {
 
   // Pre-render loading state for weather
   const tripCardsHtml = upcoming.slice(0, 2).map((trip, i) => `
-    <div class="trip-card reveal bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='trip-details.html?id=${trip.id}'">
+    <div class="trip-card reveal bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='itinerary.html?id=${trip.id}'">
       <div class="card-image-container aspect-[16/10] overflow-hidden">
         <img src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}" alt="${trip.destination}" class="card-image w-full h-full object-cover" loading="lazy">
       </div>
@@ -159,7 +159,7 @@ function renderRecommendedTrips(user) {
   }
 
   container.innerHTML = recommended.map(trip => `
-    <div class="trip-card reveal bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='trip-details.html?id=${trip.id}'">
+    <div class="trip-card reveal bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='itinerary.html?id=${trip.id}'">
       <div class="card-image-container aspect-[16/10] overflow-hidden relative">
         <img src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}" alt="${trip.destination}" class="card-image w-full h-full object-cover" loading="lazy">
         <div class="absolute top-3 right-3">

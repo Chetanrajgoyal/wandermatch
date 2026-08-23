@@ -137,53 +137,9 @@
                     Upcoming Trips
                 </h2>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-<!-- Trip Card 1 -->
-<div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-<div class="relative h-48 w-full">
-<img alt="Amalfi Coast" class="w-full h-full object-cover" data-alt="A breathtaking view of the Amalfi coast in Italy during late afternoon. Pastel colored houses cling to the steep cliffs overlooking the deep blue Tyrrhenian Sea. The scene is bathed in warm, golden hour sunlight, creating a highly aspirational and serene travel aesthetic suited for a modern UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR5HkLCx3qkerhCbM-ocb7OOPm5llld8Q-wY7aAXnvH3p1MSPaMsvJcmaoiuKGTqVeFIQL-xtqT8XaeLfHudAdxzyy_Cgk_OAmBf0YmrpXImYxPUYDUxMQgNUZU8JGyg-s5vx70A6ZbH4ipFNI5QFdV6scykBaRkSqr2HRxCegpUhFnr1YvT1tys8THwYDZmL6x9nh21EyofwcxBH9c3eaLvz_3a7K8St7fHQlpW59SuE-7BjSoKhY"/>
-<div class="absolute top-4 right-4">
-<span class="bg-secondary-fixed/90 backdrop-blur-md text-on-secondary-fixed text-xs px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm font-semibold">
-<span class="material-symbols-outlined text-[14px]">flight</span> Upcoming
-                            </span>
-</div>
-</div>
-<div class="p-[24px]">
-<h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">Amalfi Coast Escape</h3>
-<p class="text-slate-500 text-sm mb-4 flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px] text-primary">schedule</span> Oct 12 - Oct 20, 2024
-                        </p>
-<div class="flex flex-wrap gap-2 mb-6">
-<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Relaxation</span>
-<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Coastal</span>
-</div>
-<button class="w-full py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">View Itinerary</button>
-</div>
-</div>
-<!-- Trip Card 2 (In Progress) -->
-<div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 ring-2 ring-primary/20">
-<div class="relative h-48 w-full">
-<img alt="Kyoto" class="w-full h-full object-cover" data-alt="A serene temple garden in Kyoto during cherry blossom season. Soft pink petals fall gently around a traditional wooden pavilion reflecting in a calm koi pond. The lighting is soft and ethereal, matching a light-mode, peaceful travel app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZVBSMjb36EZ8uqprSdsyK4ZWnB-9P3SxuCIpkJscg6PWaEietQVNcGWtMlLiifXigFpj5LHysKJziU_m3jfMnnx-pdmnPITjH9g7zrkrrSWMQEbXRGue69p8bF8POCYceTfVnxrIm85zTYJ9hOWu7BmT41bdAabheEnfC6OK3PyQQPbpaFKM8fb0Cj2f3N37ZNJkHXqwTeAEOFlmgYwTKRKBC1699BHxKWoJdG7gi2_UjWHm_JINm"/>
-<div class="absolute top-4 right-4">
-<span class="bg-primary-container/90 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm font-semibold animate-pulse">
-<span class="material-symbols-outlined text-[14px]">explore</span> In Progress
-                            </span>
-</div>
-</div>
-<div class="p-[24px]">
-<h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">Kyoto Cherry Blossoms</h3>
-<p class="text-slate-500 text-sm mb-4 flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px] text-primary">schedule</span> Apr 2 - Apr 14, 2024
-                        </p>
-<div class="flex flex-wrap gap-2 mb-6">
-<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Culture</span>
-<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">Nature</span>
-</div>
-<button class="w-full py-3 rounded-full bg-primary text-white font-bold text-sm hover:bg-surface-tint transition-colors shadow-[0_8px_16px_rgba(0,93,167,0.2)]">Open Live Guide</button>
-</div>
-</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="myTripsGrid">
 <!-- Plan New Trip CTA Card -->
-<div class="glass-card rounded-[16px] overflow-hidden flex flex-col items-center justify-center p-[24px] min-h-[400px] border-dashed border-2 border-outline-variant hover:border-primary/50 transition-colors bg-surface-container-low/50 cursor-pointer group">
+<div class="glass-card rounded-[16px] overflow-hidden flex flex-col items-center justify-center p-[24px] min-h-[400px] border-dashed border-2 border-outline-variant hover:border-primary/50 transition-colors bg-surface-container-low/50 cursor-pointer group" onclick="window.location.href='plan-trip.html'">
 <div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
 <span class="material-symbols-outlined text-[32px] text-primary">add</span>
 </div>
@@ -194,9 +150,17 @@
                     </button>
 </div>
 </div>
+<div class="hidden text-center py-12" id="myTripsEmpty">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-[28px] text-primary">map</span>
+</div>
+<h3 class="text-xl font-bold text-slate-800 mb-2">No trips yet</h3>
+<p class="text-slate-500 text-sm mb-6">Plan your first adventure and it will appear here.</p>
+<a href="plan-trip.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors shadow-sm">Plan a Trip</a>
+</div>
 </section>
 <!-- Past Memories Section -->
-<section>
+<section id="pastMemoriesSection" class="hidden">
 <div class="flex items-center justify-between mb-8">
 <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
 <span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">photo_library</span>
@@ -204,42 +168,8 @@
                 </h2>
 </div>
 <!-- Horizontal Scroll / Grid for Past Trips -->
-<div class="flex overflow-x-auto pb-8 -mx-6 px-6 gap-6 md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible md:pb-0 md:px-0 md:mx-0 snap-x">
-<!-- Past Trip 1 -->
-<div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start">
-<div class="relative h-40 w-full">
-<img alt="Swiss Alps" class="w-full h-full object-cover grayscale-[30%]" data-alt="A stunning view of the Swiss Alps, snow-capped peaks against a clear blue sky. A small, cozy wooden chalet sits in the foreground surrounded by green alpine meadows. Bright, crisp light underscores a clean, airy UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCmKvpgXM_CWGjuJDI8G02pwwyC9iKSDpqZEFQlVIGH2vafxXwxb2gj9DVVfuZqB8g4W4jmsfcUp5NqUbEb3M-lYC3Q_RHV_hxRh9W-XlekOGoP27LiMmt_EbNfQRNLMzXLOmz7DPfsvdtiqmSml7BRXRqEASDyFwGVfPV56hGOsVyk6FenqT-hLj3Z1Mhom9TKD7QS2TAsYkbbAtZW5ZsWw3I5mT2a7fd6zr3YvwvEUxYNUp2ReZt"/>
-<div class="absolute top-3 right-3">
-<span class="bg-surface-container/90 backdrop-blur-md text-slate-600 font-semibold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">check_circle</span> Completed
-                            </span>
-</div>
-</div>
-<div class="p-4">
-<h3 class="text-md font-bold text-slate-800 mb-1">Swiss Alps Retreat</h3>
-<p class="text-sm text-slate-500">Dec 2023</p>
-</div>
-</div>
-<!-- Past Trip 2 -->
-<div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start">
-<div class="relative h-40 w-full">
-<img alt="Marrakesh" class="w-full h-full object-cover grayscale-[30%]" data-alt="A vibrant street scene in Marrakesh, Morocco. Colorful spices in woven baskets, intricate tile work on the walls, and soft dappled sunlight filtering through overhead canopies. The color palette is warm and rich, yet presented cleanly within a modern interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTgz69mtxFz0KFT3w_KNWInxqLFtm2lDemZt4zLPFi7Y9xANhTRdEdP_-0jISRDwaC-sD-g4M93vdJprFc2m2RwaTuOSAqL1T8Jo9Wt6wLH5lFIU2p2YWcOwP7k7noLaVZmR6EehVsw_tpq--dwZ7Mbn6065RiO_mAqD7wTskxlIVKcN6CUY44fYKg3d-rbVdBGSQ_9rEOLmub5ACMh2RC0Np-hjB62cmoyarGxNLLVIYLMa7AqCTo"/>
-</div>
-<div class="p-4">
-<h3 class="text-md font-bold text-slate-800 mb-1">Marrakesh Markets</h3>
-<p class="text-sm text-slate-500">Sep 2023</p>
-</div>
-</div>
-<!-- Past Trip 3 -->
-<div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start">
-<div class="relative h-40 w-full">
-<img alt="Maldives" class="w-full h-full object-cover grayscale-[30%]" data-alt="A wide shot of a pristine white sand beach in the Maldives. Turquoise waters gently lap the shore. A single palm tree leans over the water. The image is bright and overexposed slightly to create a dreamy, cloud-like atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ0brFkTud69X5v73a7iH16-FWITiRuxCl0Zyjakisif7hW213hSX4xdX9zYnlNftAUUH90K_LDVGS1NLcUJ-hk0GytxREIMG0lhBQyh7Bs8nBiVOzlQjfLEjphySf1fE_x6qqwgj14fsRxWPSDTAyfl-EwP0nnSUVM8u1FBWq7ka5WbBeoxy7K-FiZuwB9mEjpFEToKV9KJRBx3MfHmAZk5MpgvqRtcpuCAhFPgm5AlBkpV6bZzK4"/>
-</div>
-<div class="p-4">
-<h3 class="text-md font-bold text-slate-800 mb-1">Maldives Honeymoon</h3>
-<p class="text-sm text-slate-500">Jun 2023</p>
-</div>
-</div>
+<div class="flex overflow-x-auto pb-8 -mx-6 px-6 gap-6 md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible md:pb-0 md:px-0 md:mx-0 snap-x" id="pastTripsGrid">
+<!-- Past trips rendered dynamically -->
 </div>
 </section>
 </main>
@@ -329,4 +259,93 @@
 <script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 <script src="js/trips.js"></script>
+<script>
+(function() {
+  function initMyTripsPage() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const grid = document.getElementById('myTripsGrid');
+    const empty = document.getElementById('myTripsEmpty');
+    const pastSection = document.getElementById('pastMemoriesSection');
+    const pastGrid = document.getElementById('pastTripsGrid');
+    if (!grid || !empty) return;
+
+    const trips = getUserTrips(user.id);
+    const now = new Date();
+    const upcoming = trips.filter(t => new Date(t.startDate) >= now).sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    const past = trips.filter(t => new Date(t.startDate) < now).sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+    // Remove CTA card before injecting trips
+    const cta = grid.querySelector('[onclick*="plan-trip.html"]');
+
+    if (upcoming.length === 0 && past.length === 0) {
+      grid.classList.add('hidden');
+      empty.classList.remove('hidden');
+      if (pastSection) pastSection.classList.add('hidden');
+      return;
+    }
+
+    empty.classList.add('hidden');
+
+    function cardHTML(trip, status) {
+      const statusBadge = status === 'upcoming'
+        ? `<span class="bg-secondary-fixed/90 backdrop-blur-md text-on-secondary-fixed text-xs px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm font-semibold"><span class="material-symbols-outlined text-[14px]">flight</span> Upcoming</span>`
+        : `<span class="bg-surface-container/90 backdrop-blur-md text-slate-600 font-semibold text-xs px-2.5 py-1 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> Completed</span>`;
+      const tags = [trip.travelStyle || 'Travel', ...(trip.interests || [])].slice(0, 2);
+      return `
+        <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" onclick="window.location.href='itinerary.html?id=${trip.id}'">
+          <div class="relative h-48 w-full">
+            <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
+            <div class="absolute top-4 right-4">${statusBadge}</div>
+          </div>
+          <div class="p-[24px]">
+            <h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">${trip.title || trip.destination || 'Trip'}</h3>
+            <p class="text-slate-500 text-sm mb-4 flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-primary">schedule</span> ${formatDateRange(trip.startDate, trip.endDate)}
+            </p>
+            <div class="flex flex-wrap gap-2 mb-6">
+              ${tags.map(tag => `<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">${tag}</span>`).join('')}
+            </div>
+            <button class="w-full py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">View Itinerary</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render upcoming trips before the CTA
+    upcoming.forEach(trip => {
+      const div = document.createElement('div');
+      div.innerHTML = cardHTML(trip, 'upcoming');
+      grid.insertBefore(div.firstElementChild, cta);
+    });
+
+    // Render past memories
+    if (pastSection && pastGrid) {
+      if (past.length > 0) {
+        pastSection.classList.remove('hidden');
+        pastGrid.innerHTML = past.map(trip => `
+          <div class="min-w-[280px] md:min-w-0 glass-card rounded-[16px] overflow-hidden opacity-90 hover:opacity-100 transition-opacity snap-start cursor-pointer" onclick="window.location.href='itinerary.html?id=${trip.id}'">
+            <div class="relative h-40 w-full">
+              <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover grayscale-[30%]" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
+            </div>
+            <div class="p-4">
+              <h3 class="text-md font-bold text-slate-800 mb-1">${trip.title || trip.destination || 'Trip'}</h3>
+              <p class="text-sm text-slate-500">${formatDateRange(trip.startDate, trip.endDate)}</p>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        pastSection.classList.add('hidden');
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMyTripsPage);
+  } else {
+    initMyTripsPage();
+  }
+})();
+</script>
 </body></html>

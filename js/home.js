@@ -363,7 +363,7 @@
     }
 
     container.innerHTML = trips.map(trip => `
-      <div class="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-shadow duration-300 cursor-pointer group" onclick="window.location.href='trip-details.html?id=${trip.id}'">
+      <div class="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-shadow duration-300 cursor-pointer group" onclick="window.location.href='itinerary.html?id=${trip.id}'">
         <div class="aspect-[16/10] overflow-hidden">
           <img src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}" alt="${trip.destination}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
         </div>

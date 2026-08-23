@@ -37,15 +37,44 @@ async function generateItinerary(params) {
   let realHotels = [];
   let weatherData = null;
 
+  // Helper: abort slow API calls so one hang doesn't block the whole planner
+  const withTimeout = (promise, ms, label) => {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out`)), ms))
+    ]);
+  };
+
   try {
-    tripMateInfo = await TripMateAPI.getPlaceInfo(destination.name);
+    const [placeInfo, attractions] = await Promise.all([
+      withTimeout(TripMateAPI.getPlaceInfo(destination.name), 8000, 'place info').catch(e => {
+        console.warn('TripMate place info failed:', e);
+        return null;
+      }),
+      withTimeout(TripMateAPI.getAttractions(destination.name), 12000, 'attractions').catch(e => {
+        console.warn('TripMate attractions failed:', e);
+        return [];
+      })
+    ]);
+    tripMateInfo = placeInfo;
+    tripMateAttractions = attractions;
   } catch (e) {
-    console.warn('TripMate place info failed:', e);
+    console.warn('TripMate data fetch failed:', e);
   }
 
   if (destination.lat && destination.lon) {
     try {
-      weatherData = await TripMateAPI.getWeather(destination.lat, destination.lon);
+      const [weather, hotels] = await Promise.all([
+        withTimeout(TripMateAPI.getWeather(destination.lat, destination.lon), 8000, 'weather').catch(e => {
+          console.warn('TripMate weather failed:', e);
+          return null;
+        }),
+        withTimeout(searchRealHotels(destination.lat, destination.lon), 15000, 'hotels').catch(e => {
+          console.warn('Real hotel search failed:', e);
+          return [];
+        })
+      ]);
+      weatherData = weather;
       if (weatherData && weatherData.weathercode !== undefined) {
         weatherData.current = {
           temp: weatherData.temperature,
@@ -53,29 +82,17 @@ async function generateItinerary(params) {
           weather_code: weatherData.weathercode
         };
       }
+      realHotels = hotels;
     } catch (e) {
-      console.warn('TripMate weather failed:', e);
-    }
-
-    // Fetch real hotels/lodging near destination
-    try {
-      realHotels = await searchRealHotels(destination.lat, destination.lon);
-    } catch (e) {
-      console.warn('Real hotel search failed:', e);
+      console.warn('Location data fetch failed:', e);
     }
   }
 
-  try {
-    tripMateAttractions = await TripMateAPI.getAttractions(destination.name);
-  } catch (e) {
-    console.warn('TripMate attractions failed:', e);
-  }
-
-  // If TripMate has no image, ask Gemini for one
+  // If TripMate has no image, ask Gemini for one (with a short timeout)
   let heroImage = tripMateInfo?.image || destination.image;
   if (!heroImage && typeof GeminiAPI !== 'undefined') {
     try {
-      heroImage = await GeminiAPI.getPlaceImage(destination.name);
+      heroImage = await withTimeout(GeminiAPI.getPlaceImage(destination.name), 6000, 'Gemini image');
     } catch (e) {
       console.warn('Gemini image fetch failed:', e);
     }
@@ -109,7 +126,7 @@ async function generateItinerary(params) {
     weather: weatherData
   });
 
-  stay = selectStay(destination, budget, numDays);
+  let stay = selectStay(destination, budget, numDays);
   let itinerary = buildDayPlan(selectedActivities, numDays, travelPace);
 
   // Use real hotels for accommodations
@@ -135,22 +152,26 @@ async function generateItinerary(params) {
   let aiEnhanced = false;
   if (typeof GeminiAPI !== 'undefined') {
     try {
-      const aiResult = await GeminiAPI.generateItinerary({
-        destination: destination.name,
-        lat: destination.lat,
-        lon: destination.lon,
-        startDate,
-        endDate,
-        budget,
-        travelStyle,
-        interests,
-        socialPreference,
-        travelPace,
-        numDays,
-        attractions: tripMateAttractions,
-        hotels: realHotels,
-        weather: weatherData
-      });
+      const aiResult = await withTimeout(
+        GeminiAPI.generateItinerary({
+          destination: destination.name,
+          lat: destination.lat,
+          lon: destination.lon,
+          startDate,
+          endDate,
+          budget,
+          travelStyle,
+          interests,
+          socialPreference,
+          travelPace,
+          numDays,
+          attractions: tripMateAttractions,
+          hotels: realHotels,
+          weather: weatherData
+        }),
+        10000,
+        'Gemini enhancement'
+      );
 
       if (aiResult && aiResult.itinerary && aiResult.itinerary.length > 0) {
         console.log('[Planner] AI enhancement applied');

@@ -153,7 +153,7 @@ function renderSavedTripsTab(user) {
 
 function renderTripCard(trip, showDelete = false, status = null) {
   return `
-    <div class="trip-card bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='trip-details.html?id=${trip.id}'">
+    <div class="trip-card bg-white rounded-2xl shadow-soft overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card transition-all duration-300" onclick="window.location.href='itinerary.html?id=${trip.id}'">
       <div class="card-image-container aspect-[16/10] overflow-hidden relative">
         <img src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}" alt="${trip.destination}" class="card-image w-full h-full object-cover" loading="lazy">
         ${status ? `<div class="absolute top-3 right-3">
@@ -170,7 +170,7 @@ function renderTripCard(trip, showDelete = false, status = null) {
       </div>
       ${showDelete ? `
         <div class="card-footer flex items-center justify-between px-5 pb-5">
-          <a href="trip-details.html?id=${trip.id}" class="btn btn-ghost btn-sm">View</a>
+          <a href="itinerary.html?id=${trip.id}" class="btn btn-ghost btn-sm">View</a>
           <button class="btn btn-ghost btn-sm delete-trip text-error" data-id="${trip.id}">Delete</button>
         </div>
       ` : ''}
@@ -494,13 +494,30 @@ function initPlanTrip() {
    ITINERARY PAGE
    ========================================== */
 function initItineraryPage() {
-  const data = sessionStorage.getItem('wm_generated_itinerary');
-  if (!data) {
+  let itinerary = null;
+
+  // 1. Try generated itinerary from plan-trip flow
+  const generated = sessionStorage.getItem('wm_generated_itinerary');
+  if (generated) {
+    itinerary = JSON.parse(generated);
+  }
+
+  // 2. If none, try loading a saved trip by ID from URL
+  if (!itinerary) {
+    const params = new URLSearchParams(window.location.search);
+    const tripId = params.get('id');
+    if (tripId) {
+      const saved = getTripById(tripId);
+      if (saved) {
+        itinerary = saved;
+      }
+    }
+  }
+
+  if (!itinerary) {
     window.location.href = 'plan-trip.html';
     return;
   }
-
-  const itinerary = JSON.parse(data);
   const user = getCurrentUser();
 
   // 1. Hero Section
@@ -508,6 +525,8 @@ function initItineraryPage() {
   if (heroEl) {
     // Start with a fallback Unsplash image while Wikipedia loads
     const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
+
+    const shortDesc = (description || itinerary.placeDescription || '').slice(0, 120);
 
     function renderHero(imageUrl, description) {
       heroEl.innerHTML = `
@@ -737,15 +756,16 @@ function initItineraryPage() {
   const weatherEl = document.getElementById('itinWeather');
   if (weatherEl && itinerary.weather && itinerary.weather.current) {
     const w = itinerary.weather.current;
-    const daily = itinerary.weather.daily[0];
+    const daily = (itinerary.weather.daily && itinerary.weather.daily[0]) || {};
     weatherEl.innerHTML = `
         <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-brand-blue text-3xl mb-2">
-            ${w.icon}
+            ${w.icon || '☀️'}
         </div>
         <h3 class="font-bold text-gray-900 text-lg">Weather Outlook</h3>
         <p class="text-gray-600 text-sm">
-            Current conditions are ${w.temp}°C and ${w.condition}. 
-            Expect a ${daily.rainProb}% chance of rain with winds around ${w.wind} km/h.
+            Current conditions are ${w.temp || '—'}°C and ${w.condition || 'clear'}.
+            ${daily.rainProb !== undefined ? `Expect a ${daily.rainProb}% chance of rain` : 'Enjoy your stay'}
+            ${w.wind !== undefined ? `with winds around ${w.wind} km/h.` : '.'}
         </p>
     `;
   }
