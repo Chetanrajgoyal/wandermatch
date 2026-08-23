@@ -190,9 +190,9 @@
 <!-- Hero Section -->
 <section class="w-full flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-12 relative">
 <div class="absolute -top-20 -left-20 w-64 h-64 bg-primary-fixed/30 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-<div class="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white shadow-xl flex-shrink-0 ambient-glow">
-<img id="profileAvatar" alt="User profile" class="w-full h-full object-cover" src="assets/images/hero-mountain.jpg"/>
-</div>
+<div id="profileAvatarContainer" class="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white shadow-xl flex-shrink-0 ambient-glow bg-surface-container-high flex items-center justify-center">
+              <!-- Avatar rendered by JS -->
+            </div>
 <div class="flex-grow">
 <h1 id="profileName" class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Traveler</h1>
 <p id="profileBio" class="font-body-lg text-body-lg text-on-surface-variant mb-6 max-w-2xl">Passionate traveler seeking immersive cultural experiences and breathtaking landscapes. Always ready for the next adventure.</p>
@@ -328,9 +328,12 @@
     // Basic info
     document.getElementById('profileName').textContent = user.name || 'Traveler';
     document.getElementById('profileBio').textContent = user.bio || 'Passionate traveler seeking immersive cultural experiences and breathtaking landscapes. Always ready for the next adventure.';
-    document.getElementById('profileAvatar').src = user.avatar && user.avatar.startsWith('http')
-      ? user.avatar
-      : (user.avatar || 'assets/images/hero-mountain.jpg');
+    const avatarContainer = document.getElementById('profileAvatarContainer');
+    if (avatarContainer) {
+      avatarContainer.innerHTML = typeof renderAvatarHTML === 'function'
+        ? renderAvatarHTML(user, 'w-full h-full', 'text-4xl')
+        : `<div class="w-full h-full rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-4xl">${user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>`;
+    }
 
     // Stats
     const trips = getUserTrips(user.id);

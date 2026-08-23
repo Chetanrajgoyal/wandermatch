@@ -70,19 +70,22 @@
     const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
     
     if (user) {
-      const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
       const displayName = user.name || 'Traveler';
       const displayEmail = user.email || '';
+      const avatarBtn = typeof renderAvatarHTML === 'function'
+        ? renderAvatarHTML(user, 'w-10 h-10', 'text-sm')
+        : `<div class="w-10 h-10 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-sm shadow-sm border border-white/20">${user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>`;
+      const avatarHeader = typeof renderAvatarHTML === 'function'
+        ? renderAvatarHTML(user, 'w-11 h-11', 'text-base')
+        : `<div class="w-11 h-11 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-base shrink-0">${user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>`;
       container.innerHTML = `
         <div class="relative" id="homeProfileDropdownWrapper">
-          <button id="homeProfileAvatarBtn" class="w-10 h-10 rounded-full bg-white/85 backdrop-blur-md text-[#005da7] flex items-center justify-center font-bold text-sm shadow-sm transition-all hover:bg-white/95 hover:ring-2 hover:ring-white/40 border border-white/40 cursor-pointer">
-            ${initial}
+          <button id="homeProfileAvatarBtn" class="rounded-full overflow-hidden flex items-center justify-center transition-all hover:ring-2 hover:ring-white/40 cursor-pointer" aria-label="Open profile menu">
+            ${avatarBtn}
           </button>
           <div id="homeProfileDropdown" class="absolute top-[calc(100%+8px)] right-0 w-[300px] bg-white border border-slate-200/60 shadow-xl shadow-black/8 rounded-xl overflow-hidden p-5 flex flex-col gap-4 z-[100] opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
             <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-base shrink-0">
-                ${initial}
-              </div>
+              ${avatarHeader}
               <div class="flex flex-col min-w-0">
                 <span class="font-semibold text-[15px] text-slate-900 leading-tight truncate">${displayName}</span>
                 <span class="text-[13px] text-slate-500 font-normal truncate">${displayEmail}</span>

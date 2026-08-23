@@ -123,12 +123,24 @@ function getFooterHTML() {
 }
 
 /* --- Auth Action Buttons --- */
+function renderAvatarHTML(user, sizeClass = "w-10 h-10", textClass = "text-sm") {
+  const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+  const img = user.avatar && (user.avatar.startsWith('http') || user.avatar.startsWith('data:image'))
+    ? user.avatar
+    : (user.avatar && user.avatar.startsWith('assets/') ? user.avatar : null);
+  if (img) {
+    return `<img src="${img}" alt="${user.name || 'User'}" class="${sizeClass} rounded-full object-cover border border-white/20 shadow-sm" />`;
+  }
+  return `<div class="${sizeClass} rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold ${textClass} shadow-sm border border-white/20">${initial}</div>`;
+}
+
 function getAuthActionHTML(isMobile = false) {
   const user = getCurrentUser();
   if (user) {
-    const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
     const displayName = user.name || 'Traveler';
     const displayEmail = user.email || '';
+    const avatarBtn = renderAvatarHTML(user, 'w-10 h-10', 'text-sm');
+    const avatarHeader = renderAvatarHTML(user, 'w-11 h-11', 'text-base');
 
     if (isMobile) {
       return `
@@ -142,14 +154,12 @@ function getAuthActionHTML(isMobile = false) {
 
     return `
       <div class="relative" id="profileDropdownWrapper">
-        <button id="profileAvatarBtn" class="w-10 h-10 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-sm shadow-sm transition-all hover:ring-2 hover:ring-[#005da7]/30 border border-white/20 cursor-pointer">
-          ${initial}
+        <button id="profileAvatarBtn" class="rounded-full overflow-hidden flex items-center justify-center transition-all hover:ring-2 hover:ring-[#005da7]/30 cursor-pointer" aria-label="Open profile menu">
+          ${avatarBtn}
         </button>
         <div id="profileDropdown" class="absolute top-[calc(100%+8px)] right-0 w-[300px] bg-white border border-slate-200/60 shadow-xl shadow-black/8 rounded-xl overflow-hidden p-5 flex flex-col gap-4 z-[100] opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
           <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-base shrink-0">
-              ${initial}
-            </div>
+            ${avatarHeader}
             <div class="flex flex-col min-w-0">
               <span class="font-semibold text-[15px] text-slate-900 leading-tight truncate">${displayName}</span>
               <span class="text-[13px] text-slate-500 font-normal truncate">${displayEmail}</span>
