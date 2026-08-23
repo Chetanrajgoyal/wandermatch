@@ -1422,6 +1422,7 @@ html.dark .bg-\[\#F8FAFC\],
 html.dark .bg-\[\#F7F5F0\],
 html.dark .bg-cream,
 html.dark .bg-brand-light,
+html.dark .bg-background,
 html.dark body.about-page,
 html.dark body.dashboard-page {
   background-color: #0B0F17 !important;
@@ -1490,23 +1491,95 @@ html.dark body[data-page="itinerary"] .bg-white.text-primary {
   color: #7EB8FF !important;
 }
 
+/* Itinerary timeline & day cards */
+html.dark body[data-page="itinerary"] #itinTimeline .bg-white,
+html.dark body[data-page="itinerary"] #itinTimeline [class*="bg-white"],
+html.dark body[data-page="itinerary"] #itinAccommodations .glass-panel,
+html.dark body[data-page="itinerary"] #itinAccommodations [class*="bg-white"],
+html.dark body[data-page="itinerary"] #itinWeather,
+html.dark body[data-page="itinerary"] #itinBudget,
+html.dark body[data-page="itinerary"] .glass-panel.rounded-3xl,
+html.dark body[data-page="itinerary"] main .bg-white,
+html.dark body[data-page="itinerary"] main [class*="rounded-3xl"][class*="bg-white"],
+html.dark body[data-page="itinerary"] main [class*="rounded-2xl"][class*="bg-white"] {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body[data-page="itinerary"] #itinTimeline .text-gray-900,
+html.dark body[data-page="itinerary"] #itinTimeline .text-gray-800,
+html.dark body[data-page="itinerary"] #itinAccommodations .text-gray-900,
+html.dark body[data-page="itinerary"] #itinAccommodations .text-gray-800,
+html.dark body[data-page="itinerary"] main .text-gray-900,
+html.dark body[data-page="itinerary"] main .text-gray-800,
+html.dark body[data-page="itinerary"] main h1,
+html.dark body[data-page="itinerary"] main h2,
+html.dark body[data-page="itinerary"] main h3,
+html.dark body[data-page="itinerary"] main h4 {
+  color: #F1F3F4 !important;
+}
+
+html.dark body[data-page="itinerary"] #itinTimeline .text-gray-600,
+html.dark body[data-page="itinerary"] #itinTimeline .text-gray-500,
+html.dark body[data-page="itinerary"] #itinAccommodations .text-gray-600,
+html.dark body[data-page="itinerary"] #itinAccommodations .text-gray-500,
+html.dark body[data-page="itinerary"] main .text-gray-600,
+html.dark body[data-page="itinerary"] main .text-gray-500 {
+  color: #BDC1C6 !important;
+}
+
+html.dark body[data-page="itinerary"] #itinTimeline .bg-gray-100,
+html.dark body[data-page="itinerary"] #itinTimeline .bg-gray-50,
+html.dark body[data-page="itinerary"] #itinAccommodations .bg-gray-100,
+html.dark body[data-page="itinerary"] #itinAccommodations .bg-gray-50,
+html.dark body[data-page="itinerary"] main .bg-gray-100,
+html.dark body[data-page="itinerary"] main .bg-gray-50,
+html.dark body[data-page="itinerary"] main .bg-blue-50,
+html.dark body[data-page="itinerary"] main .bg-purple-50,
+html.dark body[data-page="itinerary"] main .bg-orange-50 {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body[data-page="itinerary"] #itinTimeline .border-gray-100,
+html.dark body[data-page="itinerary"] #itinTimeline .border-gray-200,
+html.dark body[data-page="itinerary"] #itinAccommodations .border-gray-200,
+html.dark body[data-page="itinerary"] main .border-gray-100,
+html.dark body[data-page="itinerary"] main .border-gray-200 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body[data-page="itinerary"] #itinTimeline .border-blue-200,
+html.dark body[data-page="itinerary"] #itinTimeline .border-green-200,
+html.dark body[data-page="itinerary"] #itinTimeline .border-purple-200,
+html.dark body[data-page="itinerary"] #itinTimeline .border-amber-200 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
 /* Dashboard page specific */
+html.dark body.dashboard-page,
+html.dark body.dashboard-page .bg-background,
 html.dark body.dashboard-page .bg-surface,
 html.dark body.dashboard-page .bg-surface-container,
 html.dark body.dashboard-page .bg-surface-container-low,
 html.dark body.dashboard-page .bg-surface-container-high,
 html.dark body.dashboard-page .bg-surface-variant,
 html.dark body.dashboard-page .bg-surface-bright,
+html.dark body.dashboard-page .bg-white,
 html.dark body.dashboard-page [class*="rounded-2xl"][class*="bg-white"],
-html.dark body.dashboard-page [class*="rounded-xl"][class*="bg-white"] {
+html.dark body.dashboard-page [class*="rounded-xl"][class*="bg-white"],
+html.dark body.dashboard-page [class*="rounded-3xl"][class*="bg-white"] {
   background-color: #161B22 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
+html.dark body.dashboard-page,
 html.dark body.dashboard-page .text-on-surface,
+html.dark body.dashboard-page .text-on-background,
 html.dark body.dashboard-page h1,
 html.dark body.dashboard-page h2,
-html.dark body.dashboard-page h3 {
+html.dark body.dashboard-page h3,
+html.dark body.dashboard-page h4,
+html.dark body.dashboard-page p {
   color: #F1F3F4 !important;
 }
 
@@ -1514,23 +1587,56 @@ html.dark body.dashboard-page .text-on-surface-variant {
   color: #BDC1C6 !important;
 }
 
-/* About page specific */
+html.dark body.dashboard-page .text-outline,
+html.dark body.dashboard-page .text-outline-variant {
+  color: #9AA0A6 !important;
+}
+
+html.dark body.dashboard-page .bg-primary-fixed,
+html.dark body.dashboard-page .bg-secondary-fixed,
+html.dark body.dashboard-page .bg-tertiary-fixed,
+html.dark body.dashboard-page .bg-error-container,
+html.dark body.dashboard-page .bg-primary-container,
+html.dark body.dashboard-page .bg-secondary-container,
+html.dark body.dashboard-page .bg-tertiary-container {
+  background-color: #1F2630 !important;
+}
+
+/* About page specific — force dark backgrounds/text */
+html.dark body.about-page,
+html.dark body.about-page .bg-background,
+html.dark body.about-page .bg-surface,
+html.dark body.about-page .bg-surface-container,
 html.dark body.about-page .bg-white,
 html.dark body.about-page .bg-slate-50,
 html.dark body.about-page .bg-cream,
-html.dark body.about-page [class*="rounded-2xl"][class*="bg-white"] {
+html.dark body.about-page [class*="rounded-2xl"][class*="bg-white"],
+html.dark body.about-page [class*="rounded-3xl"][class*="bg-white"],
+html.dark body.about-page [class*="rounded-xl"][class*="bg-white"] {
   background-color: #161B22 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
+html.dark body.about-page,
 html.dark body.about-page .text-slate-900,
+html.dark body.about-page .text-slate-800,
+html.dark body.about-page .text-slate-700,
+html.dark body.about-page .text-on-surface,
 html.dark body.about-page h1,
 html.dark body.about-page h2,
-html.dark body.about-page h3 {
+html.dark body.about-page h3,
+html.dark body.about-page h4,
+html.dark body.about-page p {
   color: #F1F3F4 !important;
 }
 
 html.dark body.about-page .text-slate-600,
-html.dark body.about-page .text-slate-500 {
+html.dark body.about-page .text-slate-500,
+html.dark body.about-page .text-on-surface-variant {
   color: #BDC1C6 !important;
+}
+
+html.dark body.about-page .glass-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
