@@ -85,7 +85,12 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 8px 32px 0 rgba(74, 144, 226, 0.05);
         }
-        
+
+        html.dark .glass-panel {
+            background: rgba(22, 27, 34, 0.8) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
         /* Ambient Background */
         body::before {
             content: '';
@@ -98,6 +103,11 @@
                         radial-gradient(circle at 85% 30%, rgba(198, 231, 255, 0.4) 0%, transparent 50%);
             z-index: -1;
             pointer-events: none;
+        }
+
+        html.dark body::before {
+            background: radial-gradient(circle at 15% 50%, rgba(74, 144, 226, 0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(0, 93, 167, 0.12) 0%, transparent 50%);
         }
     </style>
 

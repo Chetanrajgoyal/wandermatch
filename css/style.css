@@ -1401,3 +1401,136 @@ html.dark .bg-brand-blue,
 html.dark .bg-primary {
   background-color: #005da7 !important;
 }
+
+/* Reduce harsh white borders in dark mode */
+html.dark [class*="border-white"],
+html.dark [class*="border-slate-50"],
+html.dark [class*="border-slate-100"],
+html.dark [class*="border-slate-200"] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark [class*="shadow-sm"],
+html.dark [class*="shadow-lg"],
+html.dark [class*="shadow-xl"] {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* About & Dashboard specific */
+html.dark .bg-\[\#f9f9fc\],
+html.dark .bg-\[\#F8FAFC\],
+html.dark .bg-\[\#F7F5F0\],
+html.dark .bg-cream,
+html.dark .bg-brand-light,
+html.dark body.about-page,
+html.dark body.dashboard-page {
+  background-color: #0B0F17 !important;
+}
+
+html.dark [class*="bg-white/"],
+html.dark [class*="bg-white\\/"],
+html.dark [class*="bg-surface/"],
+html.dark [class*="bg-surface\\/"] {
+  background-color: rgba(22, 27, 34, 0.85) !important;
+}
+
+/* Itinerary page specific */
+html.dark body[data-page="itinerary"] {
+  background-color: #0B0F17 !important;
+}
+
+html.dark body[data-page="itinerary"] .bg-white\/50,
+html.dark body[data-page="itinerary"] .bg-white\/90,
+html.dark body[data-page="itinerary"] header nav,
+html.dark body[data-page="itinerary"] #mobileMenu {
+  background-color: rgba(22, 27, 34, 0.9) !important;
+}
+
+html.dark body[data-page="itinerary"] .glass-panel {
+  background: rgba(22, 27, 34, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body[data-page="itinerary"] body::before {
+  background: radial-gradient(circle at 15% 50%, rgba(74, 144, 226, 0.12) 0%, transparent 50%),
+              radial-gradient(circle at 85% 30%, rgba(0, 93, 167, 0.12) 0%, transparent 50%);
+}
+
+html.dark body[data-page="itinerary"] .text-gray-900,
+html.dark body[data-page="itinerary"] .text-on-surface,
+html.dark body[data-page="itinerary"] h1,
+html.dark body[data-page="itinerary"] h2,
+html.dark body[data-page="itinerary"] h3,
+html.dark body[data-page="itinerary"] h4 {
+  color: #F1F3F4 !important;
+}
+
+html.dark body[data-page="itinerary"] .text-on-surface-variant,
+html.dark body[data-page="itinerary"] .text-outline,
+html.dark body[data-page="itinerary"] .text-slate-500 {
+  color: #BDC1C6 !important;
+}
+
+html.dark body[data-page="itinerary"] .bg-surface-container-low,
+html.dark body[data-page="itinerary"] [class*="bg-surface"],
+html.dark body[data-page="itinerary"] [class*="rounded-3xl"][class*="bg-white"],
+html.dark body[data-page="itinerary"] [class*="rounded-2xl"][class*="bg-white"],
+html.dark body[data-page="itinerary"] [class*="rounded-xl"][class*="bg-white"] {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body[data-page="itinerary"] .border-outline-variant\/20,
+html.dark body[data-page="itinerary"] .border-outline-variant {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body[data-page="itinerary"] .bg-white.text-primary {
+  background-color: #161B22 !important;
+  color: #7EB8FF !important;
+}
+
+/* Dashboard page specific */
+html.dark body.dashboard-page .bg-surface,
+html.dark body.dashboard-page .bg-surface-container,
+html.dark body.dashboard-page .bg-surface-container-low,
+html.dark body.dashboard-page .bg-surface-container-high,
+html.dark body.dashboard-page .bg-surface-variant,
+html.dark body.dashboard-page .bg-surface-bright,
+html.dark body.dashboard-page [class*="rounded-2xl"][class*="bg-white"],
+html.dark body.dashboard-page [class*="rounded-xl"][class*="bg-white"] {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body.dashboard-page .text-on-surface,
+html.dark body.dashboard-page h1,
+html.dark body.dashboard-page h2,
+html.dark body.dashboard-page h3 {
+  color: #F1F3F4 !important;
+}
+
+html.dark body.dashboard-page .text-on-surface-variant {
+  color: #BDC1C6 !important;
+}
+
+/* About page specific */
+html.dark body.about-page .bg-white,
+html.dark body.about-page .bg-slate-50,
+html.dark body.about-page .bg-cream,
+html.dark body.about-page [class*="rounded-2xl"][class*="bg-white"] {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body.about-page .text-slate-900,
+html.dark body.about-page h1,
+html.dark body.about-page h2,
+html.dark body.about-page h3 {
+  color: #F1F3F4 !important;
+}
+
+html.dark body.about-page .text-slate-600,
+html.dark body.about-page .text-slate-500 {
+  color: #BDC1C6 !important;
+}
