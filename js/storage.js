@@ -115,18 +115,8 @@ function saveTrip(trip) {
   trip.id = trip.id || generateId();
   trip.createdAt = trip.createdAt || new Date().toISOString();
 
-  // Prevent duplicate trips for the same user/destination/dates
-  const duplicate = trips.find(t =>
-    t.createdBy === trip.createdBy &&
-    t.destination === trip.destination &&
-    t.startDate === trip.startDate &&
-    t.endDate === trip.endDate
-  );
-  if (duplicate) {
-    console.warn('Duplicate trip detected, returning existing trip:', duplicate.id);
-    return duplicate;
-  }
-
+  // Saved trips are snapshots: allow multiple trips to the same destination/dates.
+  // The UI already guards against accidental double-saves via hasSimilarTrip / dataset.saving.
   trips.push(trip);
   setStore(STORAGE_KEYS.TRIPS, trips);
   console.log('[Storage] saveTrip:', trip.id, trip.destination, 'days:', (trip.itinerary || []).length);
