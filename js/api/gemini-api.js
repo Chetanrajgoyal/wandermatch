@@ -13,8 +13,6 @@ const GeminiAPI = {
    * @returns {Promise<Object>} { itinerary: [...], accommodations: [...], image: string|null }
    */
   async generateItinerary(params) {
-    const { destination, lat, lon, startDate, endDate, budget, travelStyle, interests, socialPreference, travelPace, numDays, attractions, weather } = params;
-
     const prompt = this.buildPrompt(params);
 
     try {
@@ -25,8 +23,7 @@ const GeminiAPI = {
           contents: [{ role: "user", parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 8192,
-            responseMimeType: "application/json"
+            maxOutputTokens: 8192
           }
         })
       });
@@ -37,11 +34,22 @@ const GeminiAPI = {
       }
 
       const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      let text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      console.log('[Gemini raw response]', text);
 
-      // Sometimes Gemini returns markdown JSON; clean it
-      const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleaned);
+      // Extract JSON from markdown code block if present
+      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (jsonMatch) text = jsonMatch[1];
+      text = text.trim();
+
+      // If response starts with text before JSON, find the first '{'
+      const firstBrace = text.indexOf('{');
+      const lastBrace = text.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        text = text.substring(firstBrace, lastBrace + 1);
+      }
+
+      const parsed = JSON.parse(text);
 
       return {
         itinerary: parsed.itinerary || [],
@@ -120,28 +128,13 @@ ${weatherText}
 
 Instructions:
 1. Create a day-by-day itinerary. Each day should have a title and 3-5 activities.
-2. Each activity must include: name, time (e.g. "9:00 AM"), icon (a single emoji), cost in INR (number), type (e.g. Nature, Culture, Food, Adventure), and a short description.
-3. Distribute activities logically across days and times (Morning, Afternoon, Evening).
-4. Respect the total budget — keep activity costs reasonable for the destination.
-5. Suggest 2-3 accommodations with: name, cost per night in INR, type (Budget/Mid-Range/Comfort/Luxury), and a one-line description.
-6. Return ONLY valid JSON in this exact structure:
+2. PRIORITY: Use the attractions listed above when planning activities. If the list is empty or insufficient, research well-known attractions for ${destination} yourself.
+3. Each activity must include: name, time (e.g. "9:00 AM"), icon (a single emoji), cost in INR (number), type (e.g. Nature, Culture, Food, Adventure), and a short description.
+4. Distribute activities logically across days and times (Morning, Afternoon, Evening).
+5. Respect the total budget — keep activity costs reasonable for the destination.
+6. For accommodations, prefer the real hotels listed above. If none fit, suggest 2-3 realistic hotels with: name, cost per night in INR, type (Budget/Mid-Range/Comfort/Luxury), and a one-line description.
+7. Return ONLY a single valid JSON object matching this exact structure. Do NOT wrap it in markdown. Do NOT add explanations.
 
-{
-  "itinerary": [
-    {
-      "day": 1,
-      "title": "Arrival & First Impressions",
-      "activities": [
-        { "name": "...", "time": "...", "icon": "...", "cost": 0, "type": "...", "description": "..." }
-      ]
-    }
-  ],
-  "accommodations": [
-    { "name": "...", "costPerNight": 0, "type": "...", "description": "..." }
-  ],
-  "notes": "string"
-}
-
-Do not include markdown formatting or explanations outside the JSON.`;
+{"itinerary":[{"day":1,"title":"...","activities":[{"name":"...","time":"...","icon":"...","cost":0,"type":"...","description":"..."}]}],"accommodations":[{"name":"...","costPerNight":0,"type":"...","description":"..."}],"notes":"..."}`;
   }
 };

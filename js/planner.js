@@ -112,6 +112,7 @@ async function generateItinerary(params) {
   let stay;
 
   if (aiResult && aiResult.itinerary && aiResult.itinerary.length > 0) {
+    console.log('[Planner] Using AI-generated itinerary');
     itinerary = aiResult.itinerary.map(day => ({
       day: day.day,
       title: day.title || `Day ${day.day}`,
@@ -191,7 +192,8 @@ async function generateItinerary(params) {
     interests,
     socialPreference,
     weather: weatherData,
-    placeDescription: tripMateInfo?.description || ''
+    placeDescription: tripMateInfo?.description || '',
+    aiPlanned: !!(aiResult && aiResult.itinerary && aiResult.itinerary.length > 0)
   };
 }
 

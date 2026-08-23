@@ -509,7 +509,7 @@ function initItineraryPage() {
     // Start with a fallback Unsplash image while Wikipedia loads
     const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
 
-    function renderHero(imageUrl, description) {
+    function renderHero(imageUrl, description, aiPlanned = false) {
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
@@ -517,6 +517,7 @@ function initItineraryPage() {
             <div class="text-white max-w-2xl">
                 <div class="flex items-center gap-3 mb-4">
                     <span class="px-3 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md text-blue-100 text-xs font-semibold border border-blue-400/30">Personalized Trip</span>
+                    ${aiPlanned ? `<span class="px-3 py-1.5 rounded-full bg-purple-500/20 backdrop-blur-md text-purple-100 text-xs font-semibold border border-purple-400/30 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span> AI Planned</span>` : ''}
                     <span class="text-sm text-gray-200 flex items-center gap-1 font-medium">
                         <i class="fa-regular fa-calendar text-xs"></i>
                         ${formatDateRange(itinerary.startDate, itinerary.endDate)}
@@ -558,13 +559,14 @@ function initItineraryPage() {
       }
     }
 
-    renderHero(null, null);
+    const aiPlanned = itinerary.aiPlanned === true;
+    renderHero(null, null, aiPlanned);
 
     // Fetch richer Wikipedia image + description
     if (typeof TripMateAPI !== 'undefined') {
       TripMateAPI.getPlaceInfo(itinerary.destination).then(place => {
         if (place) {
-          renderHero(place.image, place.description);
+          renderHero(place.image, place.description, aiPlanned);
         }
       }).catch(err => {
         console.warn('Wikipedia fetch failed for itinerary hero:', err);
