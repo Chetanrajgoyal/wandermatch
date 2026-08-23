@@ -280,9 +280,9 @@
       </div>
     </div>
   </footer>
-<script src="js/storage.js?v=8"></script>
-<script src="js/app.js?v=8"></script>
-<script src="js/trips.js?v=8"></script>
+<script src="js/storage.js?v=9"></script>
+<script src="js/app.js?v=9"></script>
+<script src="js/trips.js?v=9"></script>
 <script>
 (function() {
   function initMyTripsPage() {
@@ -338,9 +338,7 @@
             e.stopPropagation();
             const trip = savedTrips[idx];
             if (confirm(`Delete saved trip "${trip.title || trip.destination || 'this trip'}"?`)) {
-              removeSavedTrip(user.id, trip.id);
-              // Also purge the isolated itinerary so recovered/orphaned snapshots stay deleted.
-              try { localStorage.removeItem(`wm_saved_itinerary_${trip.id}`); } catch (e) {}
+              removeSavedItinerary(trip.id);
               btn.closest('[data-saved-id]').remove();
               showToast('Saved trip removed', 'default');
               if (savedGrid.children.length === 0) {

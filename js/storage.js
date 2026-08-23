@@ -12,7 +12,8 @@ const STORAGE_KEYS = {
   JOIN_REQUESTS: 'wm_join_requests',
   NOTIFICATIONS: 'wm_notifications',
   SAMPLE_TRAVELERS: 'wm_sample_travelers',
-  INITIALIZED: 'wm_initialized'
+  INITIALIZED: 'wm_initialized',
+  SAVED_ITINERARIES: 'wm_saved_itineraries'
 };
 
 /* --- Helper --- */
@@ -148,45 +149,56 @@ function getJoinedTrips(userId) {
   return trips.filter(t => t.members && t.members.includes(userId));
 }
 
+function getSavedItineraries() {
+  return getStore(STORAGE_KEYS.SAVED_ITINERARIES) || [];
+}
+
 function getSavedTrips(userId) {
-  const user = getUserById(userId);
-  if (!user) return [];
+  return getSavedItineraries().filter(t => t.createdBy === userId);
+}
 
-  const byId = new Map();
+// One-time migration: move saved trips from user.savedTrips + isolated keys into the single array.
+function migrateSavedItineraries() {
+  if (getStore('wm_saved_itineraries_migrated')) return;
+  const migrated = [];
+  const users = getUsers();
 
-  // 1. Load from the user's savedTrips list, preferring isolated keys.
-  (user.savedTrips || []).forEach(tripId => {
-    try {
-      const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
-      if (isolated) {
-        const trip = JSON.parse(isolated);
-        byId.set(trip.id, trip);
-        return;
+  users.forEach(user => {
+    (user.savedTrips || []).forEach(tripId => {
+      // Prefer isolated snapshot, fallback to wm_trips
+      let trip = null;
+      try {
+        const iso = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
+        if (iso) trip = JSON.parse(iso);
+      } catch (e) {}
+      if (!trip) trip = getTripById(tripId);
+      if (trip && trip.createdBy === user.id) {
+        migrated.push({ ...trip, id: trip.id || generateId() });
       }
-    } catch (e) {
-      console.warn('[Storage] Failed to parse isolated saved trip:', tripId, e);
-    }
-    const legacy = getTripById(tripId);
-    if (legacy) byId.set(legacy.id, legacy);
+    });
   });
 
-  // 2. Recover any orphaned isolated itineraries created by this user
-  // (e.g. when saveTrip returned a duplicate and the new snapshot ID was lost).
+  // Also scoop up any orphaned isolated keys that have a createdBy matching a user.
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (!key || !key.startsWith('wm_saved_itinerary_')) continue;
     try {
       const trip = JSON.parse(localStorage.getItem(key));
-      if (trip && trip.createdBy === userId && trip.id && !byId.has(trip.id)) {
-        byId.set(trip.id, trip);
+      if (trip && trip.createdBy && !migrated.some(m => m.id === trip.id)) {
+        migrated.push({ ...trip, id: trip.id || generateId() });
       }
-    } catch (e) {
-      // ignore corrupt entries
-    }
+    } catch (e) {}
   }
 
-  return Array.from(byId.values());
+  if (migrated.length > 0) {
+    setStore(STORAGE_KEYS.SAVED_ITINERARIES, migrated);
+    console.log('[Storage] Migrated', migrated.length, 'saved itineraries');
+  }
+  setStore('wm_saved_itineraries_migrated', true);
 }
+
+// Run migration on load.
+migrateSavedItineraries();
 
 function updateTrip(tripId, updates) {
   const trips = getTrips();
@@ -209,25 +221,30 @@ function deleteTrip(tripId) {
   } catch (e) {}
 }
 
+function saveSavedItinerary(trip) {
+  const saved = getSavedItineraries();
+  trip.id = trip.id || generateId();
+  trip.createdAt = trip.createdAt || new Date().toISOString();
+  saved.push(trip);
+  setStore(STORAGE_KEYS.SAVED_ITINERARIES, saved);
+  return trip;
+}
+
+function removeSavedItinerary(tripId) {
+  let saved = getSavedItineraries();
+  saved = saved.filter(t => t.id !== tripId);
+  setStore(STORAGE_KEYS.SAVED_ITINERARIES, saved);
+  // Also clean up legacy isolated key if present
+  try { localStorage.removeItem(`wm_saved_itinerary_${tripId}`); } catch (e) {}
+}
+
+// Backwards-compatible aliases used by older callers/pages
 function saveTripToUser(userId, tripId) {
-  const user = getUserById(userId);
-  if (!user) return;
-  const savedTrips = user.savedTrips || [];
-  if (!savedTrips.includes(tripId)) {
-    savedTrips.push(tripId);
-    updateUser(userId, { savedTrips });
-  }
+  // no-op: saved itineraries are now stored in a single array keyed by createdBy
 }
 
 function removeSavedTrip(userId, tripId) {
-  const user = getUserById(userId);
-  if (!user) return;
-  const savedTrips = (user.savedTrips || []).filter(id => id !== tripId);
-  updateUser(userId, { savedTrips });
-  // Also remove isolated saved itinerary if present
-  try {
-    localStorage.removeItem(`wm_saved_itinerary_${tripId}`);
-  } catch (e) {}
+  removeSavedItinerary(tripId);
 }
 
 /* --- Join Request Functions --- */

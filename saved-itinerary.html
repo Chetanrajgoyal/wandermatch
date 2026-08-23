@@ -76,9 +76,9 @@
   </div>
 </main>
 
-<script src="js/storage.js?v=8"></script>
-<script src="js/app.js?v=8"></script>
-<script src="js/trips.js?v=8"></script>
+<script src="js/storage.js?v=9"></script>
+<script src="js/app.js?v=9"></script>
+<script src="js/trips.js?v=9"></script>
 <script>
 (function() {
   const params = new URLSearchParams(window.location.search);
@@ -104,21 +104,21 @@
     }
   }
 
-  // 2. Fallback to isolated localStorage key
+  // 2. Fallback to saved itineraries array
   if (!trip && tripId) {
-    source = 'isolated';
+    source = 'array';
+    const saved = getSavedItineraries ? getSavedItineraries() : [];
+    trip = saved.find(t => t.id === tripId) || null;
+  }
+
+  // 3. Legacy fallback (isolated key / wm_trips)
+  if (!trip && tripId) {
+    source = 'legacy';
     try {
       const isolated = localStorage.getItem('wm_saved_itinerary_' + tripId);
       if (isolated) trip = JSON.parse(isolated);
-    } catch (e) {
-      console.error('[SavedItinerary] Parse error:', e);
-    }
-  }
-
-  // 3. Legacy fallback
-  if (!trip && tripId) {
-    source = 'legacy';
-    trip = getTripById(tripId);
+    } catch (e) {}
+    if (!trip) trip = getTripById(tripId);
   }
 
   if (!trip || !trip.destination || !Array.isArray(trip.itinerary) || trip.itinerary.length === 0) {

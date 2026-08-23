@@ -155,8 +155,7 @@ function renderSavedTripsTab(user) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (confirm('Delete this saved trip?')) {
-        removeSavedTrip(user.id, btn.dataset.id);
-        deleteTrip(btn.dataset.id);
+        removeSavedItinerary(btn.dataset.id);
         renderSavedTripsTab(user);
         showToast('Saved trip deleted', 'default');
       }
@@ -338,7 +337,12 @@ function initTripDetails() {
   const saveBtn = document.getElementById('saveBtn');
   if (saveBtn && user) {
     saveBtn.addEventListener('click', () => {
-      saveTripToUser(user.id, trip.id);
+      const snapshot = {
+        ...deepClone(trip),
+        createdBy: user.id,
+        createdAt: new Date().toISOString()
+      };
+      saveSavedItinerary(snapshot);
       showToast('Trip saved! ✓', 'success');
       saveBtn.textContent = 'Saved ✓';
       saveBtn.disabled = true;
@@ -540,23 +544,25 @@ function runInitItineraryPage() {
   const tripId = params.get('id');
 
   // STRICT: If a saved trip ID is in the URL, ONLY load that saved trip.
-  // Load from isolated localStorage key first, fallback to wm_trips for legacy trips.
   if (tripId) {
     // Extra safety: remove any generated itinerary lingering in sessionStorage
     try { sessionStorage.removeItem('wm_generated_itinerary'); } catch (e) {}
 
+    // Load from the saved itineraries array first, then legacy storages.
     let saved = null;
-    let source = 'isolated';
-    try {
-      const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
-      if (isolated) saved = JSON.parse(isolated);
-    } catch (e) {
-      console.warn('[Itinerary] Failed to parse isolated saved trip:', e);
-    }
+    let source = 'array';
+    const savedList = getSavedItineraries ? getSavedItineraries() : [];
+    saved = savedList.find(t => t.id === tripId) || null;
 
     if (!saved) {
-      saved = getTripById(tripId);
       source = 'legacy';
+      try {
+        const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
+        if (isolated) saved = JSON.parse(isolated);
+      } catch (e) {}
+    }
+    if (!saved) {
+      saved = getTripById(tripId);
     }
 
     const isValidSaved = saved && saved.destination && (Array.isArray(saved.itinerary) && saved.itinerary.length > 0);
@@ -618,26 +624,13 @@ function renderLoadedItinerary(itinerary) {
     debugBanner.style.display = 'block';
   }
 
-  const user = getCurrentUser();
-
-  // Helper: detect duplicate saved trips
-  function hasSimilarTrip(userId, destination, startDate, endDate) {
-    const trips = getUserTrips(userId);
-    return trips.some(t =>
-      t.destination === destination &&
-      t.startDate === startDate &&
-      t.endDate === endDate
-    );
-  }
-
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
   if (heroEl) {
     const fallbackBg = `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80`;
 
     function renderHero(imageUrl, description) {
-      const alreadySaved = user && hasSimilarTrip(user.id, itinerary.destination, itinerary.startDate, itinerary.endDate);
-      const saveBtnText = alreadySaved ? 'Already Saved' : 'Save Trip';
+      const saveBtnText = 'Save Trip';
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
@@ -658,7 +651,7 @@ function renderLoadedItinerary(itinerary) {
                     <i class="fa-solid fa-share-nodes"></i>
                     Share
                 </button>
-                <button id="saveItinBtn" ${alreadySaved ? 'disabled' : ''} class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50 ${alreadySaved ? 'opacity-70 cursor-not-allowed' : ''}">
+                <button id="saveItinBtn" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50">
                     <i class="fa-regular fa-bookmark"></i>
                     ${saveBtnText}
                 </button>
@@ -667,7 +660,7 @@ function renderLoadedItinerary(itinerary) {
       `;
 
       const saveBtn = document.getElementById('saveItinBtn');
-      if (saveBtn && !alreadySaved) {
+      if (saveBtn) {
         saveBtn.addEventListener('click', () => {
           const currentUser = getCurrentUser();
           if (!currentUser) {
@@ -682,19 +675,11 @@ function renderLoadedItinerary(itinerary) {
             return;
           }
 
-          if (hasSimilarTrip(currentUser.id, itinerary.destination, itinerary.startDate, itinerary.endDate)) {
-            showToast(`You already have a ${itinerary.destination} trip for these dates.`, 'default');
-            saveBtn.innerHTML = 'Already Saved';
-            saveBtn.disabled = true;
-            saveBtn.classList.add('opacity-70', 'cursor-not-allowed');
-            return;
-          }
-
           if (saveBtn.dataset.saving === 'true') return;
           saveBtn.dataset.saving = 'true';
           saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
           setTimeout(() => {
-            // ISOLATED SAVE: store a complete independent copy keyed by its own ID.
+            // Save a complete independent snapshot into the saved itineraries array.
             const newTrip = {
               ...deepClone(itinerary),
               title: `${itinerary.destination} Trip`,
@@ -702,15 +687,8 @@ function renderLoadedItinerary(itinerary) {
               createdBy: currentUser.id,
               createdAt: new Date().toISOString()
             };
-            // Store full itinerary in its own isolated localStorage key
-            try {
-              localStorage.setItem(`wm_saved_itinerary_${newTrip.id}`, JSON.stringify(newTrip));
-            } catch (e) {
-              console.error('[Save] Failed to store isolated itinerary:', e);
-            }
-            const saved = saveTrip(newTrip);
-            saveTripToUser(currentUser.id, saved.id);
-            console.log('[Save] Isolated saved trip:', newTrip.id, newTrip.destination, 'days:', (newTrip.itinerary || []).length);
+            saveSavedItinerary(newTrip);
+            console.log('[Save] Saved itinerary:', newTrip.id, newTrip.destination, 'days:', (newTrip.itinerary || []).length);
             showToast(`Your ${newTrip.destination} trip has been saved!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');
