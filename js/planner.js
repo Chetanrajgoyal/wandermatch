@@ -148,8 +148,26 @@ async function generateItinerary(params) {
       ? { name: accommodations[0].name, cost: accommodations[0].costPerNight, type: accommodations[0].type }
       : selectStay(destination, budget, numDays);
   } else {
-    // Fallback to rule-based planner
+    // Fallback: build itinerary from real TripMate attractions + sample activities
+    console.log('[Planner] Gemini failed or unavailable; building from TripMate attractions');
     const dailyBudget = Math.round(budget / numDays);
+
+    // Convert TripMate attractions into activity format
+    const attractionActivities = (tripMateAttractions || []).map(a => ({
+      name: a.name,
+      type: Array.isArray(a.category) ? a.category[0] : (a.category || 'Attraction'),
+      icon: '📍',
+      cost: typeof a.entryFee === 'number' ? a.entryFee : 300,
+      description: a.description || `A popular spot in ${destination.name}.`,
+      lat: a.coordinates?.latitude,
+      lon: a.coordinates?.longitude,
+      isRealPlace: true
+    }));
+
+    // Combine with destination activities and sample fallback
+    const combinedActivities = [...attractionActivities, ...destination.activities, ...getLocalSampleActivities()];
+    destination.activities = combinedActivities;
+
     const selectedActivities = selectActivities(destination, {
       travelStyle: Array.isArray(travelStyle) ? travelStyle : [travelStyle],
       interests: interests || [],
@@ -160,12 +178,25 @@ async function generateItinerary(params) {
 
     stay = selectStay(destination, budget, numDays);
     itinerary = buildDayPlan(selectedActivities, numDays, travelPace);
-    accommodations = destination.stays ? destination.stays.map(s => ({
-      name: s.name,
-      costPerNight: s.cost,
-      type: s.type,
-      description: ''
-    })) : [];
+
+    // Use real hotels for accommodations if available
+    accommodations = realHotels.length > 0
+      ? realHotels.slice(0, 3).map(h => ({
+          name: h.name,
+          costPerNight: h.costPerNight,
+          type: h.type,
+          description: h.description,
+          lat: h.lat,
+          lon: h.lon,
+          source: 'real'
+        }))
+      : (destination.stays ? destination.stays.map(s => ({
+          name: s.name,
+          costPerNight: s.cost,
+          type: s.type,
+          description: '',
+          source: 'fallback'
+        })) : []);
   }
 
   // 5. Enhance with routes
@@ -173,6 +204,8 @@ async function generateItinerary(params) {
 
   // 6. Budget breakdown
   const budgetBreakdown = calculateBudgetBreakdown(itinerary, stay, destination, numDays);
+
+  const aiPlanned = !!(aiResult && aiResult.itinerary && aiResult.itinerary.length > 0);
 
   return {
     destination: destination.name,
@@ -193,7 +226,8 @@ async function generateItinerary(params) {
     socialPreference,
     weather: weatherData,
     placeDescription: tripMateInfo?.description || '',
-    aiPlanned: !!(aiResult && aiResult.itinerary && aiResult.itinerary.length > 0)
+    aiPlanned,
+    aiFailed: !aiPlanned
   };
 }
 

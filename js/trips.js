@@ -509,15 +509,16 @@ function initItineraryPage() {
     // Start with a fallback Unsplash image while Wikipedia loads
     const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
 
-    function renderHero(imageUrl, description, aiPlanned = false) {
+    function renderHero(imageUrl, description, aiPlanned = false, aiFailed = false) {
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
         <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-end gap-6">
             <div class="text-white max-w-2xl">
-                <div class="flex items-center gap-3 mb-4">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
                     <span class="px-3 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md text-blue-100 text-xs font-semibold border border-blue-400/30">Personalized Trip</span>
                     ${aiPlanned ? `<span class="px-3 py-1.5 rounded-full bg-purple-500/20 backdrop-blur-md text-purple-100 text-xs font-semibold border border-purple-400/30 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span> AI Planned</span>` : ''}
+                    ${aiFailed ? `<span class="px-3 py-1.5 rounded-full bg-orange-500/20 backdrop-blur-md text-orange-100 text-xs font-semibold border border-orange-400/30 flex items-center gap-1" title="AI planner is temporarily unavailable. This plan uses real attractions from TripMate."><span class="material-symbols-outlined text-[14px]">info</span> AI Unavailable — Using Real Attractions</span>` : ''}
                     <span class="text-sm text-gray-200 flex items-center gap-1 font-medium">
                         <i class="fa-regular fa-calendar text-xs"></i>
                         ${formatDateRange(itinerary.startDate, itinerary.endDate)}
@@ -560,13 +561,14 @@ function initItineraryPage() {
     }
 
     const aiPlanned = itinerary.aiPlanned === true;
-    renderHero(null, null, aiPlanned);
+    const aiFailed = itinerary.aiFailed === true;
+    renderHero(null, null, aiPlanned, aiFailed);
 
     // Fetch richer Wikipedia image + description
     if (typeof TripMateAPI !== 'undefined') {
       TripMateAPI.getPlaceInfo(itinerary.destination).then(place => {
         if (place) {
-          renderHero(place.image, place.description, aiPlanned);
+          renderHero(place.image, place.description, aiPlanned, aiFailed);
         }
       }).catch(err => {
         console.warn('Wikipedia fetch failed for itinerary hero:', err);
