@@ -598,85 +598,19 @@
       </div>
     </div>
 
-    <!-- Destination Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-      <!-- Card 1 (Large) -->
-      <div class="lg:col-span-2 group relative rounded-[2rem] overflow-hidden shadow-lg h-80">
-        <img
-          src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-          alt="Tuscany, Italy"
-          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-        <div
-          class="absolute top-4 left-4 bg-white/20 backdrop-blur-md rounded-full px-3 py-1 text-xs text-white font-medium border border-white/30">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="inline mr-1"
-            viewBox="0 0 16 16">
-            <path
-              d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-          </svg>
-          4.9
-        </div>
-
-        <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-          <div>
-            <h3 class="text-white text-2xl font-bold mb-1">Tuscany, Italy</h3>
-            <p class="text-white/80 text-sm">Experience the rolling hills of Chianti.</p>
-          </div>
-          <button
-            class="bg-white text-gray-900 text-sm font-semibold py-2 px-5 rounded-full hover:bg-gray-100 transition-colors">
-            View details
-          </button>
-        </div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="group relative rounded-[2rem] overflow-hidden shadow-lg h-80">
-        <img
-          src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-          alt="Kyoto, Japan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-        <div class="absolute bottom-6 left-6 right-6">
-          <h3 class="text-white text-xl font-bold mb-1">Kyoto, Japan</h3>
-          <p class="text-white/80 text-xs line-clamp-2">Immerse yourself in traditional Japanese culture and beautiful
-            gardens.</p>
-        </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="group relative rounded-[2rem] overflow-hidden shadow-lg h-80">
-        <img
-          src="https://images.unsplash.com/photo-1555400038-63f5ba517a47?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-          alt="Bali, Indonesia"
-          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-        <div class="absolute bottom-6 left-6 right-6">
-          <h3 class="text-white text-xl font-bold mb-1">Bali, Indonesia</h3>
-          <p class="text-white/80 text-xs line-clamp-2">Relax on pristine beaches and explore lush landscapes.</p>
-        </div>
-      </div>
-
+    <!-- Search Bar -->
+    <div class="max-w-2xl mx-auto mb-8 relative">
+      <input id="homeDestSearch" type="text" placeholder="Where do you want to go? e.g. Manali, Paris, Tokyo"
+        class="w-full bg-white border border-gray-200 rounded-full py-3 pl-5 pr-24 text-sm text-gray-800 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 shadow-sm">
+      <button id="homeDestSearchBtn"
+        class="absolute right-1.5 top-1/2 -translate-y-1/2 bg-brand-blue text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-blue-600 transition-colors">
+        Search
+      </button>
     </div>
 
-    <!-- Carousel Controls (Static) -->
-    <div class="flex justify-center gap-4 mt-8">
-      <button
-        class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:text-brand-blue hover:border-brand-blue transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        class="w-10 h-10 rounded-full border border-brand-blue bg-white flex items-center justify-center text-brand-blue shadow-sm hover:bg-brand-blue hover:text-white transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+    <!-- Destination Cards Grid -->
+    <div id="destinationsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[320px]">
+      <!-- Cards injected by JS -->
     </div>
   </section>
   <!-- END: Destinations Section -->
@@ -1129,12 +1063,19 @@
     }
   </script>
 
-  <script src="js/storage.js"></script>
-  <script src="js/matching.js"></script>
-  <script src="js/planner.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/home.js"></script>
+  <script src="js/api/api-config.js?v=5"></script>
+  <script src="js/api/api-cache.js?v=5"></script>
+  <script src="js/api/geocoding-api.js?v=5"></script>
+  <script src="js/api/weather-api.js?v=5"></script>
+  <script src="js/api/places-api.js?v=5"></script>
+  <script src="js/api/routing-api.js?v=5"></script>
+  <script src="js/api/tripmate-api.js?v=5"></script>
+  <script src="js/storage.js?v=5"></script>
+  <script src="js/matching.js?v=5"></script>
+  <script src="js/planner.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
+  <script src="js/animations.js?v=5"></script>
+  <script src="js/home.js?v=5"></script>
 </body>
 
 </html>

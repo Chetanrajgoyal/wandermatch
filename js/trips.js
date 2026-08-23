@@ -515,21 +515,25 @@ function initItineraryPage() {
 function runInitItineraryPage() {
   let itinerary = null;
 
-  // 1. Try generated itinerary from plan-trip flow
-  try {
-    const generated = sessionStorage.getItem('wm_generated_itinerary');
-    if (generated) itinerary = JSON.parse(generated);
-  } catch (e) {
-    console.warn('Failed to parse generated itinerary:', e);
+  // 1. Load saved trip by ID from URL first (most reliable)
+  const params = new URLSearchParams(window.location.search);
+  const tripId = params.get('id');
+  if (tripId) {
+    const saved = getTripById(tripId);
+    if (saved) {
+      itinerary = saved;
+      // Clear any stale generated itinerary so it doesn't override next time
+      sessionStorage.removeItem('wm_generated_itinerary');
+    }
   }
 
-  // 2. If none, try loading a saved trip by ID from URL
+  // 2. If no saved trip, try generated itinerary from plan-trip/discover flow
   if (!itinerary) {
-    const params = new URLSearchParams(window.location.search);
-    const tripId = params.get('id');
-    if (tripId) {
-      const saved = getTripById(tripId);
-      if (saved) itinerary = saved;
+    try {
+      const generated = sessionStorage.getItem('wm_generated_itinerary');
+      if (generated) itinerary = JSON.parse(generated);
+    } catch (e) {
+      console.warn('Failed to parse generated itinerary:', e);
     }
   }
 
