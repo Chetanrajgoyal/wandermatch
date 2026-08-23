@@ -630,6 +630,13 @@ function renderLoadedItinerary(itinerary) {
             return;
           }
 
+          // Guard: don't save if itinerary data is incomplete
+          if (!itinerary.destination || !itinerary.startDate || !itinerary.endDate ||
+              !Array.isArray(itinerary.itinerary) || itinerary.itinerary.length === 0) {
+            showToast('Itinerary is still loading. Please wait a moment and try again.', 'error');
+            return;
+          }
+
           if (hasSimilarTrip(currentUser.id, itinerary.destination, itinerary.startDate, itinerary.endDate)) {
             showToast(`You already have a ${itinerary.destination} trip for these dates.`, 'default');
             saveBtn.innerHTML = 'Already Saved';
