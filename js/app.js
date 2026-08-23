@@ -19,7 +19,7 @@ function getNavHTML(activePage = "", darkHero = false) {
       <li><a href="discover.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Discover</a></li>
       <li><a href="plan-trip.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Plan Trip</a></li>
       <li><a href="my-trips.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">My Trips</a></li>
-      <li><a href="#blogs" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Blog</a></li>
+      <li><a href="about.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">About Us</a></li>
     </ul>
   </nav>
 
@@ -38,6 +38,7 @@ function getNavHTML(activePage = "", darkHero = false) {
   <a href="discover.html" class="text-xl font-medium text-slate-700">Discover</a>
   <a href="plan-trip.html" class="text-xl font-medium text-slate-700">Plan Trip</a>
   <a href="my-trips.html" class="text-xl font-medium text-slate-700">My Trips</a>
+  <a href="about.html" class="text-xl font-medium text-slate-700">About Us</a>
   <div id="mobile-auth-action-container"></div>
 </div>`;
 }
@@ -84,6 +85,7 @@ function getFooterHTML() {
           <li><a href="index.html" class="text-white hover:text-brand-blue transition-colors">Home</a></li>
           <li><a href="discover.html" class="text-white/60 hover:text-white transition-colors">Destinations</a></li>
           <li><a href="plan-trip.html" class="text-white/60 hover:text-white transition-colors">Plan Trip</a></li>
+          <li><a href="about.html" class="text-white/60 hover:text-white transition-colors">About Us</a></li>
           <li><a href="#pricing" class="text-white/60 hover:text-white transition-colors">Pricing</a></li>
           <li><a href="#faq" class="text-white/60 hover:text-white transition-colors">FAQ</a></li>
         </ul>

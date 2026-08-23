@@ -21,11 +21,19 @@ function initAuth() {
   restoreSession();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAuth);
-} else {
-  initAuth();
+// Wait for runtime config (config.json) to load before initializing OAuth,
+// otherwise the Google/Apple client IDs may still be empty when buttons are wired.
+function startAuth() {
+  const ready = window.KIBI_CONFIG_READY || Promise.resolve();
+  ready.then(() => {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAuth);
+    } else {
+      initAuth();
+    }
+  });
 }
+startAuth();
 
 /* --- Session Helpers --- */
 function setAuthSession(session) {

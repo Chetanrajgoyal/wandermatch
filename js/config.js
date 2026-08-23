@@ -9,15 +9,16 @@ window.KIBI_CONFIG = window.KIBI_CONFIG || {
 };
 
 function loadKibiConfig() {
-  return fetch('/config.json', { cache: 'no-store' })
+  return fetch('config.json', { cache: 'no-store' })
     .then(res => { if (!res.ok) throw new Error('not found'); return res.json(); })
     .then(cfg => {
       window.KIBI_CONFIG = { ...window.KIBI_CONFIG, ...cfg };
       if (typeof onKibiConfigLoaded === 'function') onKibiConfigLoaded();
     })
     .catch(e => {
-      console.warn('Kibi config.json not found; OAuth buttons will be disabled until configured.');
+      console.warn('Kibi config.json not found; OAuth buttons will use demo fallback until configured.');
     });
 }
 
-loadKibiConfig();
+// Expose the promise so other scripts can wait for config before using OAuth
+window.KIBI_CONFIG_READY = loadKibiConfig();
