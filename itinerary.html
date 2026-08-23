@@ -106,8 +106,12 @@
     // SAFETY: If this page was opened for a saved trip (?id=...), discard any
     // generated itinerary left in sessionStorage so the saved trip always wins.
     (function() {
-      if (new URLSearchParams(window.location.search).get('id')) {
+      const id = new URLSearchParams(window.location.search).get('id');
+      if (id) {
         try { sessionStorage.removeItem('wm_generated_itinerary'); } catch (e) {}
+        window.__itineraryLoadMode = { type: 'saved', id: id };
+      } else {
+        window.__itineraryLoadMode = { type: 'generated' };
       }
     })();
   </script>

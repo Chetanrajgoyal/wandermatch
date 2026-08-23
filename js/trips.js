@@ -513,30 +513,41 @@ function initItineraryPage() {
 }
 
 function runInitItineraryPage() {
-  let itinerary = null;
-
-  // Always clear stale generated itinerary when a saved trip ID is present
   const params = new URLSearchParams(window.location.search);
   const tripId = params.get('id');
+
+  // STRICT: If a saved trip ID is in the URL, ONLY load that saved trip.
+  // Never fall back to a generated itinerary when ?id= is present.
   if (tripId) {
     sessionStorage.removeItem('wm_generated_itinerary');
     const saved = getTripById(tripId);
     if (saved) {
-      itinerary = saved;
       console.log('[Itinerary] Loading saved trip:', saved.id, saved.destination);
-    } else {
-      console.warn('[Itinerary] No saved trip found for id:', tripId);
+      renderLoadedItinerary(saved);
+      return;
     }
+    // Saved trip not found — show clear error instead of falling back
+    console.error('[Itinerary] Saved trip not found for id:', tripId);
+    const main = document.querySelector('main');
+    if (main) {
+      main.innerHTML = `
+        <div class="max-w-xl mx-auto mt-20 p-8 glass-panel rounded-3xl text-center">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Trip not found</h2>
+          <p class="text-gray-600 mb-6">We couldn't find a saved trip with this link. It may have been deleted.</p>
+          <a href="my-trips.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">Go to My Trips</a>
+        </div>
+      `;
+    }
+    return;
   }
 
-  // 2. If no saved trip, try generated itinerary from plan-trip/discover flow
-  if (!itinerary) {
-    try {
-      const generated = sessionStorage.getItem('wm_generated_itinerary');
-      if (generated) itinerary = JSON.parse(generated);
-    } catch (e) {
-      console.warn('Failed to parse generated itinerary:', e);
-    }
+  // No ID in URL: use generated itinerary from plan-trip/discover flow
+  let itinerary = null;
+  try {
+    const generated = sessionStorage.getItem('wm_generated_itinerary');
+    if (generated) itinerary = JSON.parse(generated);
+  } catch (e) {
+    console.warn('Failed to parse generated itinerary:', e);
   }
 
   if (!itinerary) {
@@ -544,6 +555,11 @@ function runInitItineraryPage() {
     return;
   }
 
+  console.log('[Itinerary] Loading generated trip:', itinerary.destination);
+  renderLoadedItinerary(itinerary);
+}
+
+function renderLoadedItinerary(itinerary) {
   // Normalize fields so downstream code doesn't crash on missing data
   itinerary.destination = itinerary.destination || 'Your Destination';
   itinerary.startDate = itinerary.startDate || new Date().toISOString();
@@ -552,6 +568,9 @@ function runInitItineraryPage() {
   itinerary.accommodations = Array.isArray(itinerary.accommodations) ? itinerary.accommodations : [];
   itinerary.budgetBreakdown = itinerary.budgetBreakdown || { stay: 0, food: 0, transport: 0, activities: 0, total: 0 };
   itinerary.weather = itinerary.weather || {};
+
+  const mode = window.__itineraryLoadMode || { type: 'unknown' };
+  console.log('[Itinerary] Rendering', mode.type, 'trip:', itinerary.id || '(generated)', itinerary.destination);
 
   const user = getCurrentUser();
 
