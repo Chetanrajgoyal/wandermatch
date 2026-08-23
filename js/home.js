@@ -403,7 +403,7 @@
           name: place?.name || geoResult?.name || query,
           state: place?.description ? place.description.split(',')[0] : (geoResult?.displayName || ''),
           description: place?.description || `Discover ${query}`,
-          image: place?.image || `https://source.unsplash.com/800x600/?${encodeURIComponent(query)},travel`,
+          image: place?.image || `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80`, // reliable fallback for unknown queries
           lat: geoResult?.latitude ? parseFloat(geoResult.latitude) : (place?.coordinates?.lat || null),
           lon: geoResult?.longitude ? parseFloat(geoResult.longitude) : (place?.coordinates?.lon || null)
         };

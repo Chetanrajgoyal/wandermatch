@@ -562,7 +562,7 @@
 
   function renderCard(trip, place, idx) {
     const isLarge = idx < 2;
-    const image = place?.image || `https://source.unsplash.com/800x600/?${encodeURIComponent(trip.name)},india,travel`;
+    const image = place?.image || `https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80`;
     const description = place?.description || `Explore ${trip.name}, ${trip.state}. Perfect for ${trip.bestFor}.`;
     return `
       <div class="${isLarge ? 'md:col-span-6' : 'md:col-span-4'} rounded-xl overflow-hidden relative group h-[360px] cursor-pointer ambient-shadow" onclick="window.generateIndiaTrip('${trip.id}')">

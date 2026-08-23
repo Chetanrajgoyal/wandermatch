@@ -588,7 +588,7 @@ function renderLoadedItinerary(itinerary) {
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
   if (heroEl) {
-    const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
+    const fallbackBg = `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80`;
 
     function renderHero(imageUrl, description) {
       const alreadySaved = user && hasSimilarTrip(user.id, itinerary.destination, itinerary.startDate, itinerary.endDate);
