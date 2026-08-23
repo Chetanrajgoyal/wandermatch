@@ -541,7 +541,8 @@ function runInitItineraryPage() {
   // STRICT: If a saved trip ID is in the URL, ONLY load that saved trip.
   // Load from isolated localStorage key first, fallback to wm_trips for legacy trips.
   if (tripId) {
-    sessionStorage.removeItem('wm_generated_itinerary');
+    // Extra safety: remove any generated itinerary lingering in sessionStorage
+    try { sessionStorage.removeItem('wm_generated_itinerary'); } catch (e) {}
 
     let saved = null;
     let source = 'isolated';
@@ -608,6 +609,13 @@ function renderLoadedItinerary(itinerary) {
 
   const mode = window.__itineraryLoadMode || { type: 'unknown' };
   console.log('[Itinerary] Rendering', mode.type, 'trip:', itinerary.id || '(generated)', itinerary.destination);
+
+  // Debug banner so users can verify which trip loaded
+  const debugBanner = document.getElementById('itinDebugBanner');
+  if (debugBanner) {
+    debugBanner.textContent = `DEBUG: ${mode.type} trip — ID: ${itinerary.id || 'generated'} — ${itinerary.destination} (${itinerary.itinerary.length} days)`;
+    debugBanner.style.display = 'block';
+  }
 
   const user = getCurrentUser();
 
