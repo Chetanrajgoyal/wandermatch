@@ -91,12 +91,30 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    html.dark body.my-trips-page { background-color: #0B0F17 !important; color: #E8EAED !important; }
+    html.dark body.my-trips-page .text-slate-800 { color: #E8EAED !important; }
+    html.dark body.my-trips-page .text-slate-600 { color: #A8B0BC !important; }
+    html.dark body.my-trips-page .text-slate-500 { color: #8B95A3 !important; }
+    html.dark body.my-trips-page .glass-card { background: rgba(18,24,33,0.78) !important; border-color: rgba(255,255,255,0.08) !important; }
+    html.dark body.my-trips-page .bg-slate-50 { background-color: #121821 !important; }
+    html.dark body.my-trips-page .bg-surface-container-low\/50 { background-color: rgba(18,24,33,0.5) !important; }
+    html.dark body.my-trips-page .bg-primary-fixed { background-color: #1b3a5f !important; }
+    html.dark body.my-trips-page .bg-secondary-fixed\/90 { background-color: rgba(27,58,95,0.9) !important; }
+    html.dark body.my-trips-page .bg-surface-container\/90 { background-color: rgba(18,24,33,0.9) !important; }
+    html.dark body.my-trips-page .text-on-secondary-fixed { color: #a4c9ff !important; }
+    html.dark body.my-trips-page .text-primary { color: #a4c9ff !important; }
+    html.dark body.my-trips-page .border-outline-variant { border-color: #2A3441 !important; }
+    html.dark body.my-trips-page .text-on-primary-fixed { color: #a4c9ff !important; }
+    html.dark body.my-trips-page .bg-error\/10 { background-color: rgba(186,26,26,0.15) !important; }
+    html.dark body.my-trips-page .text-tertiary-container { color: #A8B0BC !important; }
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 </head>
-<body class="bg-surface text-on-surface min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container" data-page="my-trips">
+<body class="my-trips-page bg-surface text-on-surface min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container" data-page="my-trips">
 <!-- Header -->
 <header class="relative z-50 px-6 lg:px-12 flex justify-between items-center w-full max-w-7xl mx-auto pt-6 pb-4">
   
