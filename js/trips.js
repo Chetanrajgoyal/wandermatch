@@ -517,8 +517,9 @@ function initItineraryPage() {
             <div class="text-white max-w-2xl">
                 <div class="flex flex-wrap items-center gap-3 mb-4">
                     <span class="px-3 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md text-blue-100 text-xs font-semibold border border-blue-400/30">Personalized Trip</span>
-                    ${aiPlanned ? `<span class="px-3 py-1.5 rounded-full bg-purple-500/20 backdrop-blur-md text-purple-100 text-xs font-semibold border border-purple-400/30 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span> AI Planned</span>` : ''}
-                    ${aiFailed ? `<span class="px-3 py-1.5 rounded-full bg-orange-500/20 backdrop-blur-md text-orange-100 text-xs font-semibold border border-orange-400/30 flex items-center gap-1" title="AI planner is temporarily unavailable. This plan uses real attractions from TripMate."><span class="material-symbols-outlined text-[14px]">info</span> AI Unavailable — Using Real Attractions</span>` : ''}
+                    ${aiPlanned ? `<span class="px-3 py-1.5 rounded-full bg-purple-500/20 backdrop-blur-md text-purple-100 text-xs font-semibold border border-purple-400/30 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span> AI Enhanced</span>` : ''}
+                    <span class="px-3 py-1.5 rounded-full bg-green-500/20 backdrop-blur-md text-green-100 text-xs font-semibold border border-green-400/30 flex items-center gap-1" title="This plan is built from real attractions and hotels near your destination."><span class="material-symbols-outlined text-[14px]">map</span> Real Attractions</span>
+                    ${aiFailed ? `<span class="px-3 py-1.5 rounded-full bg-orange-500/20 backdrop-blur-md text-orange-100 text-xs font-semibold border border-orange-400/30 flex items-center gap-1" title="AI enhancement is temporarily unavailable. The plan still uses real attractions."><span class="material-symbols-outlined text-[14px]">info</span> AI Unavailable</span>` : ''}
                     <span class="text-sm text-gray-200 flex items-center gap-1 font-medium">
                         <i class="fa-regular fa-calendar text-xs"></i>
                         ${formatDateRange(itinerary.startDate, itinerary.endDate)}
