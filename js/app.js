@@ -47,8 +47,12 @@ function getNavHTML(activePage = "", darkHero = false) {
   <!-- Right Action -->
   <div class="flex items-center gap-3">
     <div id="auth-action-container"></div>
-    <button id="mobile-menu-btn" class="md:hidden w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-800 hover:bg-white transition-colors shadow-sm border border-white/20">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <button id="mobile-menu-btn" class="md:hidden w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-800 hover:bg-white transition-colors shadow-sm border border-white/20" aria-label="Open menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="transition-transform duration-300">
+        <path id="mobile-bar-1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16"/>
+        <path id="mobile-bar-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/>
+        <path id="mobile-bar-3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 18h16"/>
+      </svg>
     </button>
   </div>
 </header>
@@ -273,11 +277,13 @@ function initNav(activePage = '', darkHero = false) {
       mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
       mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
       // Animate hamburger icon to X
-      const bars = hamburger.querySelectorAll('svg path');
-      if (bars.length >= 3) {
-        bars[0].setAttribute('transform', 'rotate(45 12 12) translate(0, 5)');
-        bars[1].style.opacity = '0';
-        bars[2].setAttribute('transform', 'rotate(-45 12 12) translate(0, -7)');
+      const bar1 = document.getElementById('mobile-bar-1');
+      const bar2 = document.getElementById('mobile-bar-2');
+      const bar3 = document.getElementById('mobile-bar-3');
+      if (bar1 && bar2 && bar3) {
+        bar1.setAttribute('transform', 'rotate(45 12 12) translate(0, 6)');
+        bar2.style.opacity = '0';
+        bar3.setAttribute('transform', 'rotate(-45 12 12) translate(0, -6)');
       }
       document.body.style.overflow = 'hidden';
     }
@@ -286,11 +292,13 @@ function initNav(activePage = '', darkHero = false) {
       menuOpen = false;
       mobileMenu.classList.add('opacity-0', 'pointer-events-none');
       mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
-      const bars = hamburger.querySelectorAll('svg path');
-      if (bars.length >= 3) {
-        bars[0].removeAttribute('transform');
-        bars[1].style.opacity = '';
-        bars[2].removeAttribute('transform');
+      const bar1 = document.getElementById('mobile-bar-1');
+      const bar2 = document.getElementById('mobile-bar-2');
+      const bar3 = document.getElementById('mobile-bar-3');
+      if (bar1 && bar2 && bar3) {
+        bar1.removeAttribute('transform');
+        bar2.style.opacity = '';
+        bar3.removeAttribute('transform');
       }
       document.body.style.overflow = '';
     }
