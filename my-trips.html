@@ -317,9 +317,10 @@
             </div>
             <div class="p-[24px]">
               <h3 class="text-[20px] leading-[28px] font-bold text-slate-800 mb-2">${trip.title || trip.destination || 'Trip'}</h3>
-              <p class="text-slate-500 text-sm mb-4 flex items-center gap-2">
+              <p class="text-slate-500 text-sm mb-1 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px] text-primary">schedule</span> ${formatDateRange(trip.startDate, trip.endDate)}
               </p>
+              <p class="text-xs font-mono text-amber-700 bg-amber-50 px-2 py-1 rounded mb-3">DEBUG: ${trip.destination} | ${(trip.itinerary || []).length} days | ID: ${trip.id.slice(0,8)}</p>
               <div class="flex gap-2">
                 <button class="view-saved-btn flex-1 py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors" onclick="event.stopPropagation(); window.location.href='saved-itinerary.html?data=' + encodeURIComponent(this.closest('[data-encoded-trip]').dataset.encodedTrip)">View Itinerary</button>
                 <button class="delete-saved-btn px-4 py-3 rounded-full bg-error/10 border border-error text-error font-bold text-sm hover:bg-error/20 transition-colors" onclick="event.stopPropagation();">Delete</button>
