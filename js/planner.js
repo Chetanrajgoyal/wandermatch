@@ -199,8 +199,8 @@ async function generateItinerary(params) {
   // 5. Enhance with routes
   await enhanceItineraryWithRoutes(itinerary);
 
-  // 6. Budget breakdown
-  const budgetBreakdown = calculateBudgetBreakdown(itinerary, stay, destination, numDays);
+  // 6. Budget breakdown (scaled to match user's entered budget)
+  const budgetBreakdown = calculateBudgetBreakdown(itinerary, stay, destination, numDays, budget);
 
   return {
     destination: destination.name,
@@ -414,7 +414,7 @@ async function enhanceItineraryWithRoutes(itineraryDays) {
 }
 
 /* --- Calculate Budget Breakdown --- */
-function calculateBudgetBreakdown(itinerary, stay, destination, numDays) {
+function calculateBudgetBreakdown(itinerary, stay, destination, numDays, userBudget = 0) {
   const transport = destination.transport;
   let transportCost = 0;
   if (transport) {
@@ -427,7 +427,7 @@ function calculateBudgetBreakdown(itinerary, stay, destination, numDays) {
 
   const stayCost = stay.cost * numDays;
   let activitiesCost = 0;
-  
+
   itinerary.forEach(day => {
     day.activities.forEach(act => {
       activitiesCost += act.cost || 0;
@@ -436,14 +436,17 @@ function calculateBudgetBreakdown(itinerary, stay, destination, numDays) {
 
   const foodCost = numDays * 800; // ₹800 per day average
 
-  const total = transportCost + stayCost + activitiesCost + foodCost;
+  // If user entered a budget, scale breakdown so total matches it
+  const estimatedTotal = transportCost + stayCost + activitiesCost + foodCost;
+  const targetTotal = userBudget > 0 ? userBudget : estimatedTotal;
+  const scale = estimatedTotal > 0 ? targetTotal / estimatedTotal : 1;
 
   return {
-    transport: transportCost,
-    stay: stayCost,
-    food: foodCost,
-    activities: activitiesCost,
-    total
+    transport: Math.round(transportCost * scale),
+    stay: Math.round(stayCost * scale),
+    food: Math.round(foodCost * scale),
+    activities: Math.round(activitiesCost * scale),
+    total: targetTotal
   };
 }
 

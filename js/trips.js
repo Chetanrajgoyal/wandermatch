@@ -544,16 +544,24 @@ function initItineraryPage() {
       const saveBtn = document.getElementById('saveItinBtn');
       if (saveBtn) {
         saveBtn.addEventListener('click', () => {
+          const user = getCurrentUser();
+          if (!user) {
+            showToast('Please log in to save your trip.', 'error');
+            return;
+          }
+
           saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
           setTimeout(() => {
             const newTrip = {
               ...itinerary,
               title: `${itinerary.destination} Trip`,
               id: generateId(),
+              createdBy: user.id,
               createdAt: new Date().toISOString()
             };
             saveTrip(newTrip);
-            showToast(`Your ${itinerary.destination} itinerary has been saved!`, 'success');
+            saveTripToUser(user.id, newTrip.id);
+            showToast(`Your ${itinerary.destination} trip has been saved!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');
           }, 800);
