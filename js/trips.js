@@ -620,12 +620,10 @@ function runInitItineraryPage() {
 
     // Load from the saved itineraries array first, then legacy storages.
     let saved = null;
-    let source = 'array';
     const savedList = getSavedItineraries ? getSavedItineraries() : [];
     saved = savedList.find(t => t.id === tripId) || null;
 
     if (!saved) {
-      source = 'legacy';
       try {
         const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
         if (isolated) saved = JSON.parse(isolated);
@@ -637,7 +635,6 @@ function runInitItineraryPage() {
 
     const isValidSaved = saved && saved.destination && (Array.isArray(saved.itinerary) && saved.itinerary.length > 0);
     if (isValidSaved) {
-      console.log(`[Itinerary] Loading saved trip (${source}):`, saved.id, saved.destination, 'days:', saved.itinerary.length);
       renderLoadedItinerary(deepClone(saved));
       return;
     }
@@ -670,7 +667,6 @@ function runInitItineraryPage() {
     return;
   }
 
-  console.log('[Itinerary] Loading generated trip:', itinerary.destination, 'days:', (itinerary.itinerary || []).length);
   renderLoadedItinerary(deepClone(itinerary));
 }
 
@@ -683,9 +679,6 @@ function renderLoadedItinerary(itinerary) {
   itinerary.accommodations = Array.isArray(itinerary.accommodations) ? itinerary.accommodations : [];
   itinerary.budgetBreakdown = itinerary.budgetBreakdown || { stay: 0, food: 0, transport: 0, activities: 0, total: 0 };
   itinerary.weather = itinerary.weather || {};
-
-  const mode = window.__itineraryLoadMode || { type: 'unknown' };
-  console.log('[Itinerary] Rendering', mode.type, 'trip:', itinerary.id || '(generated)', itinerary.destination);
 
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
@@ -751,7 +744,6 @@ function renderLoadedItinerary(itinerary) {
               createdAt: new Date().toISOString()
             };
             saveTrip(newTrip);
-            console.log('[Save] Saved trip to My Trips:', newTrip.id, newTrip.destination, 'days:', (newTrip.itinerary || []).length);
             showToast(`Your ${newTrip.destination} trip has been saved to My Trips!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');

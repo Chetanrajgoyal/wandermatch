@@ -57,8 +57,6 @@
 </header>
 
 <main class="flex-1 flex flex-col w-full pt-[100px] px-6 pb-32 max-w-[1280px] mx-auto">
-  <div id="savedItinDebug" class="hidden bg-amber-100 text-amber-900 text-xs font-mono px-4 py-2 rounded-lg border border-amber-200 mb-4"></div>
-
   <section id="savedItinHero" class="relative rounded-3xl overflow-hidden min-h-[400px] flex items-end p-8 shadow-sm mb-8">
     <!-- Injected via JS -->
   </section>
@@ -84,13 +82,6 @@
   const params = new URLSearchParams(window.location.search);
   const dataParam = params.get('data');
   const tripId = params.get('id');
-  const debug = document.getElementById('savedItinDebug');
-
-  function showDebug(msg) {
-    if (debug) { debug.textContent = msg; debug.style.display = 'block'; }
-    console.log('[SavedItinerary]', msg);
-  }
-
   let trip = null;
   let source = 'url';
 
@@ -122,7 +113,6 @@
   }
 
   if (!trip || !trip.destination || !Array.isArray(trip.itinerary) || trip.itinerary.length === 0) {
-    showDebug('Trip not available');
     document.getElementById('savedItinHero').innerHTML = `
       <div class="text-white text-center w-full p-8">
         <h2 class="text-2xl font-bold mb-4">Trip not available</h2>

@@ -24,6 +24,7 @@
   --color-border-light: #F0EEE8;
   --color-error: #C75B5B;
   --color-success: #6B8E6E;
+  --color-primary: #005da7;
 }
 
 *, *::before, *::after {
@@ -825,6 +826,36 @@ ul, ol {
 
 .suggestion-item:hover {
   background-color: var(--color-cream-dark);
+}
+
+/* Hide native select arrow while keeping custom Material icon */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+/* Plan Trip chip active state */
+.chip.active {
+  background-color: var(--color-primary) !important;
+  color: var(--color-white) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Remove native select arrow on Plan Trip dropdowns (Tailwind forms plugin adds one) */
+#planForm select,
+#socialSelect,
+#paceSelect {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: none !important;
+  background-repeat: no-repeat !important;
 }
 
 /* ---------- Onboarding ---------- */

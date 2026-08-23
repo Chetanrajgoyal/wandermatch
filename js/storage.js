@@ -120,7 +120,6 @@ function saveTrip(trip) {
   // The UI already guards against accidental double-saves via hasSimilarTrip / dataset.saving.
   trips.push(trip);
   setStore(STORAGE_KEYS.TRIPS, trips);
-  console.log('[Storage] saveTrip:', trip.id, trip.destination, 'days:', (trip.itinerary || []).length);
   return trip;
 }
 
@@ -130,13 +129,7 @@ function getTrips() {
 
 function getTripById(id) {
   const trips = getTrips();
-  const trip = trips.find(t => t.id === id) || null;
-  if (trip) {
-    console.log('[Storage] getTripById:', id, '->', trip.destination, 'days:', (trip.itinerary || []).length);
-  } else {
-    console.log('[Storage] getTripById:', id, '-> not found');
-  }
-  return trip;
+  return trips.find(t => t.id === id) || null;
 }
 
 function getUserTrips(userId) {
@@ -192,7 +185,6 @@ function migrateSavedItineraries() {
 
   if (migrated.length > 0) {
     setStore(STORAGE_KEYS.SAVED_ITINERARIES, migrated);
-    console.log('[Storage] Migrated', migrated.length, 'saved itineraries');
   }
   setStore('wm_saved_itineraries_migrated', true);
 }
