@@ -617,13 +617,6 @@ function renderLoadedItinerary(itinerary) {
   const mode = window.__itineraryLoadMode || { type: 'unknown' };
   console.log('[Itinerary] Rendering', mode.type, 'trip:', itinerary.id || '(generated)', itinerary.destination);
 
-  // Debug banner so users can verify which trip loaded
-  const debugBanner = document.getElementById('itinDebugBanner');
-  if (debugBanner) {
-    debugBanner.textContent = `DEBUG: ${mode.type} trip — ID: ${itinerary.id || 'generated'} — ${itinerary.destination} (${itinerary.itinerary.length} days)`;
-    debugBanner.style.display = 'block';
-  }
-
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
   if (heroEl) {

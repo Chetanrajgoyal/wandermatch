@@ -321,7 +321,6 @@
               <p class="text-slate-500 text-sm mb-1 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px] text-primary">schedule</span> ${formatDateRange(trip.startDate, trip.endDate)}
               </p>
-              <p class="text-xs font-mono text-amber-700 bg-amber-50 px-2 py-1 rounded mb-2">DEBUG: ${trip.destination} | ${(trip.itinerary || []).length} days | ID: ${trip.id.slice(0,8)}</p>
               <div class="text-xs text-slate-600 bg-slate-50 p-2 rounded mb-3">
                 <strong>Day 1 preview:</strong><br>
                 ${((trip.itinerary || [])[0]?.activities || []).slice(0,2).map(a => `• ${a.name} (${a.time || 'no time'})`).join('<br>') || 'No activities'}
