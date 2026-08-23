@@ -161,8 +161,17 @@ function getJoinedTrips(userId) {
 function getSavedTrips(userId) {
   const user = getUserById(userId);
   if (!user || !user.savedTrips) return [];
-  const trips = getTrips();
-  return trips.filter(t => user.savedTrips.includes(t.id));
+
+  // Load each saved trip from its isolated key first; fallback to wm_trips for legacy trips.
+  return user.savedTrips.map(tripId => {
+    try {
+      const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
+      if (isolated) return JSON.parse(isolated);
+    } catch (e) {
+      console.warn('[Storage] Failed to parse isolated saved trip:', tripId, e);
+    }
+    return getTripById(tripId);
+  }).filter(Boolean);
 }
 
 function updateTrip(tripId, updates) {
