@@ -515,15 +515,17 @@ function initItineraryPage() {
 function runInitItineraryPage() {
   let itinerary = null;
 
-  // 1. Load saved trip by ID from URL first (most reliable)
+  // Always clear stale generated itinerary when a saved trip ID is present
   const params = new URLSearchParams(window.location.search);
   const tripId = params.get('id');
   if (tripId) {
+    sessionStorage.removeItem('wm_generated_itinerary');
     const saved = getTripById(tripId);
     if (saved) {
       itinerary = saved;
-      // Clear any stale generated itinerary so it doesn't override next time
-      sessionStorage.removeItem('wm_generated_itinerary');
+      console.log('[Itinerary] Loading saved trip:', saved.id, saved.destination);
+    } else {
+      console.warn('[Itinerary] No saved trip found for id:', tripId);
     }
   }
 
