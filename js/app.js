@@ -37,6 +37,13 @@ function updateThemeToggleUI(isDark) {
   if (moon) moon.classList.toggle('hidden', isDark);
   if (sun) sun.classList.toggle('hidden', !isDark);
   if (label) label.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+
+  const homeMoon = document.getElementById('homeThemeIconMoon');
+  const homeSun = document.getElementById('homeThemeIconSun');
+  const homeLabel = document.getElementById('homeThemeToggleLabel');
+  if (homeMoon) homeMoon.classList.toggle('hidden', isDark);
+  if (homeSun) homeSun.classList.toggle('hidden', !isDark);
+  if (homeLabel) homeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 }
 
 (function bootTheme() {

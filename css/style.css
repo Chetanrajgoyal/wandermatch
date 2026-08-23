@@ -33,6 +33,12 @@
   box-sizing: border-box;
 }
 
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -1184,6 +1190,10 @@ select::-ms-expand {
 }
 
 /* ---------- Dark Theme ---------- */
+html {
+  transition: background-color 400ms ease, color 400ms ease;
+}
+
 html.dark {
   color-scheme: dark;
 }
@@ -1320,8 +1330,45 @@ html.dark .glass-item {
 html.dark .destination-card,
 html.dark .trip-card,
 html.dark .itinerary-day-card,
-html.dark .stat-card {
+html.dark .stat-card,
+html.dark .glass-card,
+html.dark [class*="glass-card"],
+html.dark [class*="rounded-2xl"][class*="bg-white"],
+html.dark [class*="rounded-3xl"][class*="bg-white"],
+html.dark [class*="rounded-[16px]"][class*="bg-white"],
+html.dark .bg-surface,
+html.dark .bg-surface-container,
+html.dark .bg-surface-container-low,
+html.dark .bg-surface-container-high,
+html.dark .bg-surface-variant,
+html.dark .bg-surface-bright,
+html.dark .bg-primary-fixed,
+html.dark .bg-secondary-fixed,
+html.dark .bg-tertiary-fixed,
+html.dark .bg-error-container,
+html.dark .bg-tertiary-container,
+html.dark .bg-secondary-container,
+html.dark .bg-primary-container {
   background-color: #161B22 !important;
+}
+
+html.dark .text-slate-800,
+html.dark .text-gray-800,
+html.dark .text-on-primary-fixed,
+html.dark .text-on-secondary-fixed,
+html.dark .text-on-tertiary-fixed,
+html.dark .text-on-primary-container,
+html.dark .text-on-secondary-container,
+html.dark .text-on-tertiary-container,
+html.dark .text-on-error-container {
+  color: #F1F3F4 !important;
+}
+
+html.dark .text-slate-400,
+html.dark .text-gray-400,
+html.dark .text-outline,
+html.dark .text-outline-variant {
+  color: #9AA0A6 !important;
 }
 
 html.dark #mobileMenu {
