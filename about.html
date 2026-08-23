@@ -180,26 +180,40 @@
             -webkit-text-fill-color: transparent;
         }
 
+        html.dark body.about-page,
+        html.dark body.about-page * {
+          background-color: transparent;
+          border-color: transparent;
+          color: inherit;
+        }
         html.dark body.about-page { background-color: #0B0F17 !important; color: #E8EAED !important; }
-        html.dark body.about-page .bg-background { background-color: #0B0F17 !important; }
+        html.dark body.about-page .bg-background,
+        html.dark body.about-page .bg-surface,
         html.dark body.about-page .bg-surface-container-low { background-color: #121821 !important; }
-        html.dark body.about-page .bg-surface { background-color: #0B0F17 !important; }
-        html.dark body.about-page .text-on-surface { color: #E8EAED !important; }
-        html.dark body.about-page .text-on-surface-variant { color: #A8B0BC !important; }
-        html.dark body.about-page .text-on-secondary-fixed-variant { color: #a4c9ff !important; }
-        html.dark body.about-page .text-on-primary-container { color: #E8EAED !important; }
-        html.dark body.about-page .text-on-secondary-container { color: #a4c9ff !important; }
-        html.dark body.about-page .text-primary { color: #a4c9ff !important; }
-        html.dark body.about-page .bg-secondary-fixed\/50,
-        html.dark body.about-page .bg-secondary-fixed { background-color: rgba(27,58,95,0.5) !important; }
-        html.dark body.about-page .glass-card { background: rgba(18,24,33,0.72) !important; border-color: rgba(255,255,255,0.08) !important; }
-        html.dark body.about-page .border-outline-variant { border-color: #2A3441 !important; }
-        html.dark body.about-page .bg-surface-container-high { background-color: #1b2430 !important; }
-        html.dark body.about-page .text-on-background { color: #E8EAED !important; }
-        html.dark body.about-page .text-slate-600,
-        html.dark body.about-page .text-slate-500,
-        html.dark body.about-page .text-slate-400 { color: #A8B0BC !important; }
+        html.dark body.about-page .bg-secondary-fixed,
+        html.dark body.about-page .bg-secondary-fixed\/50 { background-color: rgba(27,58,95,0.55) !important; }
+        html.dark body.about-page .bg-primary-fixed\/40 { background-color: rgba(41,118,199,0.22) !important; }
+        html.dark body.about-page .glass-card { background: rgba(18,24,33,0.78) !important; border: 1px solid rgba(255,255,255,0.08) !important; }
+        html.dark body.about-page .text-on-surface,
+        html.dark body.about-page .text-on-background,
+        html.dark body.about-page h1,
+        html.dark body.about-page h2,
+        html.dark body.about-page h3,
+        html.dark body.about-page .headline,
+        html.dark body.about-page .label,
+        html.dark body.about-page .font-headline-lg,
+        html.dark body.about-page .font-headline-md { color: #E8EAED !important; }
+        html.dark body.about-page .text-on-surface-variant,
+        html.dark body.about-page .text-on-secondary-fixed-variant,
+        html.dark body.about-page p,
+        html.dark body.about-page span:not(.material-symbols-outlined):not(.text-gradient) { color: #A8B0BC !important; }
+        html.dark body.about-page .text-primary,
+        html.dark body.about-page .text-secondary { color: #a4c9ff !important; }
+        html.dark body.about-page .bg-primary { background-color: #005da7 !important; color: #ffffff !important; }
+        html.dark body.about-page .bg-primary:hover { background-color: #2976c7 !important; }
         html.dark body.about-page footer { background-color: #0A1B29 !important; }
+        html.dark body.about-page footer * { color: rgba(255,255,255,0.7) !important; }
+        html.dark body.about-page footer a:hover { color: #ffffff !important; }
       </style>
 </head>
 <body class="about-page bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">

@@ -181,22 +181,73 @@
               box-shadow: 0 10px 40px -10px rgba(0, 93, 167, 0.15);
           }
 
+          html.dark body.dashboard-page,
+          html.dark body.dashboard-page * {
+            background-color: transparent;
+            border-color: transparent;
+            color: inherit;
+          }
           html.dark body.dashboard-page { background-color: #0B0F17 !important; color: #E8EAED !important; }
-          html.dark body.dashboard-page .bg-background { background-color: #0B0F17 !important; }
+          html.dark body.dashboard-page .bg-background,
           html.dark body.dashboard-page .bg-surface { background-color: #0B0F17 !important; }
-          html.dark body.dashboard-page .bg-surface-container-high { background-color: #1b2430 !important; }
+          html.dark body.dashboard-page .bg-surface-container-high,
           html.dark body.dashboard-page .bg-surface-container { background-color: #121821 !important; }
           html.dark body.dashboard-page .bg-surface-variant { background-color: #1b2430 !important; }
-          html.dark body.dashboard-page .bg-primary-fixed\/30 { background-color: rgba(41,118,199,0.18) !important; }
-          html.dark body.dashboard-page .text-on-surface { color: #E8EAED !important; }
-          html.dark body.dashboard-page .text-on-surface-variant { color: #A8B0BC !important; }
-          html.dark body.dashboard-page .text-on-background { color: #E8EAED !important; }
+          html.dark body.dashboard-page .bg-surface-container-lowest { background-color: #0B0F17 !important; }
+          html.dark body.dashboard-page .bg-primary-fixed\/30,
+          html.dark body.dashboard-page .bg-primary-fixed\/50 { background-color: rgba(41,118,199,0.22) !important; }
+          html.dark body.dashboard-page .bg-secondary-fixed,
+          html.dark body.dashboard-page .bg-secondary-fixed\/50,
+          html.dark body.dashboard-page .bg-secondary-fixed\/90 { background-color: rgba(27,58,95,0.55) !important; }
+          html.dark body.dashboard-page .bg-tertiary-fixed\/50 { background-color: rgba(85,93,99,0.4) !important; }
+          html.dark body.dashboard-page .bg-white\/90 { background-color: rgba(18,24,33,0.9) !important; }
+          html.dark body.dashboard-page .bg-white { background-color: #121821 !important; }
+          html.dark body.dashboard-page .glass-panel { background: rgba(18,24,33,0.78) !important; border: 1px solid rgba(255,255,255,0.08) !important; }
+          html.dark body.dashboard-page .text-on-surface,
+          html.dark body.dashboard-page .text-on-background,
+          html.dark body.dashboard-page h1,
+          html.dark body.dashboard-page h2,
+          html.dark body.dashboard-page h3,
+          html.dark body.dashboard-page h4,
+          html.dark body.dashboard-page .font-headline-lg,
+          html.dark body.dashboard-page .font-headline-md,
+          html.dark body.dashboard-page .font-label-md,
+          html.dark body.dashboard-page .font-label-sm { color: #E8EAED !important; }
+          html.dark body.dashboard-page .text-on-surface-variant,
+          html.dark body.dashboard-page .text-outline,
+          html.dark body.dashboard-page p,
+          html.dark body.dashboard-page span:not(.material-symbols-outlined) { color: #A8B0BC !important; }
           html.dark body.dashboard-page .text-primary { color: #a4c9ff !important; }
+          html.dark body.dashboard-page .text-secondary { color: #8bd2fe !important; }
           html.dark body.dashboard-page .text-tertiary { color: #8B95A3 !important; }
-          html.dark body.dashboard-page .text-on-primary-container { color: #E8EAED !important; }
-          html.dark body.dashboard-page .glass-panel { background: rgba(18,24,33,0.72) !important; border-color: rgba(255,255,255,0.08) !important; }
-          html.dark body.dashboard-page .border-outline-variant { border-color: #2A3441 !important; }
+          html.dark body.dashboard-page .text-on-secondary-fixed { color: #a4c9ff !important; }
+          html.dark body.dashboard-page .text-on-primary-fixed { color: #001c39 !important; }
+          html.dark body.dashboard-page .bg-primary { background-color: #005da7 !important; color: #ffffff !important; }
+          html.dark body.dashboard-page .bg-primary:hover { background-color: #2976c7 !important; }
+          html.dark body.dashboard-page .border-outline-variant,
+          html.dark body.dashboard-page .border-white { border-color: #2A3441 !important; }
+          html.dark body.dashboard-page .border-white\/20 { border-color: rgba(255,255,255,0.08) !important; }
           html.dark body.dashboard-page footer { background-color: #0A1B29 !important; }
+          html.dark body.dashboard-page footer * { color: rgba(255,255,255,0.7) !important; }
+          html.dark body.dashboard-page footer a:hover { color: #ffffff !important; }
+          /* Edit profile modal dark */
+          html.dark body.dashboard-page #editProfileModal { background-color: rgba(0,0,0,0.6) !important; }
+          html.dark body.dashboard-page #editProfileModal > div { background-color: #121821 !important; border: 1px solid rgba(255,255,255,0.08) !important; }
+          html.dark body.dashboard-page #editProfileModal h3,
+          html.dark body.dashboard-page #editProfileModal label,
+          html.dark body.dashboard-page #editProfileModal .text-on-surface { color: #E8EAED !important; }
+          html.dark body.dashboard-page #editProfileModal input,
+          html.dark body.dashboard-page #editProfileModal textarea { background-color: #0B0F17 !important; border-color: #2A3441 !important; color: #E8EAED !important; }
+          html.dark body.dashboard-page #editProfileModal input::placeholder,
+          html.dark body.dashboard-page #editProfileModal textarea::placeholder { color: #6B7685 !important; }
+          html.dark body.dashboard-page #editProfileModal .text-on-surface-variant,
+          html.dark body.dashboard-page #editProfileModal .text-xs { color: #A8B0BC !important; }
+          html.dark body.dashboard-page #editProfileModal #editAvatarPreview { background-color: #1b2430 !important; color: #A8B0BC !important; }
+          html.dark body.dashboard-page #editProfileModal button[type="submit"] { background-color: #005da7 !important; color: #ffffff !important; }
+          html.dark body.dashboard-page #editProfileModal button[type="button"] { background-color: transparent !important; border-color: #2A3441 !important; color: #E8EAED !important; }
+          html.dark body.dashboard-page #editProfileModal button[type="button"]:hover { background-color: #1b2430 !important; }
+          html.dark body.dashboard-page #editProfileModal label.cursor-pointer { border-color: #2A3441 !important; color: #E8EAED !important; }
+          html.dark body.dashboard-page #editProfileModal label.cursor-pointer:hover { background-color: #1b2430 !important; }
       </style>
 </head>
 <body class="dashboard-page bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
