@@ -393,7 +393,13 @@ function initTripDetails() {
         createdBy: user.id,
         createdAt: new Date().toISOString()
       };
-      saveSavedItinerary(snapshot);
+      const saved = saveSavedItinerary(snapshot);
+      if (!saved) {
+        showToast('This trip is already saved.', 'default');
+        saveBtn.textContent = 'Already Saved';
+        saveBtn.disabled = true;
+        return;
+      }
       showToast('Trip saved! ✓', 'success');
       saveBtn.textContent = 'Saved ✓';
       saveBtn.disabled = true;

@@ -217,6 +217,16 @@ function saveSavedItinerary(trip) {
   const saved = getSavedItineraries();
   trip.id = trip.id || generateId();
   trip.createdAt = trip.createdAt || new Date().toISOString();
+
+  // Prevent duplicate saved itineraries for the same user + destination + startDate.
+  const currentUserId = (typeof getCurrentUser === 'function' && getCurrentUser()) ? getCurrentUser().id : trip.createdBy;
+  const isDuplicate = saved.some(t =>
+    t.createdBy === currentUserId &&
+    t.destination === trip.destination &&
+    t.startDate === trip.startDate
+  );
+  if (isDuplicate) return null;
+
   saved.push(trip);
   setStore(STORAGE_KEYS.SAVED_ITINERARIES, saved);
   return trip;

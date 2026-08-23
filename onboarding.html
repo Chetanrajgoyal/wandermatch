@@ -10,8 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
   <script>
     tailwind.config = {
+      darkMode: "class",
       theme: {
         extend: {
           colors: {
@@ -127,6 +130,36 @@
       border:4px solid transparent;
       transition:.3s ease;
     }
+    html.dark .interest { background:#1b2430; }
+    html.dark .interest.selected { border-color:#a4c9ff; box-shadow:0 0 0 2px #005da7; }
+    html.dark body { background:#0B0F17; color:#E8EAED; }
+    html.dark .ambient { background: linear-gradient(135deg,#0B0F17 0%,#111a28 55%,#0B0F17 100%); }
+    html.dark .orb.one { background:#1b3a5f; opacity:.35; }
+    html.dark .orb.two { background:#1a4a66; opacity:.35; }
+    html.dark .orb.three { background:#1b3a5f; opacity:.35; }
+    html.dark .topbar { background:rgba(11,15,23,.85); box-shadow:0 20px 40px rgba(0,0,0,.15); }
+    html.dark .glass { background:rgba(18,24,33,.72); border-color:rgba(255,255,255,.08); }
+    html.dark .option { background:#121821; border-color:#2A3441; color:#E8EAED; }
+    html.dark .option:hover { border-color:#a4c9ff; box-shadow:0 12px 30px rgba(0,0,0,.25); }
+    html.dark .option.selected { border-color:#005da7; background:#0B0F17; box-shadow:0 0 0 2px #005da7, 0 12px 30px rgba(0,0,0,.25); }
+    html.dark .option.selected .icon-wrap { background:#1b3a5f; color:#a4c9ff; }
+    html.dark .nav-btn.secondary { background:rgba(18,24,33,.75); color:#E8EAED; border-color:#2A3441; }
+    html.dark .progress-segment { background:#2A3441; }
+    html.dark .progress-segment.active { background:#005da7; }
+    html.dark .profile-choice { background:rgba(18,24,33,.72); border-color:rgba(255,255,255,.08); }
+    html.dark .profile-choice.selected { border-color:#005da7; }
+    html.dark .profile-choice.dim { opacity:.45; }
+    html.dark h1, html.dark h2, html.dark h3, html.dark .headline, html.dark .label, html.dark .brand { color:#E8EAED; }
+    html.dark p, html.dark small { color:#A8B0BC; }
+    html.dark #stepLabel { color:#a4c9ff; }
+    html.dark #profileTags span { background:#1b3a5f !important; color:#a4c9ff !important; }
+    html.dark .rounded-2xl.bg-white\/70 { background:rgba(18,24,33,.7) !important; border-color:rgba(255,255,255,.08) !important; }
+    html.dark .text-\[\#414751\] { color:#A8B0BC !important; }
+    html.dark .text-\[\#717783\] { color:#6B7685 !important; }
+    html.dark .text-\[\#005da7\] { color:#a4c9ff !important; }
+    html.dark .bg-\[\#d4e3ff\] { background:#1b3a5f !important; }
+    html.dark .bg-\[\#e2e2e5\] { background:#2A3441 !important; }
+    html.dark .text-\[\#005da7\].material-symbols-outlined { color:#a4c9ff !important; }
     .interest:hover { transform:translateY(-3px); }
     .interest.selected { border-color:#a4c9ff; box-shadow:0 0 0 2px #005da7; }
     .interest::after {
@@ -183,13 +216,19 @@
 
   <header class="topbar">
     <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
-      <button id="backTop" aria-label="Go back" class="p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600 invisible">
+      <button id="backTop" aria-label="Go back" class="p-2 rounded-full hover:bg-slate-100/20 transition-colors text-slate-600 dark:text-slate-300 invisible">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <div class="brand text-2xl font-bold text-[#005da7]">Kibi</div>
-      <button id="closeBtn" aria-label="Close onboarding" class="p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600">
-        <span class="material-symbols-outlined">close</span>
-      </button>
+      <div class="flex items-center gap-2">
+        <button id="themeToggleBtn" type="button" aria-label="Toggle dark mode" class="p-2.5 rounded-full bg-white/80 dark:bg-slate-800/80 border border-outline-variant/30 text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          <span id="themeIconMoon" class="material-symbols-outlined text-xl">dark_mode</span>
+          <span id="themeIconSun" class="material-symbols-outlined text-xl hidden">light_mode</span>
+        </button>
+        <button id="closeBtn" aria-label="Close onboarding" class="p-2 rounded-full hover:bg-slate-100/20 transition-colors text-slate-600 dark:text-slate-300">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
     </div>
   </header>
 

@@ -137,9 +137,28 @@
     .toast.active { opacity: 1; transform: translateY(0); }
     .toast.success { background: #1b5e20; }
     .toast.error { background: #c62828; }
+
+    /* Dark mode overrides */
+    html.dark body { background-color: #0B0F17; color: #E8EAED; }
+    html.dark .bg-surface-container-lowest { background-color: #121821 !important; }
+    html.dark .bg-surface-container-low { background-color: #151d26 !important; }
+    html.dark .bg-surface { background-color: #0B0F17 !important; }
+    html.dark .bg-surface-container-high { background-color: #1b2430 !important; }
+    html.dark .text-on-surface { color: #E8EAED !important; }
+    html.dark .text-on-surface-variant { color: #A8B0BC !important; }
+    html.dark .text-outline-variant { color: #6B7685 !important; }
+    html.dark .border-outline-variant { border-color: #2A3441 !important; }
+    html.dark input::placeholder { color: #6B7685 !important; }
+    html.dark .glass { background: rgba(18,24,33,0.78); border-color: rgba(255,255,255,0.08); }
+    html.dark .shadow-glow { box-shadow: 0 4px 40px rgba(0,0,0,0.25); }
+    html.dark #themeToggleBtn { background-color: rgba(27,36,48,0.85); border-color: rgba(42,52,65,0.6); color: #E8EAED; }
 </style>
 </head>
-<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed">
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed transition-colors duration-300">
+  <button id="themeToggleBtn" type="button" aria-label="Toggle dark mode" class="fixed top-4 right-4 z-50 p-2.5 rounded-full bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/40 text-on-surface shadow-sm hover:bg-surface-container-high transition-colors">
+    <span id="themeIconMoon" class="material-symbols-outlined text-xl">dark_mode</span>
+    <span id="themeIconSun" class="material-symbols-outlined text-xl hidden">light_mode</span>
+  </button>
 <!-- Suppress TopNavBar and Footer for Linear/Transactional Signup flow as per instructions -->
 <main class="flex-grow flex w-full min-h-screen">
 <!-- Left Side: Inspiring Imagery -->
@@ -286,6 +305,12 @@
 <script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 <script src="js/auth.js"></script>
+<script>
+  (function(){
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.addEventListener('click', toggleTheme);
+  })();
+</script>
 <script>
 (function () {
   // Password visibility toggles
