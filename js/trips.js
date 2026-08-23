@@ -506,53 +506,68 @@ function initItineraryPage() {
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
   if (heroEl) {
-    // Generate an image based on destination if available, otherwise fallback
-    const bgImage = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
-    
-    heroEl.innerHTML = `
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('${bgImage}')"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
-      <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-end gap-6">
-          <div class="text-white max-w-2xl">
-              <div class="flex items-center gap-3 mb-4">
-                  <span class="px-3 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md text-blue-100 text-xs font-semibold border border-blue-400/30">Personalized Trip</span>
-                  <span class="text-sm text-gray-200 flex items-center gap-1 font-medium">
-                      <i class="fa-regular fa-calendar text-xs"></i>
-                      ${formatDateRange(itinerary.startDate, itinerary.endDate)}
-                  </span>
-              </div>
-              <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">${itinerary.destination} Escape</h1>
-              <p class="text-lg text-gray-200 opacity-90 font-light">A curated ${itinerary.numDays}-day journey to ${itinerary.destination}.</p>
-          </div>
-          <div class="flex gap-3 shrink-0 w-full md:w-auto">
-              <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/20 transition-colors border border-white/20">
-                  <i class="fa-solid fa-share-nodes"></i>
-                  Share
-              </button>
-              <button id="saveItinBtn" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50">
-                  <i class="fa-regular fa-bookmark"></i>
-                  Save Trip
-              </button>
-          </div>
-      </div>
-    `;
-    
-    const saveBtn = document.getElementById('saveItinBtn');
-    if (saveBtn) {
-      saveBtn.addEventListener('click', () => {
-        saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
-        setTimeout(() => {
-          const newTrip = {
-            ...itinerary,
-            title: `${itinerary.destination} Trip`,
-            id: generateId(),
-            createdAt: new Date().toISOString()
-          };
-          saveTrip(newTrip);
-          showToast(`Your ${itinerary.destination} itinerary has been saved!`, 'success');
-          saveBtn.innerHTML = '✅ Saved';
-          saveBtn.classList.add('opacity-70');
-        }, 800);
+    // Start with a fallback Unsplash image while Wikipedia loads
+    const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
+
+    function renderHero(imageUrl, description) {
+      heroEl.innerHTML = `
+        <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
+        <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-end gap-6">
+            <div class="text-white max-w-2xl">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-3 py-1.5 rounded-full bg-blue-500/20 backdrop-blur-md text-blue-100 text-xs font-semibold border border-blue-400/30">Personalized Trip</span>
+                    <span class="text-sm text-gray-200 flex items-center gap-1 font-medium">
+                        <i class="fa-regular fa-calendar text-xs"></i>
+                        ${formatDateRange(itinerary.startDate, itinerary.endDate)}
+                    </span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">${itinerary.destination} Escape</h1>
+                <p class="text-lg text-gray-200 opacity-90 font-light">${description || `A curated ${itinerary.numDays}-day journey to ${itinerary.destination}.`}</p>
+            </div>
+            <div class="flex gap-3 shrink-0 w-full md:w-auto">
+                <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/20 transition-colors border border-white/20">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    Share
+                </button>
+                <button id="saveItinBtn" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50">
+                    <i class="fa-regular fa-bookmark"></i>
+                    Save Trip
+                </button>
+            </div>
+        </div>
+      `;
+
+      const saveBtn = document.getElementById('saveItinBtn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
+          setTimeout(() => {
+            const newTrip = {
+              ...itinerary,
+              title: `${itinerary.destination} Trip`,
+              id: generateId(),
+              createdAt: new Date().toISOString()
+            };
+            saveTrip(newTrip);
+            showToast(`Your ${itinerary.destination} itinerary has been saved!`, 'success');
+            saveBtn.innerHTML = '✅ Saved';
+            saveBtn.classList.add('opacity-70');
+          }, 800);
+        });
+      }
+    }
+
+    renderHero(null, null);
+
+    // Fetch richer Wikipedia image + description
+    if (typeof TripMateAPI !== 'undefined') {
+      TripMateAPI.getPlaceInfo(itinerary.destination).then(place => {
+        if (place) {
+          renderHero(place.image, place.description);
+        }
+      }).catch(err => {
+        console.warn('Wikipedia fetch failed for itinerary hero:', err);
       });
     }
   }
