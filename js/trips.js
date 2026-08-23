@@ -184,7 +184,7 @@ function renderTripCard(trip, showDelete = false, status = null) {
       ${showDelete ? `
         <div class="card-footer flex items-center justify-between px-5 pb-5">
           <a href="itinerary.html?id=${trip.id}" class="btn btn-ghost btn-sm">View</a>
-          <button class="btn btn-ghost btn-sm delete-trip text-error" data-id="${trip.id}">Delete</button>
+          <button class="btn btn-ghost btn-sm delete-trip text-error font-semibold" data-id="${trip.id}">Delete</button>
         </div>
       ` : ''}
     </div>
