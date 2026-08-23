@@ -147,8 +147,21 @@ function renderSavedTripsTab(user) {
   }
 
   container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    ${trips.map(trip => renderTripCard(trip)).join('')}
+    ${trips.map(trip => renderTripCard(trip, true)).join('')}
   </div>`;
+
+  // Attach delete handlers for saved trips
+  container.querySelectorAll('.delete-trip').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm('Delete this saved trip?')) {
+        removeSavedTrip(user.id, btn.dataset.id);
+        deleteTrip(btn.dataset.id);
+        renderSavedTripsTab(user);
+        showToast('Saved trip deleted', 'default');
+      }
+    });
+  });
 }
 
 function renderTripCard(trip, showDelete = false, status = null) {
