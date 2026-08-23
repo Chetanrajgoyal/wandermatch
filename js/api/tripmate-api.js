@@ -6,7 +6,7 @@
    ============================================ */
 
 // PASTE YOUR FREE OPENTRIPMAP KEY HERE (https://dev.opentripmap.org/product)
-const OPENTRIPMAP_KEY = "YOUR_API_KEY_HERE";
+const OPENTRIPMAP_KEY = "5ae2e3f221c38a28845f05b65ad5c69491fc9e193e19e64eaaf88418";
 
 const TripMateAPI = {
   /* ---------- 1. PLACE INFO (description + hero image) ---------- */

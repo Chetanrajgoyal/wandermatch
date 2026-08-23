@@ -624,7 +624,38 @@ function initItineraryPage() {
     `).join('');
   }
 
-  // 3. Budget
+  // 3. Accommodations
+  const accommodationsSection = document.getElementById('itinAccommodations');
+  if (accommodationsSection && itinerary.accommodations && itinerary.accommodations.length > 0) {
+    accommodationsSection.innerHTML = `
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Where You'll Stay</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        ${itinerary.accommodations.map(acc => `
+          <div class="glass-panel rounded-3xl overflow-hidden group">
+            <div class="h-48 relative overflow-hidden bg-gradient-to-br from-blue-100 to-cream flex items-center justify-center">
+              <span class="material-symbols-outlined text-6xl text-primary/30">hotel</span>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-lg font-bold text-gray-900">${acc.name}</h3>
+                <span class="text-brand-blue font-bold text-sm">₹${acc.costPerNight}<span class="text-gray-400 font-normal">/nt</span></span>
+              </div>
+              <p class="text-gray-500 text-sm mb-4">${acc.type}</p>
+              <p class="text-gray-600 text-sm mb-4">${acc.description || 'A comfortable stay tailored to your trip.'}</p>
+              <div class="flex flex-wrap gap-2 mb-4">
+                <span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">AI Suggested</span>
+              </div>
+              <button class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors">View Details</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // 4. Budget
   const budgetEl = document.getElementById('itinBudget');
   if (budgetEl && itinerary.budgetBreakdown) {
     const b = itinerary.budgetBreakdown;
