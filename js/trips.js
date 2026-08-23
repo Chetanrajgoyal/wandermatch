@@ -512,6 +512,15 @@ function initItineraryPage() {
   }
 }
 
+function deepClone(obj) {
+  try {
+    return JSON.parse(JSON.stringify(obj));
+  } catch (e) {
+    console.warn('[Itinerary] deepClone failed:', e);
+    return obj;
+  }
+}
+
 function runInitItineraryPage() {
   const params = new URLSearchParams(window.location.search);
   const tripId = params.get('id');
@@ -523,8 +532,8 @@ function runInitItineraryPage() {
     const saved = getTripById(tripId);
     const isValidSaved = saved && saved.destination && (Array.isArray(saved.itinerary) && saved.itinerary.length > 0);
     if (isValidSaved) {
-      console.log('[Itinerary] Loading saved trip:', saved.id, saved.destination);
-      renderLoadedItinerary(saved);
+      console.log('[Itinerary] Loading saved trip:', saved.id, saved.destination, 'days:', saved.itinerary.length);
+      renderLoadedItinerary(deepClone(saved));
       return;
     }
     // Saved trip missing or corrupt — show clear error instead of falling back
@@ -556,8 +565,8 @@ function runInitItineraryPage() {
     return;
   }
 
-  console.log('[Itinerary] Loading generated trip:', itinerary.destination);
-  renderLoadedItinerary(itinerary);
+  console.log('[Itinerary] Loading generated trip:', itinerary.destination, 'days:', (itinerary.itinerary || []).length);
+  renderLoadedItinerary(deepClone(itinerary));
 }
 
 function renderLoadedItinerary(itinerary) {
@@ -645,10 +654,12 @@ function renderLoadedItinerary(itinerary) {
             return;
           }
 
+          if (saveBtn.dataset.saving === 'true') return;
+          saveBtn.dataset.saving = 'true';
           saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
           setTimeout(() => {
             const newTrip = {
-              ...itinerary,
+              ...deepClone(itinerary),
               title: `${itinerary.destination} Trip`,
               id: generateId(),
               createdBy: currentUser.id,
