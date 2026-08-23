@@ -365,8 +365,11 @@
 
     function renderFallback() {
       grid.innerHTML = CURATED.map((dest, i) => renderCard(dest, i === 0)).join('');
-      wireCardClicks(() => {
-        window.location.href = 'plan-trip.html';
+      wireCardClicks((e) => {
+        const card = e.currentTarget;
+        const idx = Array.from(grid.children).indexOf(card);
+        const dest = CURATED[idx];
+        if (dest) generateHomeTrip(dest.name, null, null, e);
       });
     }
 
