@@ -307,8 +307,9 @@
       } else {
         savedEmpty.classList.add('hidden');
         savedGrid.innerHTML = savedTrips.map((trip, idx) => {
-          // Embed full trip data into the URL so the page never needs storage lookup
-          const encoded = encodeURIComponent(btoa(JSON.stringify(trip)));
+          // Embed full trip data into the URL so the page never needs storage lookup.
+          // Use encodeURIComponent -> btoa -> encodeURIComponent to support Unicode/emojis.
+          const encoded = encodeURIComponent(btoa(encodeURIComponent(JSON.stringify(trip))));
           return `
           <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-saved-id="${trip.id}" data-encoded-trip="${encoded}">
             <div class="relative h-48 w-full" onclick="window.location.href='saved-itinerary.html?data=' + encodeURIComponent(this.closest('[data-encoded-trip]').dataset.encodedTrip)">

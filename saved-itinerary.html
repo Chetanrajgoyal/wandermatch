@@ -97,7 +97,7 @@
   // 1. Try full trip data encoded in URL (most reliable)
   if (dataParam) {
     try {
-      trip = JSON.parse(atob(decodeURIComponent(dataParam)));
+      trip = JSON.parse(decodeURIComponent(atob(decodeURIComponent(dataParam))));
     } catch (e) {
       console.error('[SavedItinerary] URL data parse error:', e);
       trip = null;
