@@ -555,7 +555,6 @@ function runInitItineraryPage() {
     const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
 
     function renderHero(imageUrl, description) {
-      const shortDesc = (description || itinerary.placeDescription || '').slice(0, 120);
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
@@ -569,7 +568,7 @@ function runInitItineraryPage() {
                     </span>
                 </div>
                 <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">${itinerary.destination} Escape</h1>
-                <p class="text-base md:text-lg text-gray-200 opacity-90 font-light line-clamp-2">${shortDesc}</p>
+                <p class="text-base md:text-lg text-gray-200 opacity-90 font-light line-clamp-2">${(description || itinerary.placeDescription || '').slice(0, 120)}</p>
             </div>
             <div class="flex gap-3 shrink-0 w-full md:w-auto">
                 <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/20 transition-colors border border-white/20">
