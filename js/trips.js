@@ -142,11 +142,11 @@ function renderPlannedTrips(user) {
   container.querySelectorAll('.delete-trip').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (confirm('Delete this trip?')) {
+      confirmModal('This trip will be permanently removed.', () => {
         deleteTrip(btn.dataset.id);
         renderPlannedTrips(user);
         showToast('Trip deleted', 'default');
-      }
+      });
     });
   });
 }
@@ -205,11 +205,11 @@ function renderSavedTripsTab(user) {
   container.querySelectorAll('.delete-trip').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (confirm('Delete this saved trip?')) {
+      confirmModal('This saved trip will be permanently removed.', () => {
         removeSavedItinerary(btn.dataset.id);
         renderSavedTripsTab(user);
         showToast('Saved trip deleted', 'default');
-      }
+      });
     });
   });
 }

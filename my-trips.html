@@ -348,7 +348,7 @@
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const trip = savedTrips[idx];
-            if (confirm(`Delete saved trip "${trip.title || trip.destination || 'this trip'}"?`)) {
+            confirmModal(`Delete saved trip "${trip.title || trip.destination || 'this trip'}"? This cannot be undone.`, () => {
               removeSavedItinerary(trip.id);
               btn.closest('[data-saved-id]').remove();
               showToast('Saved trip removed', 'default');
@@ -356,7 +356,7 @@
                 savedGrid.classList.add('hidden');
                 savedEmpty.classList.remove('hidden');
               }
-            }
+            });
           });
         });
       }
@@ -418,7 +418,7 @@
       if (deleteBtn) {
         deleteBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (confirm(`Delete "${trip.title || trip.destination || 'this trip'}"?`)) {
+          confirmModal(`Delete "${trip.title || trip.destination || 'this trip'}"? This cannot be undone.`, () => {
             deleteTrip(trip.id);
             card.remove();
             showToast('Trip deleted', 'default');
@@ -426,7 +426,7 @@
               grid.classList.add('hidden');
               empty.classList.remove('hidden');
             }
-          }
+          });
         });
       }
     });
