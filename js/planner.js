@@ -64,7 +64,7 @@ async function generateItinerary(params) {
 
   if (destination.lat && destination.lon) {
     try {
-      const [weather, hotels] = await Promise.all([
+      const [weatherRaw, hotels] = await Promise.all([
         withTimeout(TripMateAPI.getWeather(destination.lat, destination.lon), 8000, 'weather').catch(e => {
           console.warn('TripMate weather failed:', e);
           return null;
@@ -74,18 +74,45 @@ async function generateItinerary(params) {
           return [];
         })
       ]);
-      weatherData = weather;
-      if (weatherData && weatherData.weathercode !== undefined) {
-        weatherData.current = {
-          temp: weatherData.temperature,
-          condition: TripMateAPI.weatherCodeToText(weatherData.weathercode),
-          weather_code: weatherData.weathercode
+
+      // Normalize TripMate/Open-Meteo weather into stable shape used by the UI
+      if (weatherRaw) {
+        const current = weatherRaw.current_weather || weatherRaw;
+        const code = current.weathercode !== undefined ? current.weathercode : current.weather_code;
+        weatherData = {
+          current: {
+            temp: current.temperature !== undefined ? current.temperature : (current.temp || null),
+            condition: TripMateAPI.weatherCodeToText(code),
+            icon: getWeatherIcon(code),
+            wind: current.windspeed !== undefined ? current.windspeed : (current.wind || null),
+            weather_code: code
+          },
+          daily: (weatherRaw.daily || []).time ? weatherRaw.daily.time.map((date, i) => ({
+            date,
+            maxTemp: Math.round(weatherRaw.daily.temperature_2m_max[i]),
+            minTemp: Math.round(weatherRaw.daily.temperature_2m_min[i]),
+            rainProb: weatherRaw.daily.precipitation_probability_max[i],
+            condition: TripMateAPI.weatherCodeToText(weatherRaw.daily.weather_code[i]),
+            icon: getWeatherIcon(weatherRaw.daily.weather_code[i])
+          })) : []
         };
       }
       realHotels = hotels;
     } catch (e) {
       console.warn('Location data fetch failed:', e);
     }
+  }
+
+  function getWeatherIcon(code) {
+    if (code === 0) return '☀️';
+    if (code >= 1 && code <= 2) return '⛅';
+    if (code === 3) return '☁️';
+    if (code >= 45 && code <= 48) return '🌫️';
+    if (code >= 51 && code <= 65) return '🌧️';
+    if (code >= 71 && code <= 75) return '❄️';
+    if (code >= 80 && code <= 82) return '🌦️';
+    if (code >= 95) return '⛈️';
+    return '🌡️';
   }
 
   // If TripMate has no image, ask Gemini for one (with a short timeout)

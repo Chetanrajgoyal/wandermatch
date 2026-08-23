@@ -549,12 +549,24 @@ function runInitItineraryPage() {
 
   const user = getCurrentUser();
 
+  // Helper: detect duplicate saved trips
+  function hasSimilarTrip(userId, destination, startDate, endDate) {
+    const trips = getUserTrips(userId);
+    return trips.some(t =>
+      t.destination === destination &&
+      t.startDate === startDate &&
+      t.endDate === endDate
+    );
+  }
+
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
   if (heroEl) {
     const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
 
     function renderHero(imageUrl, description) {
+      const alreadySaved = user && hasSimilarTrip(user.id, itinerary.destination, itinerary.startDate, itinerary.endDate);
+      const saveBtnText = alreadySaved ? 'Already Saved' : 'Save Trip';
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
@@ -575,20 +587,28 @@ function runInitItineraryPage() {
                     <i class="fa-solid fa-share-nodes"></i>
                     Share
                 </button>
-                <button id="saveItinBtn" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50">
+                <button id="saveItinBtn" ${alreadySaved ? 'disabled' : ''} class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50 ${alreadySaved ? 'opacity-70 cursor-not-allowed' : ''}">
                     <i class="fa-regular fa-bookmark"></i>
-                    Save Trip
+                    ${saveBtnText}
                 </button>
             </div>
         </div>
       `;
 
       const saveBtn = document.getElementById('saveItinBtn');
-      if (saveBtn) {
+      if (saveBtn && !alreadySaved) {
         saveBtn.addEventListener('click', () => {
-          const user = getCurrentUser();
-          if (!user) {
+          const currentUser = getCurrentUser();
+          if (!currentUser) {
             showToast('Please log in to save your trip.', 'error');
+            return;
+          }
+
+          if (hasSimilarTrip(currentUser.id, itinerary.destination, itinerary.startDate, itinerary.endDate)) {
+            showToast(`You already have a ${itinerary.destination} trip for these dates.`, 'default');
+            saveBtn.innerHTML = 'Already Saved';
+            saveBtn.disabled = true;
+            saveBtn.classList.add('opacity-70', 'cursor-not-allowed');
             return;
           }
 
@@ -598,11 +618,11 @@ function runInitItineraryPage() {
               ...itinerary,
               title: `${itinerary.destination} Trip`,
               id: generateId(),
-              createdBy: user.id,
+              createdBy: currentUser.id,
               createdAt: new Date().toISOString()
             };
-            saveTrip(newTrip);
-            saveTripToUser(user.id, newTrip.id);
+            const saved = saveTrip(newTrip);
+            saveTripToUser(currentUser.id, saved.id);
             showToast(`Your ${itinerary.destination} trip has been saved!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');
@@ -768,19 +788,106 @@ function runInitItineraryPage() {
   // 5. Weather
   const weatherEl = document.getElementById('itinWeather');
   if (weatherEl) {
-    const w = itinerary.weather.current || {};
-    const daily = (itinerary.weather.daily && itinerary.weather.daily[0]) || {};
-    weatherEl.innerHTML = `
-        <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-brand-blue text-3xl mb-2">
-            ${w.icon || '☀️'}
-        </div>
-        <h3 class="font-bold text-gray-900 text-lg">Weather Outlook</h3>
-        <p class="text-gray-600 text-sm">
-            Current conditions are ${w.temp || '—'}°C and ${w.condition || 'clear'}.
-            ${daily.rainProb !== undefined ? `Expect a ${daily.rainProb}% chance of rain` : 'Enjoy your stay'}
-            ${w.wind !== undefined ? `with winds around ${w.wind} km/h.` : '.'}
-        </p>
-    `;
+    renderWeatherCard(weatherEl, itinerary.weather);
+
+    // Refresh weather from TripMate if coordinates are available
+    if (itinerary.lat && itinerary.lon && typeof TripMateAPI !== 'undefined') {
+      Promise.all([
+        TripMateAPI.getWeather(itinerary.lat, itinerary.lon).catch(() => null),
+        TripMateAPI.getSunTimes(itinerary.lat, itinerary.lon).catch(() => null)
+      ]).then(([weatherRaw, sun]) => {
+        let normalized = null;
+        if (weatherRaw) {
+          const current = weatherRaw.current_weather || weatherRaw;
+          const code = current.weathercode !== undefined ? current.weathercode : current.weather_code;
+          normalized = {
+            current: {
+              temp: current.temperature !== undefined ? current.temperature : (current.temp || null),
+              condition: TripMateAPI.weatherCodeToText(code),
+              icon: getWeatherIcon(code),
+              wind: current.windspeed !== undefined ? current.windspeed : (current.wind || null),
+              weather_code: code
+            },
+            daily: (weatherRaw.daily || []).time ? weatherRaw.daily.time.map((date, i) => ({
+              date,
+              maxTemp: Math.round(weatherRaw.daily.temperature_2m_max[i]),
+              minTemp: Math.round(weatherRaw.daily.temperature_2m_min[i]),
+              rainProb: weatherRaw.daily.precipitation_probability_max[i],
+              condition: TripMateAPI.weatherCodeToText(weatherRaw.daily.weather_code[i]),
+              icon: getWeatherIcon(weatherRaw.daily.weather_code[i])
+            })) : []
+          };
+        }
+        if (normalized) {
+          itinerary.weather = normalized;
+          renderWeatherCard(weatherEl, normalized, sun);
+        } else if (sun) {
+          renderWeatherCard(weatherEl, itinerary.weather, sun);
+        }
+      }).catch(err => {
+        console.warn('Failed to refresh weather:', err);
+      });
+    }
   }
+
+  // 6. Destination Gallery (TripMate scenic images)
+  const essentialsSection = document.querySelector('#itinWeather')?.closest('.grid');
+  if (essentialsSection && typeof TripMateAPI !== 'undefined') {
+    TripMateAPI.getMultipleImages(itinerary.destination).then(urls => {
+      if (urls && urls.length > 0) {
+        const gallery = document.createElement('div');
+        gallery.className = 'md:col-span-3 bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col gap-4 mt-2';
+        gallery.innerHTML = `
+          <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">photo_library</span>
+            ${itinerary.destination} Gallery
+          </h3>
+          <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+            ${urls.slice(0, 6).map(url => `
+              <div class="shrink-0 w-48 h-32 rounded-2xl overflow-hidden shadow-sm">
+                <img src="${url}" alt="${itinerary.destination}" class="w-full h-full object-cover hover:scale-105 transition duration-500" loading="lazy">
+              </div>
+            `).join('')}
+          </div>
+        `;
+        essentialsSection.appendChild(gallery);
+      }
+    }).catch(err => {
+      console.warn('Gallery fetch failed:', err);
+    });
+  }
+}
+
+function getWeatherIcon(code) {
+  if (code === 0) return '☀️';
+  if (code >= 1 && code <= 2) return '⛅';
+  if (code === 3) return '☁️';
+  if (code >= 45 && code <= 48) return '🌫️';
+  if (code >= 51 && code <= 65) return '🌧️';
+  if (code >= 71 && code <= 75) return '❄️';
+  if (code >= 80 && code <= 82) return '🌦️';
+  if (code >= 95) return '⛈️';
+  return '🌡️';
+}
+
+function renderWeatherCard(el, weather, sun = null) {
+  const w = weather && weather.current ? weather.current : {};
+  const daily = (weather && weather.daily && weather.daily[0]) || {};
+  el.innerHTML = `
+      <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-brand-blue text-3xl mb-2">
+          ${w.icon || '☀️'}
+      </div>
+      <h3 class="font-bold text-gray-900 text-lg">Weather Outlook</h3>
+      <p class="text-gray-600 text-sm">
+          Current conditions are ${w.temp || '—'}°C and ${w.condition || 'clear'}.
+          ${daily.rainProb !== undefined ? `Expect a ${daily.rainProb}% chance of rain` : 'Enjoy your stay'}
+          ${w.wind !== undefined ? `with winds around ${w.wind} km/h.` : '.'}
+      </p>
+      ${sun ? `
+      <div class="flex items-center gap-4 text-xs text-gray-500 pt-2 border-t border-gray-100 mt-2">
+          <span class="flex items-center gap-1"><i class="fa-solid fa-sun text-orange-400"></i> Sunrise ${sun.sunrise}</span>
+          <span class="flex items-center gap-1"><i class="fa-solid fa-moon text-slate-400"></i> Sunset ${sun.sunset}</span>
+      </div>` : ''}
+  `;
 }
 

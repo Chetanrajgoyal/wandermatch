@@ -114,6 +114,19 @@ function saveTrip(trip) {
   const trips = getTrips();
   trip.id = trip.id || generateId();
   trip.createdAt = trip.createdAt || new Date().toISOString();
+
+  // Prevent duplicate trips for the same user/destination/dates
+  const duplicate = trips.find(t =>
+    t.createdBy === trip.createdBy &&
+    t.destination === trip.destination &&
+    t.startDate === trip.startDate &&
+    t.endDate === trip.endDate
+  );
+  if (duplicate) {
+    console.warn('Duplicate trip detected, returning existing trip:', duplicate.id);
+    return duplicate;
+  }
+
   trips.push(trip);
   setStore(STORAGE_KEYS.TRIPS, trips);
   return trip;
