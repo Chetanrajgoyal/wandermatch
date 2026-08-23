@@ -692,7 +692,11 @@ function renderLoadedItinerary(itinerary) {
     const fallbackBg = `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80`;
 
     function renderHero(imageUrl, description) {
-      const saveBtnText = 'Save Trip';
+      const currentUser = getCurrentUser();
+      const alreadySaved = currentUser && getSavedTrips(currentUser.id).some(t =>
+        t.destination === itinerary.destination && t.startDate === itinerary.startDate
+      );
+      const saveBtnText = alreadySaved ? 'Already Saved' : 'Save Trip';
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
@@ -713,7 +717,7 @@ function renderLoadedItinerary(itinerary) {
                     <i class="fa-solid fa-share-nodes"></i>
                     Share
                 </button>
-                <button id="saveItinBtn" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50">
+                <button id="saveItinBtn" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/80 transition-colors shadow-lg shadow-brand-blue/30 border border-brand-blue/50" ${alreadySaved ? 'disabled' : ''}>
                     <i class="fa-regular fa-bookmark"></i>
                     ${saveBtnText}
                 </button>
@@ -723,12 +727,16 @@ function renderLoadedItinerary(itinerary) {
 
       const saveBtn = document.getElementById('saveItinBtn');
       if (saveBtn) {
+        if (alreadySaved) {
+          saveBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        }
         saveBtn.addEventListener('click', () => {
           const currentUser = getCurrentUser();
           if (!currentUser) {
             showToast('Please log in to save your trip.', 'error');
             return;
           }
+          if (alreadySaved) return;
 
           // Guard: don't save if itinerary data is incomplete
           if (!itinerary.destination || !itinerary.startDate || !itinerary.endDate ||
