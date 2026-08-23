@@ -482,8 +482,8 @@ function initPlanTrip() {
       }, 500);
 
     } catch (err) {
-      console.error(err);
-      showToast('Could not generate itinerary. Please try again.', 'error');
+      console.error('Itinerary generation error:', err);
+      showToast('Could not generate itinerary: ' + (err && err.message ? err.message : 'Unknown error'), 'error');
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
     }
@@ -494,6 +494,25 @@ function initPlanTrip() {
    ITINERARY PAGE
    ========================================== */
 function initItineraryPage() {
+  try {
+    runInitItineraryPage();
+  } catch (err) {
+    console.error('Itinerary page crashed:', err);
+    const main = document.querySelector('main');
+    if (main) {
+      main.innerHTML = `
+        <div class="max-w-xl mx-auto mt-20 p-8 glass-panel rounded-3xl text-center">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h2>
+          <p class="text-gray-600 mb-6">We couldn't display this itinerary. Please try planning the trip again.</p>
+          <p class="text-xs text-gray-400 mb-6 font-mono">${String(err && err.message ? err.message : err).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</p>
+          <a href="plan-trip.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">Plan a New Trip</a>
+        </div>
+      `;
+    }
+  }
+}
+
+function runInitItineraryPage() {
   let itinerary = null;
 
   // 1. Try generated itinerary from plan-trip flow
