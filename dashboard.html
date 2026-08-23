@@ -367,7 +367,7 @@
       `;
     } else {
       grid.innerHTML = displayTrips.map(trip => `
-        <div class="glass-panel rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-transform duration-300" onclick="window.location.href='trip-details.html?id=${trip.id}'">
+        <div class="glass-panel rounded-2xl overflow-hidden group cursor-pointer hover:-translate-y-1 transition-transform duration-300" onclick="window.location.href='itinerary.html?id=${trip.id}'">
           <div class="h-48 w-full relative">
             <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'assets/images/hero-mountain.jpg'}"/>
             <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-label-sm text-label-sm text-primary shadow-sm">

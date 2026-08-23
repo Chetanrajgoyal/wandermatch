@@ -497,9 +497,11 @@ function initItineraryPage() {
   let itinerary = null;
 
   // 1. Try generated itinerary from plan-trip flow
-  const generated = sessionStorage.getItem('wm_generated_itinerary');
-  if (generated) {
-    itinerary = JSON.parse(generated);
+  try {
+    const generated = sessionStorage.getItem('wm_generated_itinerary');
+    if (generated) itinerary = JSON.parse(generated);
+  } catch (e) {
+    console.warn('Failed to parse generated itinerary:', e);
   }
 
   // 2. If none, try loading a saved trip by ID from URL
@@ -508,9 +510,7 @@ function initItineraryPage() {
     const tripId = params.get('id');
     if (tripId) {
       const saved = getTripById(tripId);
-      if (saved) {
-        itinerary = saved;
-      }
+      if (saved) itinerary = saved;
     }
   }
 
@@ -518,17 +518,25 @@ function initItineraryPage() {
     window.location.href = 'plan-trip.html';
     return;
   }
+
+  // Normalize fields so downstream code doesn't crash on missing data
+  itinerary.destination = itinerary.destination || 'Your Destination';
+  itinerary.startDate = itinerary.startDate || new Date().toISOString();
+  itinerary.endDate = itinerary.endDate || new Date().toISOString();
+  itinerary.itinerary = Array.isArray(itinerary.itinerary) ? itinerary.itinerary : [];
+  itinerary.accommodations = Array.isArray(itinerary.accommodations) ? itinerary.accommodations : [];
+  itinerary.budgetBreakdown = itinerary.budgetBreakdown || { stay: 0, food: 0, transport: 0, activities: 0, total: 0 };
+  itinerary.weather = itinerary.weather || {};
+
   const user = getCurrentUser();
 
   // 1. Hero Section
   const heroEl = document.getElementById('itinHero');
   if (heroEl) {
-    // Start with a fallback Unsplash image while Wikipedia loads
     const fallbackBg = `https://source.unsplash.com/1600x900/?${encodeURIComponent(itinerary.destination)},travel,city`;
 
-    const shortDesc = (description || itinerary.placeDescription || '').slice(0, 120);
-
     function renderHero(imageUrl, description) {
+      const shortDesc = (description || itinerary.placeDescription || '').slice(0, 120);
       heroEl.innerHTML = `
         <div id="itinHeroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('${imageUrl || fallbackBg}')"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
@@ -587,12 +595,9 @@ function initItineraryPage() {
 
     renderHero(null, null);
 
-    // Fetch richer Wikipedia image + description
     if (typeof TripMateAPI !== 'undefined') {
       TripMateAPI.getPlaceInfo(itinerary.destination).then(place => {
-        if (place) {
-          renderHero(place.image, place.description);
-        }
+        if (place) renderHero(place.image, place.description);
       }).catch(err => {
         console.warn('Wikipedia fetch failed for itinerary hero:', err);
       });
@@ -602,74 +607,74 @@ function initItineraryPage() {
   // 2. Timeline
   const timelineEl = document.getElementById('itinTimeline');
   if (timelineEl) {
-    // Array of tailwind colors for variation
     const colors = ['blue-500', 'green-500', 'orange-400', 'purple-500', 'pink-500'];
     const textColors = ['blue-600', 'green-600', 'orange-500', 'purple-600', 'pink-600'];
-    const bgColors = ['blue-100', 'green-100', 'orange-100', 'purple-100', 'pink-100'];
 
-    timelineEl.innerHTML = itinerary.itinerary.map((day, dIdx) => `
-      <div class="glass-panel rounded-3xl p-8 flex flex-col gap-6">
-          <div class="flex items-start justify-between border-b border-gray-200/50 pb-6">
-              <div>
-                  <div class="flex items-center gap-4 mb-2">
-                      <span class="w-10 h-10 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center font-bold text-lg">${day.day}</span>
-                      <h3 class="text-2xl font-bold text-gray-900">${day.title || `Day ${day.day}`}</h3>
-                  </div>
-                  <p class="text-gray-600 ml-14">Discovering ${itinerary.destination}'s highlights.</p>
-              </div>
-              <span class="px-4 py-1.5 bg-gray-100 rounded-full text-xs font-semibold text-gray-600">${itinerary.destination}</span>
-          </div>
-          <div class="flex flex-col gap-8 relative ml-5 pl-8 border-l-2 border-blue-200 mt-2">
-              ${(day.activities || []).map((act, aIdx) => {
-                  const cIdx = aIdx % colors.length;
-                  const cBorder = `border-${colors[cIdx]}`;
-                  const cText = `text-${colors[cIdx]}`;
-                  const cTime = `text-${textColors[cIdx]}`;
-                  const cBg = `bg-${bgColors[cIdx]}`;
-                  
-                  return `
-                  <div class="relative">
-                      <div class="absolute -left-[43px] top-1 w-8 h-8 rounded-full bg-white border-2 ${cBorder} flex items-center justify-center">
-                          <span class="text-xs ${cText}">${act.icon || '📍'}</span>
-                      </div>
-                      <div class="flex flex-col md:flex-row gap-6 md:items-start">
-                          <div class="w-24 shrink-0 text-sm font-bold ${cTime} mt-1">${act.time || 'TBD'}</div>
-                          <div class="flex-1 bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                              <h4 class="font-bold text-gray-900 text-lg mb-2">${act.name}</h4>
-                              <p class="text-gray-600 mb-4 text-sm leading-relaxed">${act.description || ''}</p>
-                              ${act.cost ? `
-                              <div class="flex gap-2">
-                                  <span class="px-3 py-1.5 bg-gray-50 rounded-lg text-xs font-medium text-gray-600 flex items-center gap-1.5 border border-gray-100"><i class="fa-solid fa-tag text-gray-400"></i> ${formatBudget(act.cost)}</span>
-                              </div>` : ''}
-                          </div>
-                      </div>
-                  </div>
-                  `;
-              }).join('')}
-          </div>
-      </div>
-    `).join('');
+    if (itinerary.itinerary.length === 0) {
+      timelineEl.innerHTML = `<p class="text-gray-500 text-center py-8">No day-by-day plan available.</p>`;
+    } else {
+      timelineEl.innerHTML = itinerary.itinerary.map((day) => `
+        <div class="glass-panel rounded-3xl p-8 flex flex-col gap-6">
+            <div class="flex items-start justify-between border-b border-gray-200/50 pb-6">
+                <div>
+                    <div class="flex items-center gap-4 mb-2">
+                        <span class="w-10 h-10 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center font-bold text-lg">${day.day || 1}</span>
+                        <h3 class="text-2xl font-bold text-gray-900">${day.title || `Day ${day.day || 1}`}</h3>
+                    </div>
+                    <p class="text-gray-600 ml-14">Discovering ${itinerary.destination}'s highlights.</p>
+                </div>
+                <span class="px-4 py-1.5 bg-gray-100 rounded-full text-xs font-semibold text-gray-600">${itinerary.destination}</span>
+            </div>
+            <div class="flex flex-col gap-8 relative ml-5 pl-8 border-l-2 border-blue-200 mt-2">
+                ${(day.activities || []).map((act, aIdx) => {
+                    const cIdx = aIdx % colors.length;
+                    const cBorder = `border-${colors[cIdx]}`;
+                    const cText = `text-${colors[cIdx]}`;
+                    const cTime = `text-${textColors[cIdx]}`;
+                    return `
+                    <div class="relative">
+                        <div class="absolute -left-[43px] top-1 w-8 h-8 rounded-full bg-white border-2 ${cBorder} flex items-center justify-center">
+                            <span class="text-xs ${cText}">${act.icon || '📍'}</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-6 md:items-start">
+                            <div class="w-24 shrink-0 text-sm font-bold ${cTime} mt-1">${act.time || 'TBD'}</div>
+                            <div class="flex-1 bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-gray-900 text-lg mb-2">${act.name || 'Activity'}</h4>
+                                <p class="text-gray-600 mb-4 text-sm leading-relaxed">${act.description || ''}</p>
+                                ${act.cost ? `
+                                <div class="flex gap-2">
+                                    <span class="px-3 py-1.5 bg-gray-50 rounded-lg text-xs font-medium text-gray-600 flex items-center gap-1.5 border border-gray-100"><i class="fa-solid fa-tag text-gray-400"></i> ${formatBudget(act.cost)}</span>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+      `).join('');
+    }
   }
 
   // 3. Accommodations
   const accommodationsSection = document.getElementById('itinAccommodations');
-  if (accommodationsSection && itinerary.accommodations && itinerary.accommodations.length > 0) {
+  if (accommodationsSection && itinerary.accommodations.length > 0) {
     accommodationsSection.innerHTML = `
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Where You'll Stay</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="accommodationsGrid">
         ${itinerary.accommodations.map((acc, idx) => `
-          <div class="glass-panel rounded-3xl overflow-hidden group" data-acc-name="${acc.name}" data-acc-idx="${idx}">
+          <div class="glass-panel rounded-3xl overflow-hidden group" data-acc-name="${acc.name || 'Stay'}" data-acc-idx="${idx}">
             <div class="h-48 relative overflow-hidden bg-gradient-to-br from-blue-100 to-cream flex items-center justify-center acc-image-placeholder">
               <span class="material-symbols-outlined text-6xl text-primary/30">hotel</span>
             </div>
             <div class="p-6">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="text-lg font-bold text-gray-900">${acc.name}</h3>
-                <span class="text-brand-blue font-bold text-sm">₹${acc.costPerNight}<span class="text-gray-400 font-normal">/nt</span></span>
+                <h3 class="text-lg font-bold text-gray-900">${acc.name || 'Stay'}</h3>
+                <span class="text-brand-blue font-bold text-sm">₹${acc.costPerNight || 0}<span class="text-gray-400 font-normal">/nt</span></span>
               </div>
-              <p class="text-gray-500 text-sm mb-4">${acc.type}${acc.source === 'real' ? ' · Verified lodging' : ' · AI Suggested'}</p>
+              <p class="text-gray-500 text-sm mb-4">${acc.type || 'Mid-Range'}${acc.source === 'real' ? ' · Verified lodging' : ' · AI Suggested'}</p>
               <p class="text-gray-600 text-sm mb-4">${acc.description || 'A comfortable stay tailored to your trip.'}</p>
               <div class="flex flex-wrap gap-2 mb-4">
                 ${acc.lat && acc.lon ? `<span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Near ${itinerary.destination}</span>` : ''}
@@ -682,16 +687,15 @@ function initItineraryPage() {
       </div>
     `;
 
-    // Try to load images for each accommodation from Wikipedia
     if (typeof TripMateAPI !== 'undefined') {
       itinerary.accommodations.forEach((acc, idx) => {
-        TripMateAPI.searchForImage(`${acc.name} ${itinerary.destination} hotel`).then(url => {
+        TripMateAPI.searchForImage(`${acc.name || ''} ${itinerary.destination} hotel`).then(url => {
           if (url) {
             const card = accommodationsSection.querySelector(`[data-acc-idx="${idx}"]`);
             if (card) {
               const placeholder = card.querySelector('.acc-image-placeholder');
               if (placeholder) {
-                placeholder.innerHTML = `<img src="${url}" alt="${acc.name}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" />`;
+                placeholder.innerHTML = `<img src="${url}" alt="${acc.name || 'Stay'}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" />`;
                 placeholder.classList.remove('bg-gradient-to-br', 'from-blue-100', 'to-cream', 'flex', 'items-center', 'justify-center');
               }
             }
@@ -703,19 +707,18 @@ function initItineraryPage() {
 
   // 4. Budget
   const budgetEl = document.getElementById('itinBudget');
-  if (budgetEl && itinerary.budgetBreakdown) {
+  if (budgetEl) {
     const b = itinerary.budgetBreakdown;
-    // Calculate percentages
     const tot = b.total || 1;
-    const pStay = Math.round((b.stay / tot) * 100) || 50;
-    const pFood = Math.round((b.food / tot) * 100) || 25;
-    const pTrans = Math.round((b.transport / tot) * 100) || 15;
-    const pAct = Math.round((b.activities / tot) * 100) || 10;
-    
+    const pStay = Math.round((b.stay / tot) * 100) || 0;
+    const pFood = Math.round((b.food / tot) * 100) || 0;
+    const pTrans = Math.round((b.transport / tot) * 100) || 0;
+    const pAct = Math.round((b.activities / tot) * 100) || 0;
+
     budgetEl.innerHTML = `
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold text-gray-900">Budget Estimate</h3>
-            <span class="text-2xl font-bold text-brand-blue">₹${b.total}</span>
+            <span class="text-2xl font-bold text-brand-blue">₹${b.total || 0}</span>
         </div>
         <div class="flex h-3 w-full rounded-full overflow-hidden mb-6">
             <div class="bg-brand-blue" style="width: ${pStay}%"></div>
@@ -725,37 +728,29 @@ function initItineraryPage() {
         </div>
         <ul class="space-y-4">
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700">
-                    <span class="w-3 h-3 rounded-full bg-brand-blue"></span> Stay
-                </div>
-                <span class="font-bold text-gray-900">₹${b.stay}</span>
+                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-brand-blue"></span> Stay</div>
+                <span class="font-bold text-gray-900">₹${b.stay || 0}</span>
             </li>
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700">
-                    <span class="w-3 h-3 rounded-full bg-orange-400"></span> Food &amp; Dining
-                </div>
-                <span class="font-bold text-gray-900">₹${b.food}</span>
+                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-orange-400"></span> Food &amp; Dining</div>
+                <span class="font-bold text-gray-900">₹${b.food || 0}</span>
             </li>
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700">
-                    <span class="w-3 h-3 rounded-full bg-green-400"></span> Transportation
-                </div>
-                <span class="font-bold text-gray-900">₹${b.transport}</span>
+                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-green-400"></span> Transportation</div>
+                <span class="font-bold text-gray-900">₹${b.transport || 0}</span>
             </li>
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700">
-                    <span class="w-3 h-3 rounded-full bg-purple-400"></span> Activities
-                </div>
-                <span class="font-bold text-gray-900">₹${b.activities}</span>
+                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-purple-400"></span> Activities</div>
+                <span class="font-bold text-gray-900">₹${b.activities || 0}</span>
             </li>
         </ul>
     `;
   }
 
-  // 4. Weather
+  // 5. Weather
   const weatherEl = document.getElementById('itinWeather');
-  if (weatherEl && itinerary.weather && itinerary.weather.current) {
-    const w = itinerary.weather.current;
+  if (weatherEl) {
+    const w = itinerary.weather.current || {};
     const daily = (itinerary.weather.daily && itinerary.weather.daily[0]) || {};
     weatherEl.innerHTML = `
         <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-brand-blue text-3xl mb-2">
