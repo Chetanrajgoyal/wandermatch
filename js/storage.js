@@ -180,6 +180,10 @@ function deleteTrip(tripId) {
   const trips = getTrips();
   const filtered = trips.filter(t => t.id !== tripId);
   setStore(STORAGE_KEYS.TRIPS, filtered);
+  // Also remove isolated saved itinerary if present
+  try {
+    localStorage.removeItem(`wm_saved_itinerary_${tripId}`);
+  } catch (e) {}
 }
 
 function saveTripToUser(userId, tripId) {
@@ -197,6 +201,10 @@ function removeSavedTrip(userId, tripId) {
   if (!user) return;
   const savedTrips = (user.savedTrips || []).filter(id => id !== tripId);
   updateUser(userId, { savedTrips });
+  // Also remove isolated saved itinerary if present
+  try {
+    localStorage.removeItem(`wm_saved_itinerary_${tripId}`);
+  } catch (e) {}
 }
 
 /* --- Join Request Functions --- */

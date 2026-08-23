@@ -539,13 +539,27 @@ function runInitItineraryPage() {
   const tripId = params.get('id');
 
   // STRICT: If a saved trip ID is in the URL, ONLY load that saved trip.
-  // Never fall back to a generated itinerary when ?id= is present.
+  // Load from isolated localStorage key first, fallback to wm_trips for legacy trips.
   if (tripId) {
     sessionStorage.removeItem('wm_generated_itinerary');
-    const saved = getTripById(tripId);
+
+    let saved = null;
+    let source = 'isolated';
+    try {
+      const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
+      if (isolated) saved = JSON.parse(isolated);
+    } catch (e) {
+      console.warn('[Itinerary] Failed to parse isolated saved trip:', e);
+    }
+
+    if (!saved) {
+      saved = getTripById(tripId);
+      source = 'legacy';
+    }
+
     const isValidSaved = saved && saved.destination && (Array.isArray(saved.itinerary) && saved.itinerary.length > 0);
     if (isValidSaved) {
-      console.log('[Itinerary] Loading saved trip:', saved.id, saved.destination, 'days:', saved.itinerary.length);
+      console.log(`[Itinerary] Loading saved trip (${source}):`, saved.id, saved.destination, 'days:', saved.itinerary.length);
       renderLoadedItinerary(deepClone(saved));
       return;
     }
@@ -671,19 +685,23 @@ function renderLoadedItinerary(itinerary) {
           saveBtn.dataset.saving = 'true';
           saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
           setTimeout(() => {
-            const clone = deepClone(itinerary);
-            console.log('[Save] Cloning itinerary before save. Original id:', itinerary.id, 'dest:', itinerary.destination, 'days:', (itinerary.itinerary || []).length);
-            console.log('[Save] Cloned id:', clone.id, 'dest:', clone.destination, 'days:', (clone.itinerary || []).length);
+            // ISOLATED SAVE: store a complete independent copy keyed by its own ID.
             const newTrip = {
-              ...clone,
-              title: `${clone.destination} Trip`,
+              ...deepClone(itinerary),
+              title: `${itinerary.destination} Trip`,
               id: generateId(),
               createdBy: currentUser.id,
               createdAt: new Date().toISOString()
             };
-            console.log('[Save] New trip object id:', newTrip.id, 'dest:', newTrip.destination, 'days:', (newTrip.itinerary || []).length);
+            // Store full itinerary in its own isolated localStorage key
+            try {
+              localStorage.setItem(`wm_saved_itinerary_${newTrip.id}`, JSON.stringify(newTrip));
+            } catch (e) {
+              console.error('[Save] Failed to store isolated itinerary:', e);
+            }
             const saved = saveTrip(newTrip);
             saveTripToUser(currentUser.id, saved.id);
+            console.log('[Save] Isolated saved trip:', newTrip.id, newTrip.destination, 'days:', (newTrip.itinerary || []).length);
             showToast(`Your ${newTrip.destination} trip has been saved!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');
