@@ -1556,7 +1556,16 @@ html.dark body[data-page="itinerary"] #itinTimeline .border-amber-200 {
 }
 
 /* Dashboard page specific */
-html.dark body.dashboard-page,
+html.dark body.dashboard-page {
+  background-color: #0B0F17 !important;
+}
+
+html.dark body.dashboard-page *,
+html.dark body.dashboard-page *::before,
+html.dark body.dashboard-page *::after {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 html.dark body.dashboard-page .bg-background,
 html.dark body.dashboard-page .bg-surface,
 html.dark body.dashboard-page .bg-surface-container,
@@ -1565,11 +1574,16 @@ html.dark body.dashboard-page .bg-surface-container-high,
 html.dark body.dashboard-page .bg-surface-variant,
 html.dark body.dashboard-page .bg-surface-bright,
 html.dark body.dashboard-page .bg-white,
+html.dark body.dashboard-page [class*="bg-"],
 html.dark body.dashboard-page [class*="rounded-2xl"][class*="bg-white"],
 html.dark body.dashboard-page [class*="rounded-xl"][class*="bg-white"],
 html.dark body.dashboard-page [class*="rounded-3xl"][class*="bg-white"] {
   background-color: #161B22 !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body.dashboard-page .glass-panel,
+html.dark body.dashboard-page .glass-card {
+  background: rgba(255, 255, 255, 0.05) !important;
 }
 
 html.dark body.dashboard-page,
@@ -1579,7 +1593,8 @@ html.dark body.dashboard-page h1,
 html.dark body.dashboard-page h2,
 html.dark body.dashboard-page h3,
 html.dark body.dashboard-page h4,
-html.dark body.dashboard-page p {
+html.dark body.dashboard-page p,
+html.dark body.dashboard-page span:not(.material-symbols-outlined):not([class*="text-primary"]):not([class*="text-secondary"]):not([class*="text-tertiary"]) {
   color: #F1F3F4 !important;
 }
 
@@ -1590,6 +1605,10 @@ html.dark body.dashboard-page .text-on-surface-variant {
 html.dark body.dashboard-page .text-outline,
 html.dark body.dashboard-page .text-outline-variant {
   color: #9AA0A6 !important;
+}
+
+html.dark body.dashboard-page .text-primary {
+  color: #7EB8FF !important;
 }
 
 html.dark body.dashboard-page .bg-primary-fixed,
@@ -1603,18 +1622,36 @@ html.dark body.dashboard-page .bg-tertiary-container {
 }
 
 /* About page specific — force dark backgrounds/text */
-html.dark body.about-page,
+html.dark body.about-page {
+  background-color: #0B0F17 !important;
+}
+
+html.dark body.about-page *,
+html.dark body.about-page *::before,
+html.dark body.about-page *::after {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 html.dark body.about-page .bg-background,
 html.dark body.about-page .bg-surface,
 html.dark body.about-page .bg-surface-container,
+html.dark body.about-page .bg-surface-container-low,
+html.dark body.about-page .bg-surface-container-high,
+html.dark body.about-page .bg-surface-variant,
+html.dark body.about-page .bg-surface-bright,
 html.dark body.about-page .bg-white,
 html.dark body.about-page .bg-slate-50,
 html.dark body.about-page .bg-cream,
+html.dark body.about-page [class*="bg-"],
 html.dark body.about-page [class*="rounded-2xl"][class*="bg-white"],
 html.dark body.about-page [class*="rounded-3xl"][class*="bg-white"],
 html.dark body.about-page [class*="rounded-xl"][class*="bg-white"] {
   background-color: #161B22 !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark body.about-page .glass-card,
+html.dark body.about-page .glass-panel {
+  background: rgba(255, 255, 255, 0.05) !important;
 }
 
 html.dark body.about-page,
@@ -1622,23 +1659,28 @@ html.dark body.about-page .text-slate-900,
 html.dark body.about-page .text-slate-800,
 html.dark body.about-page .text-slate-700,
 html.dark body.about-page .text-on-surface,
+html.dark body.about-page .text-on-background,
 html.dark body.about-page h1,
 html.dark body.about-page h2,
 html.dark body.about-page h3,
 html.dark body.about-page h4,
-html.dark body.about-page p {
+html.dark body.about-page h5,
+html.dark body.about-page h6,
+html.dark body.about-page p,
+html.dark body.about-page span:not(.material-symbols-outlined):not([class*="text-primary"]):not([class*="text-secondary"]):not([class*="text-tertiary"]) {
   color: #F1F3F4 !important;
 }
 
 html.dark body.about-page .text-slate-600,
 html.dark body.about-page .text-slate-500,
-html.dark body.about-page .text-on-surface-variant {
+html.dark body.about-page .text-on-surface-variant,
+html.dark body.about-page .text-outline,
+html.dark body.about-page .text-outline-variant {
   color: #BDC1C6 !important;
 }
 
-html.dark body.about-page .glass-card {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+html.dark body.about-page .text-primary {
+  color: #7EB8FF !important;
 }
 
 /* Logo white in dark mode */

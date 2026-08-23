@@ -768,18 +768,18 @@ function renderLoadedItinerary(itinerary) {
       timelineEl.innerHTML = `<p class="text-gray-500 text-center py-8">No day-by-day plan available.</p>`;
     } else {
       timelineEl.innerHTML = itinerary.itinerary.map((day) => `
-        <div class="glass-panel rounded-3xl p-8 flex flex-col gap-6">
-            <div class="flex items-start justify-between border-b border-gray-200/50 pb-6">
+        <div class="glass-panel rounded-3xl p-8 flex flex-col gap-6 dark:bg-[#161B22] dark:border-white/[0.08]">
+            <div class="flex items-start justify-between border-b border-gray-200/50 dark:border-white/[0.08] pb-6">
                 <div>
                     <div class="flex items-center gap-4 mb-2">
-                        <span class="w-10 h-10 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center font-bold text-lg">${day.day || 1}</span>
-                        <h3 class="text-2xl font-bold text-gray-900">${day.title || `Day ${day.day || 1}`}</h3>
+                        <span class="w-10 h-10 rounded-full bg-blue-100 dark:bg-[#1F2630] text-brand-blue dark:text-[#7EB8FF] flex items-center justify-center font-bold text-lg">${day.day || 1}</span>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-[#F1F3F4]">${day.title || `Day ${day.day || 1}`}</h3>
                     </div>
-                    <p class="text-gray-600 ml-14">Discovering ${itinerary.destination}'s highlights.</p>
+                    <p class="text-gray-600 dark:text-[#BDC1C6] ml-14">Discovering ${itinerary.destination}'s highlights.</p>
                 </div>
-                <span class="px-4 py-1.5 bg-gray-100 rounded-full text-xs font-semibold text-gray-600">${itinerary.destination}</span>
+                <span class="px-4 py-1.5 bg-gray-100 dark:bg-[#1F2630] rounded-full text-xs font-semibold text-gray-600 dark:text-[#BDC1C6]">${itinerary.destination}</span>
             </div>
-            <div class="flex flex-col gap-8 relative ml-5 pl-8 border-l-2 border-blue-200 mt-2">
+            <div class="flex flex-col gap-8 relative ml-5 pl-8 border-l-2 border-blue-200 dark:border-white/[0.12] mt-2">
                 ${(day.activities || []).map((act, aIdx) => {
                     const cIdx = aIdx % colors.length;
                     const cBorder = `border-${colors[cIdx]}`;
@@ -787,17 +787,17 @@ function renderLoadedItinerary(itinerary) {
                     const cTime = `text-${textColors[cIdx]}`;
                     return `
                     <div class="relative">
-                        <div class="absolute -left-[43px] top-1 w-8 h-8 rounded-full bg-white border-2 ${cBorder} flex items-center justify-center">
+                        <div class="absolute -left-[43px] top-1 w-8 h-8 rounded-full bg-white dark:bg-[#161B22] border-2 ${cBorder} flex items-center justify-center">
                             <span class="text-xs ${cText}">${act.icon || '📍'}</span>
                         </div>
                         <div class="flex flex-col md:flex-row gap-6 md:items-start">
                             <div class="w-24 shrink-0 text-sm font-bold ${cTime} mt-1">${act.time || 'TBD'}</div>
-                            <div class="flex-1 bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                                <h4 class="font-bold text-gray-900 text-lg mb-2">${act.name || 'Activity'}</h4>
-                                <p class="text-gray-600 mb-4 text-sm leading-relaxed">${act.description || ''}</p>
+                            <div class="flex-1 bg-white dark:bg-[#161B22] rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-white/[0.08] hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-gray-900 dark:text-[#F1F3F4] text-lg mb-2">${act.name || 'Activity'}</h4>
+                                <p class="text-gray-600 dark:text-[#BDC1C6] mb-4 text-sm leading-relaxed">${act.description || ''}</p>
                                 ${act.cost ? `
                                 <div class="flex gap-2">
-                                    <span class="px-3 py-1.5 bg-gray-50 rounded-lg text-xs font-medium text-gray-600 flex items-center gap-1.5 border border-gray-100"><i class="fa-solid fa-tag text-gray-400"></i> ${formatBudget(act.cost)}</span>
+                                    <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#1F2630] rounded-lg text-xs font-medium text-gray-600 dark:text-[#BDC1C6] flex items-center gap-1.5 border border-gray-100 dark:border-white/[0.08]"><i class="fa-solid fa-tag text-gray-400 dark:text-[#9AA0A6]"></i> ${formatBudget(act.cost)}</span>
                                 </div>` : ''}
                             </div>
                         </div>
@@ -819,22 +819,22 @@ function renderLoadedItinerary(itinerary) {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="accommodationsGrid">
         ${itinerary.accommodations.map((acc, idx) => `
-          <div class="glass-panel rounded-3xl overflow-hidden group" data-acc-name="${acc.name || 'Stay'}" data-acc-idx="${idx}">
-            <div class="h-48 relative overflow-hidden bg-gradient-to-br from-blue-100 to-cream flex items-center justify-center acc-image-placeholder">
-              <span class="material-symbols-outlined text-6xl text-primary/30">hotel</span>
+          <div class="glass-panel rounded-3xl overflow-hidden group dark:bg-[#161B22] dark:border-white/[0.08]" data-acc-name="${acc.name || 'Stay'}" data-acc-idx="${idx}">
+            <div class="h-48 relative overflow-hidden bg-gradient-to-br from-blue-100 to-cream dark:from-[#1F2630] dark:to-[#0B0F17] flex items-center justify-center acc-image-placeholder">
+              <span class="material-symbols-outlined text-6xl text-primary/30 dark:text-primary/50">hotel</span>
             </div>
             <div class="p-6">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="text-lg font-bold text-gray-900">${acc.name || 'Stay'}</h3>
-                <span class="text-brand-blue font-bold text-sm">₹${acc.costPerNight || 0}<span class="text-gray-400 font-normal">/nt</span></span>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-[#F1F3F4]">${acc.name || 'Stay'}</h3>
+                <span class="text-brand-blue font-bold text-sm dark:text-[#7EB8FF]">₹${acc.costPerNight || 0}<span class="text-gray-400 dark:text-[#9AA0A6] font-normal">/nt</span></span>
               </div>
-              <p class="text-gray-500 text-sm mb-4">${acc.type || 'Mid-Range'}${acc.source === 'real' ? ' · Verified lodging' : ' · AI Suggested'}</p>
-              <p class="text-gray-600 text-sm mb-4">${acc.description || 'A comfortable stay tailored to your trip.'}</p>
+              <p class="text-gray-500 dark:text-[#BDC1C6] text-sm mb-4">${acc.type || 'Mid-Range'}${acc.source === 'real' ? ' · Verified lodging' : ' · AI Suggested'}</p>
+              <p class="text-gray-600 dark:text-[#BDC1C6] text-sm mb-4">${acc.description || 'A comfortable stay tailored to your trip.'}</p>
               <div class="flex flex-wrap gap-2 mb-4">
-                ${acc.lat && acc.lon ? `<span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Near ${itinerary.destination}</span>` : ''}
-                <span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">${acc.source === 'real' ? 'Real listing' : 'AI Suggested'}</span>
+                ${acc.lat && acc.lon ? `<span class="text-xs text-gray-600 dark:text-[#BDC1C6] bg-gray-100 dark:bg-[#1F2630] px-2.5 py-1 rounded-md flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Near ${itinerary.destination}</span>` : ''}
+                <span class="text-xs text-gray-600 dark:text-[#BDC1C6] bg-gray-100 dark:bg-[#1F2630] px-2.5 py-1 rounded-md">${acc.source === 'real' ? 'Real listing' : 'AI Suggested'}</span>
               </div>
-              <button class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors">View Details</button>
+              <button class="w-full py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.12] text-gray-700 dark:text-[#F1F3F4] text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">View Details</button>
             </div>
           </div>
         `).join('')}
@@ -1014,10 +1014,11 @@ function initMapModal(itinerary) {
         ensureCoords().then(() => {
           initMap();
           initialized = true;
+          setTimeout(() => { if (map) map.invalidateSize(); }, 250);
         });
-      }, 50);
+      }, 100);
     } else if (map) {
-      setTimeout(() => map.invalidateSize(), 50);
+      setTimeout(() => map.invalidateSize(), 200);
     }
   }
 
