@@ -631,10 +631,10 @@ function initItineraryPage() {
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Where You'll Stay</h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        ${itinerary.accommodations.map(acc => `
-          <div class="glass-panel rounded-3xl overflow-hidden group">
-            <div class="h-48 relative overflow-hidden bg-gradient-to-br from-blue-100 to-cream flex items-center justify-center">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="accommodationsGrid">
+        ${itinerary.accommodations.map((acc, idx) => `
+          <div class="glass-panel rounded-3xl overflow-hidden group" data-acc-name="${acc.name}" data-acc-idx="${idx}">
+            <div class="h-48 relative overflow-hidden bg-gradient-to-br from-blue-100 to-cream flex items-center justify-center acc-image-placeholder">
               <span class="material-symbols-outlined text-6xl text-primary/30">hotel</span>
             </div>
             <div class="p-6">
@@ -642,10 +642,11 @@ function initItineraryPage() {
                 <h3 class="text-lg font-bold text-gray-900">${acc.name}</h3>
                 <span class="text-brand-blue font-bold text-sm">₹${acc.costPerNight}<span class="text-gray-400 font-normal">/nt</span></span>
               </div>
-              <p class="text-gray-500 text-sm mb-4">${acc.type}</p>
+              <p class="text-gray-500 text-sm mb-4">${acc.type}${acc.source === 'real' ? ' · Verified lodging' : ' · AI Suggested'}</p>
               <p class="text-gray-600 text-sm mb-4">${acc.description || 'A comfortable stay tailored to your trip.'}</p>
               <div class="flex flex-wrap gap-2 mb-4">
-                <span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">AI Suggested</span>
+                ${acc.lat && acc.lon ? `<span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Near ${itinerary.destination}</span>` : ''}
+                <span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">${acc.source === 'real' ? 'Real listing' : 'AI Suggested'}</span>
               </div>
               <button class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors">View Details</button>
             </div>
@@ -653,6 +654,24 @@ function initItineraryPage() {
         `).join('')}
       </div>
     `;
+
+    // Try to load images for each accommodation from Wikipedia
+    if (typeof TripMateAPI !== 'undefined') {
+      itinerary.accommodations.forEach((acc, idx) => {
+        TripMateAPI.searchForImage(`${acc.name} ${itinerary.destination} hotel`).then(url => {
+          if (url) {
+            const card = accommodationsSection.querySelector(`[data-acc-idx="${idx}"]`);
+            if (card) {
+              const placeholder = card.querySelector('.acc-image-placeholder');
+              if (placeholder) {
+                placeholder.innerHTML = `<img src="${url}" alt="${acc.name}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" />`;
+                placeholder.classList.remove('bg-gradient-to-br', 'from-blue-100', 'to-cream', 'flex', 'items-center', 'justify-center');
+              }
+            }
+          }
+        }).catch(() => {});
+      });
+    }
   }
 
   // 4. Budget

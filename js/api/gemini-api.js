@@ -89,8 +89,12 @@ const GeminiAPI = {
     const { destination, lat, lon, startDate, endDate, budget, travelStyle, interests, socialPreference, travelPace, numDays, attractions, weather } = params;
 
     const attractionList = (attractions || []).map(a =>
-      `- ${a.name}${a.category ? ` (${a.category})` : ""}: ${a.description || "No description"}`
+      `- ${a.name}${a.category ? ` (${Array.isArray(a.category) ? a.category.join(", ") : a.category})` : ""}: ${a.description || "No description"}`
     ).join("\n") || "No specific attractions provided.";
+
+    const hotelList = (params.hotels || []).map(h =>
+      `- ${h.name} (${h.type}, ~₹${h.costPerNight}/night)`
+    ).join("\n") || "No specific hotels found.";
 
     const weatherText = weather?.current
       ? `Current weather: ${weather.current.temperature_2m || weather.current.temp || "N/A"}°C, ${weather.current.weather_code || ""}`
@@ -108,6 +112,9 @@ Trip Details:
 
 Attractions available in ${destination}:
 ${attractionList}
+
+Real hotels/lodging found near ${destination}:
+${hotelList}
 
 ${weatherText}
 

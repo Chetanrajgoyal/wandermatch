@@ -34,6 +34,7 @@ async function generateItinerary(params) {
   // 2. Fetch TripMate data (Wikipedia image/description + attractions + weather)
   let tripMateInfo = null;
   let tripMateAttractions = [];
+  let realHotels = [];
   let weatherData = null;
 
   try {
@@ -54,6 +55,13 @@ async function generateItinerary(params) {
       }
     } catch (e) {
       console.warn('TripMate weather failed:', e);
+    }
+
+    // Fetch real hotels/lodging near destination
+    try {
+      realHotels = await searchRealHotels(destination.lat, destination.lon);
+    } catch (e) {
+      console.warn('Real hotel search failed:', e);
     }
   }
 
@@ -90,6 +98,7 @@ async function generateItinerary(params) {
         travelPace,
         numDays,
         attractions: tripMateAttractions,
+        hotels: realHotels,
         weather: weatherData
       });
     } catch (e) {
@@ -116,12 +125,22 @@ async function generateItinerary(params) {
       }))
     }));
 
-    accommodations = (aiResult.accommodations || []).map(acc => ({
-      name: acc.name,
-      costPerNight: typeof acc.costPerNight === 'number' ? acc.costPerNight : 1500,
-      type: acc.type || 'Mid-Range',
-      description: acc.description || ''
-    }));
+    // Merge AI accommodation suggestions with real hotel data when possible
+    accommodations = (aiResult.accommodations || []).map(acc => {
+      const real = realHotels.find(h =>
+        h.name.toLowerCase().includes(acc.name.toLowerCase()) ||
+        acc.name.toLowerCase().includes(h.name.toLowerCase())
+      );
+      return {
+        name: real ? real.name : acc.name,
+        costPerNight: real ? real.costPerNight : (typeof acc.costPerNight === 'number' ? acc.costPerNight : 1500),
+        type: real ? real.type : (acc.type || 'Mid-Range'),
+        description: acc.description || (real ? `Real ${real.type.toLowerCase()} stay found near ${destination.name}.` : 'AI-suggested stay.'),
+        lat: real ? real.lat : null,
+        lon: real ? real.lon : null,
+        source: real ? 'real' : 'ai'
+      };
+    });
 
     // Pick first accommodation as the primary stay for budget calc
     stay = accommodations.length > 0
@@ -394,6 +413,78 @@ function calculateBudgetBreakdown(itinerary, stay, destination, numDays) {
     activities: activitiesCost,
     total
   };
+}
+
+/* --- Search Real Hotels via Overpass --- */
+async function searchRealHotels(lat, lon) {
+  const radius = 15000; // 15km
+  const query = `
+    [out:json][timeout:20];
+    (
+      node["tourism"="hotel"](around:${radius},${lat},${lon});
+      node["tourism"="guest_house"](around:${radius},${lat},${lon});
+      node["tourism"="hostel"](around:${radius},${lat},${lon});
+      node["tourism"="apartment"](around:${radius},${lat},${lon});
+      node["tourism"="resort"](around:${radius},${lat},${lon});
+      way["tourism"="hotel"](around:${radius},${lat},${lon});
+      way["tourism"="guest_house"](around:${radius},${lat},${lon});
+      way["tourism"="hostel"](around:${radius},${lat},${lon});
+      way["tourism"="apartment"](around:${radius},${lat},${lon});
+      way["tourism"="resort"](around:${radius},${lat},${lon});
+    );
+    out center 20;
+  `;
+
+  try {
+    const response = await fetch(API_CONFIG.overpass.baseUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'data=' + encodeURIComponent(query)
+    });
+    if (!response.ok) throw new Error('Overpass hotel search failed');
+    const data = await response.json();
+
+    const hotels = (data.elements || [])
+      .filter(el => el.tags && (el.tags.name || el.tags['name:en']))
+      .map(el => {
+        const tags = el.tags || {};
+        const name = tags.name || tags['name:en'];
+        let type = 'Mid-Range';
+        if (tags.tourism === 'hostel') type = 'Budget';
+        else if (tags.tourism === 'resort' || tags.stars >= 4) type = 'Luxury';
+        else if (tags.tourism === 'hotel') type = 'Comfort';
+
+        let costPerNight = 1500;
+        if (type === 'Budget') costPerNight = 700;
+        else if (type === 'Comfort') costPerNight = 2500;
+        else if (type === 'Luxury') costPerNight = 5000;
+
+        return {
+          name,
+          costPerNight,
+          type,
+          description: `${tags.tourism ? tags.tourism.replace(/_/g, ' ') : 'Stay'} in the area.`,
+          lat: el.lat || (el.center && el.center.lat),
+          lon: el.lon || (el.center && el.center.lon),
+          stars: tags.stars || null,
+          source: 'overpass'
+        };
+      });
+
+    // Deduplicate by name and return top 6
+    const seen = new Set();
+    const unique = [];
+    for (const h of hotels) {
+      if (!seen.has(h.name)) {
+        seen.add(h.name);
+        unique.push(h);
+      }
+    }
+    return unique.slice(0, 6);
+  } catch (err) {
+    console.warn('Hotel search error:', err);
+    return [];
+  }
 }
 
 /* --- Calculate Number of Days --- */
