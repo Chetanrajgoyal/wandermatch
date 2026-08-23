@@ -180,15 +180,9 @@
             -webkit-text-fill-color: transparent;
         }
 
-        html.dark body.about-page,
-        html.dark body.about-page * {
-          background-color: transparent;
-          border-color: transparent;
-          color: inherit;
-        }
         html.dark body.about-page { background-color: #0B0F17 !important; color: #E8EAED !important; }
-        html.dark body.about-page .bg-background,
-        html.dark body.about-page .bg-surface,
+        html.dark body.about-page .bg-background { background-color: #0B0F17 !important; }
+        html.dark body.about-page .bg-surface { background-color: #0B0F17 !important; }
         html.dark body.about-page .bg-surface-container-low { background-color: #121821 !important; }
         html.dark body.about-page .bg-secondary-fixed,
         html.dark body.about-page .bg-secondary-fixed\/50 { background-color: rgba(27,58,95,0.55) !important; }
@@ -202,7 +196,8 @@
         html.dark body.about-page .headline,
         html.dark body.about-page .label,
         html.dark body.about-page .font-headline-lg,
-        html.dark body.about-page .font-headline-md { color: #E8EAED !important; }
+        html.dark body.about-page .font-headline-md,
+        html.dark body.about-page .font-display-lg { color: #E8EAED !important; }
         html.dark body.about-page .text-on-surface-variant,
         html.dark body.about-page .text-on-secondary-fixed-variant,
         html.dark body.about-page p,
@@ -214,6 +209,10 @@
         html.dark body.about-page footer { background-color: #0A1B29 !important; }
         html.dark body.about-page footer * { color: rgba(255,255,255,0.7) !important; }
         html.dark body.about-page footer a:hover { color: #ffffff !important; }
+        html.dark body.about-page header nav { background: rgba(18,24,33,0.85) !important; border-color: rgba(255,255,255,0.08) !important; }
+        html.dark body.about-page header nav a { color: #E8EAED !important; }
+        html.dark body.about-page header nav a:hover { color: #a4c9ff !important; }
+        html.dark body.about-page #navActivePill { background: #1b2430 !important; border-color: rgba(255,255,255,0.08) !important; }
       </style>
 </head>
 <body class="about-page bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">

@@ -218,27 +218,27 @@ function getAuthActionHTML(isMobile = false) {
         <button id="profileAvatarBtn" class="rounded-full overflow-hidden flex items-center justify-center transition-all hover:ring-2 hover:ring-[#005da7]/30 cursor-pointer" aria-label="Open profile menu">
           ${avatarBtn}
         </button>
-        <div id="profileDropdown" class="absolute top-[calc(100%+8px)] right-0 w-[300px] bg-white border border-slate-200/60 shadow-xl shadow-black/8 rounded-xl overflow-hidden p-5 flex flex-col gap-4 z-[100] opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
+        <div id="profileDropdown" class="absolute top-[calc(100%+8px)] right-0 w-[300px] bg-white dark:bg-[#121821] border border-slate-200/60 dark:border-white/10 shadow-xl shadow-black/8 rounded-xl overflow-hidden p-5 flex flex-col gap-4 z-[100] opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
           <div class="flex items-center gap-3">
             ${avatarHeader}
             <div class="flex flex-col min-w-0">
-              <span class="font-semibold text-[15px] text-slate-900 leading-tight truncate">${displayName}</span>
-              <span class="text-[13px] text-slate-500 font-normal truncate">${displayEmail}</span>
+              <span class="font-semibold text-[15px] text-slate-900 dark:text-slate-100 leading-tight truncate">${displayName}</span>
+              <span class="text-[13px] text-slate-500 dark:text-slate-400 font-normal truncate">${displayEmail}</span>
             </div>
           </div>
-          <div class="h-px w-full bg-slate-100"></div>
+          <div class="h-px w-full bg-slate-100 dark:bg-white/10"></div>
           <div class="flex flex-col gap-1">
-            <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-slate-700 hover:text-[#005da7] transition-colors duration-150 group w-full text-left no-underline">
-              <svg class="w-[18px] h-[18px] text-slate-400 group-hover:text-[#005da7] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-[#1b3a5f] text-slate-700 dark:text-slate-200 hover:text-[#005da7] dark:hover:text-[#a4c9ff] transition-colors duration-150 group w-full text-left no-underline">
+              <svg class="w-[18px] h-[18px] text-slate-400 dark:text-slate-500 group-hover:text-[#005da7] dark:group-hover:text-[#a4c9ff] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
               <span class="text-[14px] font-semibold">Dashboard</span>
             </a>
-            <button id="themeToggleBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 hover:text-slate-900 transition-colors duration-150 group w-full text-left cursor-pointer">
-              <svg id="themeIconMoon" class="w-[18px] h-[18px] text-slate-400 group-hover:text-slate-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-              <svg id="themeIconSun" class="w-[18px] h-[18px] text-slate-400 group-hover:text-slate-700 transition-colors hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <button id="themeToggleBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-150 group w-full text-left cursor-pointer">
+              <svg id="themeIconMoon" class="w-[18px] h-[18px] text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+              <svg id="themeIconSun" class="w-[18px] h-[18px] text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
               <span id="themeToggleLabel" class="text-[14px] font-semibold">Dark Mode</span>
             </button>
-            <button id="dropdownLogoutBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors duration-150 group w-full text-left cursor-pointer">
-              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <button id="dropdownLogoutBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 hover:text-red-600 transition-colors duration-150 group w-full text-left cursor-pointer">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 0 013-3h4a3 3 0 013 3v1"/></svg>
               <span class="text-[14px] font-semibold">Logout</span>
             </button>
           </div>
