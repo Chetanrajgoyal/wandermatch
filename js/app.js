@@ -49,14 +49,8 @@ function getFooterHTML() {
 
       <!-- Brand Column -->
       <div class="md:col-span-1">
-        <div class="flex items-center gap-2 font-bold text-2xl tracking-tighter mb-4">
-          <div class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path
-                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-            </svg>
-          </div>
-          kibi
+        <div class="flex items-center gap-2 font-heading font-bold text-2xl tracking-tight text-white mb-4">
+          Kibi
         </div>
         <p class="text-white/60 text-xs mb-6 max-w-[200px] leading-relaxed">
           Making travel planning effortless and personal for the modern explorer.
@@ -132,12 +126,47 @@ function getFooterHTML() {
 function getAuthActionHTML(isMobile = false) {
   const user = getCurrentUser();
   if (user) {
+    const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+    const displayName = user.name || 'Traveler';
+    const displayEmail = user.email || '';
+
+    if (isMobile) {
+      return `
+        <div class="flex flex-col items-center gap-4">
+          <span class="text-sm font-medium text-slate-500">${displayName}</span>
+          <a href="profile.html" class="text-xl font-medium text-slate-800">Profile</a>
+          <button id="mobileLogoutBtn" class="text-xl font-medium text-red-500">Log out</button>
+        </div>
+      `;
+    }
+
     return `
-      <div class="${isMobile ? 'flex flex-col items-center gap-4' : 'hidden md:flex items-center gap-3'}">
-        <a href="dashboard.html" class="${isMobile ? 'text-xl font-medium text-slate-800' : 'w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-sm hover:bg-primary-container transition-colors'}" title="Dashboard">
-          ${isMobile ? 'Dashboard' : user.avatar || user.name.charAt(0).toUpperCase()}
-        </a>
-        <button id="${isMobile ? 'mobileLogoutBtn' : 'logoutBtn'}" class="${isMobile ? 'text-xl font-medium text-error' : 'px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors text-sm font-medium'}">Log out</button>
+      <div class="relative" id="profileDropdownWrapper">
+        <button id="profileAvatarBtn" class="w-10 h-10 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-sm shadow-sm transition-all hover:ring-2 hover:ring-[#005da7]/30 border border-white/20 cursor-pointer">
+          ${initial}
+        </button>
+        <div id="profileDropdown" class="absolute top-[calc(100%+8px)] right-0 w-[300px] bg-white border border-slate-200/60 shadow-xl shadow-black/8 rounded-xl overflow-hidden p-5 flex flex-col gap-4 z-[100] opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-base shrink-0">
+              ${initial}
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-semibold text-[15px] text-slate-900 leading-tight truncate">${displayName}</span>
+              <span class="text-[13px] text-slate-500 font-normal truncate">${displayEmail}</span>
+            </div>
+          </div>
+          <div class="h-px w-full bg-slate-100"></div>
+          <div class="flex flex-col gap-1">
+            <a href="profile.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-slate-700 hover:text-[#005da7] transition-colors duration-150 group w-full text-left no-underline">
+              <svg class="w-[18px] h-[18px] text-slate-400 group-hover:text-[#005da7] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              <span class="text-[14px] font-semibold">Manage Profile</span>
+            </a>
+            <button id="dropdownLogoutBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors duration-150 group w-full text-left cursor-pointer">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+              <span class="text-[14px] font-semibold">Logout</span>
+            </button>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -163,14 +192,16 @@ function initNav(activePage = '', darkHero = false) {
     footerContainer.innerHTML = getFooterHTML();
   }
 
-  // Render auth actions
-  const authContainer = document.getElementById('auth-action-container');
-  if (authContainer) {
-    authContainer.innerHTML = getAuthActionHTML(false);
-  }
-  const mobileAuthContainer = document.getElementById('mobile-auth-action-container');
-  if (mobileAuthContainer) {
-    mobileAuthContainer.innerHTML = getAuthActionHTML(true);
+  // Render auth actions (skip on home page — home.js handles its own header)
+  if (activePage !== 'home') {
+    const authContainer = document.getElementById('auth-action-container');
+    if (authContainer) {
+      authContainer.innerHTML = getAuthActionHTML(false);
+    }
+    const mobileAuthContainer = document.getElementById('mobile-auth-action-container');
+    if (mobileAuthContainer) {
+      mobileAuthContainer.innerHTML = getAuthActionHTML(true);
+    }
   }
 
   // Scroll handler — nav background
@@ -255,8 +286,55 @@ function initNav(activePage = '', darkHero = false) {
     });
   }
 
+  // Profile dropdown hover/click logic
+  const profileWrapper = document.getElementById('profileDropdownWrapper');
+  const profileDropdown = document.getElementById('profileDropdown');
+  const profileAvatarBtn = document.getElementById('profileAvatarBtn');
+
+  if (profileWrapper && profileDropdown) {
+    let hideTimeout;
+
+    function showDropdown() {
+      clearTimeout(hideTimeout);
+      profileDropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1', 'pointer-events-none');
+      profileDropdown.classList.add('opacity-100', 'visible', 'translate-y-0', 'pointer-events-auto');
+    }
+
+    function hideDropdown() {
+      hideTimeout = setTimeout(() => {
+        profileDropdown.classList.add('opacity-0', 'invisible', 'translate-y-1', 'pointer-events-none');
+        profileDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0', 'pointer-events-auto');
+      }, 150);
+    }
+
+    // Show on hover
+    profileWrapper.addEventListener('mouseenter', showDropdown);
+    profileWrapper.addEventListener('mouseleave', hideDropdown);
+
+    // Also toggle on click for touch devices
+    if (profileAvatarBtn) {
+      profileAvatarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isVisible = profileDropdown.classList.contains('opacity-100');
+        if (isVisible) {
+          hideDropdown();
+        } else {
+          showDropdown();
+        }
+      });
+    }
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!profileWrapper.contains(e.target)) {
+        profileDropdown.classList.add('opacity-0', 'invisible', 'translate-y-1', 'pointer-events-none');
+        profileDropdown.classList.remove('opacity-100', 'visible', 'translate-y-0', 'pointer-events-auto');
+      }
+    });
+  }
+
   // Logout buttons
-  const logoutBtn = document.getElementById('logoutBtn');
+  const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
   const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
 
   function handleLogout(e) {
@@ -265,7 +343,7 @@ function initNav(activePage = '', darkHero = false) {
     window.location.href = 'index.html';
   }
 
-  if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+  if (dropdownLogoutBtn) dropdownLogoutBtn.addEventListener('click', handleLogout);
   if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
 }
 

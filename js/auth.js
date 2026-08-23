@@ -10,7 +10,7 @@
 
 const AUTH_KEY = 'kibi_auth_user';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initAuth() {
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
 
@@ -19,7 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initSocialButtons();
   restoreSession();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAuth);
+} else {
+  initAuth();
+}
 
 /* --- Session Helpers --- */
 function setAuthSession(session) {
@@ -166,12 +172,48 @@ function initSocialButtons() {
   });
 }
 
+/* --- Demo fallback for OAuth without configured credentials --- */
+function demoSocialLogin(provider) {
+  const email = provider === 'google' ? 'demo.google@example.com' : 'demo.apple@icloud.com';
+  let user = getUserByEmail(email);
+  if (!user) {
+    user = saveUser({
+      name: provider === 'google' ? 'Demo Google User' : 'Demo Apple User',
+      email,
+      password: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
+      provider: provider,
+      avatar: provider === 'google' ? 'G' : 'A',
+      travelStyle: [],
+      budget: '',
+      socialPreference: '',
+      interests: [],
+      travelPace: '',
+      savedTrips: []
+    });
+  }
+  setAuthSession({
+    id: user.id,
+    provider: provider,
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar,
+    token: 'demo-token'
+  });
+  saveNotification({
+    userId: user.id,
+    message: `Demo sign-in with ${provider === 'google' ? 'Google' : 'Apple'} succeeded.`,
+    type: 'welcome'
+  });
+  showToast(`Demo sign-in with ${provider === 'google' ? 'Google' : 'Apple'}! Configure config.json for real OAuth.`, 'success');
+  setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
+}
+
 /* --- Google Identity Services --- */
 function handleGoogleLogin() {
   const clientId = window.KIBI_CONFIG && window.KIBI_CONFIG.GOOGLE_CLIENT_ID;
   if (!clientId) {
-    showToast('Google Sign-In is not configured. Set GOOGLE_CLIENT_ID in config.json.', 'error');
-    return;
+    console.warn('Google Sign-In not configured; using demo fallback.');
+    return demoSocialLogin('google');
   }
 
   if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
@@ -255,8 +297,8 @@ function handleAppleLogin() {
   const redirectURI = window.KIBI_CONFIG && window.KIBI_CONFIG.APPLE_REDIRECT_URI;
 
   if (!clientId || !redirectURI) {
-    showToast('Apple Sign-In is not configured. Set APPLE_CLIENT_ID and APPLE_REDIRECT_URI in config.json.', 'error');
-    return;
+    console.warn('Apple Sign-In not configured; using demo fallback.');
+    return demoSocialLogin('apple');
   }
 
   if (typeof AppleID === 'undefined') {

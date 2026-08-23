@@ -70,22 +70,91 @@
     const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
     
     if (user) {
-      const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U';
+      const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+      const displayName = user.name || 'Traveler';
+      const displayEmail = user.email || '';
       container.innerHTML = `
-        <div class="group relative flex items-center">
-          <a href="dashboard.html" class="w-10 h-10 rounded-full bg-white/85 backdrop-blur-md text-slate-900 flex items-center justify-center font-bold text-sm shadow-sm transition-all hover:bg-white/95 border border-white/40">
-            ${initials}
-          </a>
-          <div class="absolute top-12 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 bg-white text-brand-blue text-sm font-semibold px-4 py-2 rounded-xl shadow-xl border border-slate-100 whitespace-nowrap z-50">
-            ${user.name || 'Profile'}
+        <div class="relative" id="homeProfileDropdownWrapper">
+          <button id="homeProfileAvatarBtn" class="w-10 h-10 rounded-full bg-white/85 backdrop-blur-md text-[#005da7] flex items-center justify-center font-bold text-sm shadow-sm transition-all hover:bg-white/95 hover:ring-2 hover:ring-white/40 border border-white/40 cursor-pointer">
+            ${initial}
+          </button>
+          <div id="homeProfileDropdown" class="absolute top-[calc(100%+8px)] right-0 w-[300px] bg-white border border-slate-200/60 shadow-xl shadow-black/8 rounded-xl overflow-hidden p-5 flex flex-col gap-4 z-[100] opacity-0 invisible translate-y-1 transition-all duration-200 pointer-events-none">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-base shrink-0">
+                ${initial}
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="font-semibold text-[15px] text-slate-900 leading-tight truncate">${displayName}</span>
+                <span class="text-[13px] text-slate-500 font-normal truncate">${displayEmail}</span>
+              </div>
+            </div>
+            <div class="h-px w-full bg-slate-100"></div>
+            <div class="flex flex-col gap-1">
+              <a href="profile.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-slate-700 hover:text-[#005da7] transition-colors duration-150 group w-full text-left no-underline">
+                <svg class="w-[18px] h-[18px] text-slate-400 group-hover:text-[#005da7] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <span class="text-[14px] font-semibold">Manage Profile</span>
+              </a>
+              <button id="homeDropdownLogoutBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors duration-150 group w-full text-left cursor-pointer">
+                <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <span class="text-[14px] font-semibold">Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       `;
+
+      // Wire up hover/click dropdown logic
+      const wrapper = document.getElementById('homeProfileDropdownWrapper');
+      const dropdown = document.getElementById('homeProfileDropdown');
+      const avatarBtn = document.getElementById('homeProfileAvatarBtn');
+      let hideTimeout;
+
+      function showDropdown() {
+        clearTimeout(hideTimeout);
+        dropdown.classList.remove('opacity-0', 'invisible', 'translate-y-1', 'pointer-events-none');
+        dropdown.classList.add('opacity-100', 'visible', 'translate-y-0', 'pointer-events-auto');
+      }
+      function hideDropdown() {
+        hideTimeout = setTimeout(() => {
+          dropdown.classList.add('opacity-0', 'invisible', 'translate-y-1', 'pointer-events-none');
+          dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0', 'pointer-events-auto');
+        }, 150);
+      }
+
+      wrapper.addEventListener('mouseenter', showDropdown);
+      wrapper.addEventListener('mouseleave', hideDropdown);
+
+      avatarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.contains('opacity-100') ? hideDropdown() : showDropdown();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+          dropdown.classList.add('opacity-0', 'invisible', 'translate-y-1', 'pointer-events-none');
+          dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0', 'pointer-events-auto');
+        }
+      });
+
+      // Logout handler
+      const logoutBtn = document.getElementById('homeDropdownLogoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (typeof logoutUser === 'function') logoutUser();
+          window.location.href = 'index.html';
+        });
+      }
     } else {
       container.innerHTML = `
-        <a href="login.html" class="bg-white/85 hover:bg-white/95 backdrop-blur-md text-slate-900 px-5 py-2 rounded-full font-medium text-[14px] transition-colors shadow-sm border border-white/40 block">
-          Get Started
-        </a>
+        <div class="flex items-center gap-2">
+          <a href="login.html" class="hidden sm:block text-slate-700 hover:text-slate-900 font-medium text-[14px] px-3 py-2 transition-colors">
+            Log In
+          </a>
+          <a href="signup.html" class="bg-white/85 hover:bg-white/95 backdrop-blur-md text-slate-900 px-5 py-2 rounded-full font-medium text-[14px] transition-colors shadow-sm border border-white/40 block">
+            Sign Up
+          </a>
+        </div>
       `;
     }
   }

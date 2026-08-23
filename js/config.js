@@ -8,15 +8,16 @@ window.KIBI_CONFIG = window.KIBI_CONFIG || {
   APPLE_REDIRECT_URI: ''
 };
 
-async function loadKibiConfig() {
-  try {
-    const res = await fetch('/config.json', { cache: 'no-store' });
-    if (!res.ok) return;
-    const cfg = await res.json();
-    window.KIBI_CONFIG = { ...window.KIBI_CONFIG, ...cfg };
-  } catch (e) {
-    console.warn('Kibi config.json not found; OAuth buttons will be disabled until configured.');
-  }
+function loadKibiConfig() {
+  return fetch('/config.json', { cache: 'no-store' })
+    .then(res => { if (!res.ok) throw new Error('not found'); return res.json(); })
+    .then(cfg => {
+      window.KIBI_CONFIG = { ...window.KIBI_CONFIG, ...cfg };
+      if (typeof onKibiConfigLoaded === 'function') onKibiConfigLoaded();
+    })
+    .catch(e => {
+      console.warn('Kibi config.json not found; OAuth buttons will be disabled until configured.');
+    });
 }
 
 loadKibiConfig();
