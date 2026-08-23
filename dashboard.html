@@ -297,6 +297,19 @@
         <label for="editBio" class="block font-label-sm text-label-sm text-on-surface mb-2">Bio</label>
         <textarea id="editBio" rows="3" class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all resize-none"></textarea>
       </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface mb-2">Profile Picture</label>
+        <div class="flex items-center gap-4">
+          <div id="editAvatarPreview" class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden text-on-surface-variant">
+            <!-- preview rendered by JS -->
+          </div>
+          <label class="cursor-pointer px-4 py-2 rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+            Choose Photo
+            <input type="file" id="editAvatarInput" accept="image/*" class="hidden"/>
+          </label>
+        </div>
+        <p class="text-xs text-on-surface-variant mt-2">Leave empty to use your name's first letter.</p>
+      </div>
       <div class="pt-2 flex gap-3">
         <button type="submit" class="flex-1 py-3 px-4 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors">Save Changes</button>
         <button type="button" id="cancelEditBtn" class="py-3 px-4 rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors">Cancel</button>
@@ -339,7 +352,7 @@
     const trips = getUserTrips(user.id);
     document.getElementById('statDestinations').textContent = user.destinationsVisited || Math.min(trips.length + 3, 99);
     document.getElementById('statMiles').textContent = user.milesTraveled || '45k+';
-    document.getElementById('statStyle').textContent = getTravelPersonality(user);
+    document.getElementById('statStyle').textContent = user.personalityName || getTravelPersonality(user);
 
     // Trips
     const grid = document.getElementById('profileTripsGrid');
@@ -379,23 +392,58 @@
     document.getElementById('editName').value = user.name || '';
     document.getElementById('editEmail').value = user.email || '';
     document.getElementById('editBio').value = user.bio || '';
+    renderAvatarPreview(user);
+  }
+
+  function renderAvatarPreview(user) {
+    const preview = document.getElementById('editAvatarPreview');
+    if (!preview) return;
+    delete preview.dataset.avatar;
+    preview.innerHTML = typeof renderAvatarHTML === 'function'
+      ? renderAvatarHTML(user, 'w-full h-full', 'text-2xl')
+      : `<div class="w-full h-full rounded-full bg-[#005da7] text-white flex items-center justify-center font-bold text-2xl">${user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>`;
   }
 
   function openModal() {
     const modal = document.getElementById('editProfileModal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    const user = getCurrentUser();
+    if (user) renderAvatarPreview(user);
   }
 
   function closeModal() {
     const modal = document.getElementById('editProfileModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    const input = document.getElementById('editAvatarInput');
+    if (input) input.value = '';
+    const preview = document.getElementById('editAvatarPreview');
+    if (preview) delete preview.dataset.avatar;
   }
 
   document.getElementById('editProfileBtn').addEventListener('click', openModal);
   document.getElementById('closeEditModal').addEventListener('click', closeModal);
   document.getElementById('cancelEditBtn').addEventListener('click', closeModal);
+
+  document.getElementById('editAvatarInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Image must be under 2MB', 'error');
+      e.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const preview = document.getElementById('editAvatarPreview');
+      if (preview) {
+        preview.innerHTML = `<img src="${event.target.result}" alt="Preview" class="w-full h-full object-cover rounded-full"/>`;
+      }
+      preview.dataset.avatar = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
   document.getElementById('editProfileForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -407,6 +455,11 @@
       email: document.getElementById('editEmail').value.trim(),
       bio: document.getElementById('editBio').value.trim()
     };
+
+    const preview = document.getElementById('editAvatarPreview');
+    if (preview && preview.dataset.avatar) {
+      updates.avatar = preview.dataset.avatar;
+    }
 
     updateUser(user.id, updates);
     showToast('Profile updated!', 'success');

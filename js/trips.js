@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (page === 'plan-trip') {
+    requireAuth('login.html');
     initNav('plan-trip');
     initPlanTrip();
   }
