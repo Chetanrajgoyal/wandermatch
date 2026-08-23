@@ -521,19 +521,20 @@ function runInitItineraryPage() {
   if (tripId) {
     sessionStorage.removeItem('wm_generated_itinerary');
     const saved = getTripById(tripId);
-    if (saved) {
+    const isValidSaved = saved && saved.destination && (Array.isArray(saved.itinerary) && saved.itinerary.length > 0);
+    if (isValidSaved) {
       console.log('[Itinerary] Loading saved trip:', saved.id, saved.destination);
       renderLoadedItinerary(saved);
       return;
     }
-    // Saved trip not found — show clear error instead of falling back
-    console.error('[Itinerary] Saved trip not found for id:', tripId);
+    // Saved trip missing or corrupt — show clear error instead of falling back
+    console.error('[Itinerary] Saved trip not found or invalid for id:', tripId, saved);
     const main = document.querySelector('main');
     if (main) {
       main.innerHTML = `
         <div class="max-w-xl mx-auto mt-20 p-8 glass-panel rounded-3xl text-center">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">Trip not found</h2>
-          <p class="text-gray-600 mb-6">We couldn't find a saved trip with this link. It may have been deleted.</p>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Trip not available</h2>
+          <p class="text-gray-600 mb-6">We couldn't load this saved trip. It may have been deleted, corrupted, or not fully saved.</p>
           <a href="my-trips.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">Go to My Trips</a>
         </div>
       `;
