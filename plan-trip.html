@@ -199,9 +199,9 @@
   <!-- Center Nav Pill -->
   <nav class="hidden md:flex items-center bg-white/85 backdrop-blur-md rounded-full px-2 py-1.5 border border-white/40 shadow-sm">
     <ul class="flex items-center gap-1 lg:gap-2 text-[14px]">
-      <li><a href="index.html" class="bg-white shadow-sm border border-slate-50 text-slate-900 px-5 py-2 rounded-full block transition-colors font-medium">Home</a></li>
+      <li><a href="index.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Home</a></li>
       <li><a href="discover.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Discover</a></li>
-      <li><a href="plan-trip.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Plan Trip</a></li>
+      <li><a href="plan-trip.html" class="bg-white shadow-sm border border-slate-50 text-slate-900 px-5 py-2 rounded-full block transition-colors font-medium">Plan Trip</a></li>
       <li><a href="my-trips.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">My Trips</a></li>
       <li><a href="about.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">About Us</a></li>
     </ul>
@@ -264,7 +264,7 @@
                 <input type="hidden" id="destLat">
                 <input type="hidden" id="destLon">
                 <div id="destSuggestions"
-                  class="suggestions-dropdown hidden absolute top-full left-0 right-0 z-20 max-h-52 overflow-y-auto mt-2">
+                  class="suggestions-dropdown absolute top-full left-0 right-0 z-20 max-h-52 overflow-y-auto mt-2 hidden">
                 </div>
               </div>
             </div>
@@ -558,13 +558,13 @@
   <script src="js/api/routing-api.js"></script>
   <script src="js/api/tripmate-api.js"></script>
   <script src="js/api/gemini-api.js"></script>
-  <script src="js/storage.js?v=9"></script>
-  <script src="js/matching.js?v=9"></script>
-  <script src="js/planner.js?v=9"></script>
-  <script src="js/app.js?v=9"></script>
-  <script src="js/animations.js?v=9"></script>
-  <script src="js/trips.js?v=9"></script>
-  <script src="js/home.js?v=9"></script>
+  <script src="js/storage.js?v=10"></script>
+  <script src="js/matching.js?v=10"></script>
+  <script src="js/planner.js?v=10"></script>
+  <script src="js/app.js?v=10"></script>
+  <script src="js/animations.js?v=10"></script>
+  <script src="js/trips.js?v=10"></script>
+  <script src="js/home.js?v=10"></script>
   <script>
     // Pre-select destination from URL param
     const urlParams = new URLSearchParams(window.location.search);

@@ -5,8 +5,31 @@
 
 /* --- Navigation HTML Generator --- */
 function getNavHTML(activePage = "", darkHero = false) {
+  const pages = [
+    { id: 'home', label: 'Home', href: 'index.html' },
+    { id: 'discover', label: 'Discover', href: 'discover.html' },
+    { id: 'plan-trip', label: 'Plan Trip', href: 'plan-trip.html' },
+    { id: 'my-trips', label: 'My Trips', href: 'my-trips.html' },
+    { id: 'about', label: 'About Us', href: 'about.html' }
+  ];
+
+  const desktopLinks = pages.map(p => {
+    const isActive = p.id === activePage;
+    const cls = isActive
+      ? 'bg-white shadow-sm border border-slate-50 text-slate-900 px-5 py-2 rounded-full block transition-colors font-medium'
+      : 'hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium';
+    return `<li><a href="${p.href}" class="${cls}">${p.label}</a></li>`;
+  }).join('');
+
+  const mobileLinks = pages.map(p => {
+    const cls = p.id === activePage
+      ? 'text-xl font-medium text-slate-900'
+      : 'text-xl font-medium text-slate-700';
+    return `<a href="${p.href}" class="${cls}">${p.label}</a>`;
+  }).join('');
+
   return `<header class="relative z-50 px-6 lg:px-12 flex justify-between items-center w-full max-w-7xl mx-auto pt-6 pb-4">
-  
+
   <!-- Logo -->
   <a href="index.html" class="flex items-center justify-center h-10 px-5 bg-white/90 backdrop-blur-md rounded-full font-heading font-bold text-[1.25rem] tracking-tight text-[#005da7] hover:bg-white transition-colors shadow-sm border border-white/20">
     Kibi
@@ -15,11 +38,7 @@ function getNavHTML(activePage = "", darkHero = false) {
   <!-- Center Nav Pill -->
   <nav class="hidden md:flex items-center bg-white/85 backdrop-blur-md rounded-full px-2 py-1.5 border border-white/40 shadow-sm">
     <ul class="flex items-center gap-1 lg:gap-2 text-[14px]">
-      <li><a href="index.html" class="bg-white shadow-sm border border-slate-50 text-slate-900 px-5 py-2 rounded-full block transition-colors font-medium">Home</a></li>
-      <li><a href="discover.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Discover</a></li>
-      <li><a href="plan-trip.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">Plan Trip</a></li>
-      <li><a href="my-trips.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">My Trips</a></li>
-      <li><a href="about.html" class="hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium">About Us</a></li>
+      ${desktopLinks}
     </ul>
   </nav>
 
@@ -34,11 +53,7 @@ function getNavHTML(activePage = "", darkHero = false) {
 
 <!-- Mobile Menu -->
 <div id="mobileMenu" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-lg opacity-0 pointer-events-none transition-opacity duration-300 md:hidden flex flex-col items-center justify-center gap-6">
-  <a href="index.html" class="text-xl font-medium text-slate-800">Home</a>
-  <a href="discover.html" class="text-xl font-medium text-slate-700">Discover</a>
-  <a href="plan-trip.html" class="text-xl font-medium text-slate-700">Plan Trip</a>
-  <a href="my-trips.html" class="text-xl font-medium text-slate-700">My Trips</a>
-  <a href="about.html" class="text-xl font-medium text-slate-700">About Us</a>
+  ${mobileLinks}
   <div id="mobile-auth-action-container"></div>
 </div>`;
 }

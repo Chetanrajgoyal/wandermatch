@@ -421,42 +421,61 @@ function initPlanTrip() {
 
   if (destSearch && destSuggestions) {
     let debounceTimer;
+    let abortController;
+
+    function hideSuggestions() {
+      destSuggestions.classList.add('hidden');
+      destSuggestions.style.display = '';
+    }
+
+    function showSuggestions(html) {
+      destSuggestions.innerHTML = html;
+      destSuggestions.classList.remove('hidden');
+      destSuggestions.style.display = 'block';
+    }
 
     // Close suggestions when clicking outside
     document.addEventListener('click', (e) => {
       if (!destSearch.contains(e.target) && !destSuggestions.contains(e.target)) {
-        destSuggestions.style.display = 'none';
+        hideSuggestions();
       }
     });
 
     destSearch.addEventListener('input', (e) => {
       const query = e.target.value.trim();
       clearTimeout(debounceTimer);
+      if (abortController) abortController.abort();
 
       if (query.length < 3) {
-        destSuggestions.style.display = 'none';
+        hideSuggestions();
         return;
       }
 
-      // Debounce API calls
+      // Debounce API calls — 250ms feels snappy while still avoiding spam
       debounceTimer = setTimeout(async () => {
-        destSuggestions.innerHTML = '<div class="px-4 py-2 text-text-muted text-sm">Searching...</div>';
-        destSuggestions.style.display = 'block';
+        showSuggestions('<div class="px-4 py-2 text-text-muted text-sm">Searching...</div>');
 
-        // Fetch from API
-        const results = await GeocodingAPI.searchDestination(query);
+        abortController = new AbortController();
+        let results;
+        try {
+          results = await GeocodingAPI.searchDestination(query, abortController.signal);
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+          console.warn('Destination search error:', err);
+          results = null;
+        }
 
         if (!results || results.length === 0) {
-          destSuggestions.innerHTML = '<div class="px-4 py-2 text-text-muted text-sm">No destinations found.</div>';
+          showSuggestions('<div class="px-4 py-2 text-text-muted text-sm">No destinations found.</div>');
           return;
         }
 
-        destSuggestions.innerHTML = results.map(result => `
+        showSuggestions(results.map(result => `
           <div class="suggestion-item px-4 py-2 cursor-pointer border-b border-border-light last:border-b-0 transition-colors hover:bg-cream-dark" data-id="${result.id}" data-lat="${result.latitude}" data-lon="${result.longitude}" data-name="${result.name}">
             <div class="font-semibold text-sm text-text-main">${result.name}</div>
             <div class="text-xs text-text-muted">${result.displayName}</div>
           </div>
-        `).join('');
+        `).join(''));
 
         // Add click handlers to suggestions
         destSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
@@ -465,10 +484,10 @@ function initPlanTrip() {
             destId.value = item.dataset.id;
             destLat.value = item.dataset.lat;
             destLon.value = item.dataset.lon;
-            destSuggestions.style.display = 'none';
+            hideSuggestions();
           });
         });
-      }, 600); // 600ms debounce
+      }, 250);
     });
   }
 
@@ -723,7 +742,7 @@ function renderLoadedItinerary(itinerary) {
           saveBtn.dataset.saving = 'true';
           saveBtn.innerHTML = '<span class="spinner w-4 h-4 mr-2 border-2"></span> Saving...';
           setTimeout(() => {
-            // Save a complete independent snapshot into the saved itineraries array.
+            // Save generated itineraries from Plan Trip into My Trips (wm_trips).
             const newTrip = {
               ...deepClone(itinerary),
               title: `${itinerary.destination} Trip`,
@@ -731,9 +750,9 @@ function renderLoadedItinerary(itinerary) {
               createdBy: currentUser.id,
               createdAt: new Date().toISOString()
             };
-            saveSavedItinerary(newTrip);
-            console.log('[Save] Saved itinerary:', newTrip.id, newTrip.destination, 'days:', (newTrip.itinerary || []).length);
-            showToast(`Your ${newTrip.destination} trip has been saved!`, 'success');
+            saveTrip(newTrip);
+            console.log('[Save] Saved trip to My Trips:', newTrip.id, newTrip.destination, 'days:', (newTrip.itinerary || []).length);
+            showToast(`Your ${newTrip.destination} trip has been saved to My Trips!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
             saveBtn.classList.add('opacity-70');
           }, 800);
