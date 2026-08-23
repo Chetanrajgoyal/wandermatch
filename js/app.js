@@ -122,14 +122,9 @@ function getFooterHTML() {
 
       <!-- Brand Column -->
       <div class="md:col-span-1">
-        <div class="flex items-center gap-2 font-bold text-2xl tracking-tighter mb-4">
-          <div class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-            </svg>
-          </div>
-          kibi
-        </div>
+        <a href="index.html" class="inline-flex items-center justify-center h-10 px-5 bg-white/10 backdrop-blur-md rounded-full font-heading font-bold text-[1.25rem] tracking-tight text-white hover:bg-white/20 transition-colors border border-white/20 mb-4">
+          Kibi
+        </a>
         <p class="text-white/60 text-xs mb-6 max-w-[200px] leading-relaxed">
           Making travel planning effortless and personal for the modern explorer.
         </p>
