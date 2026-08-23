@@ -23,10 +23,12 @@ function getNavHTML(activePage = "", darkHero = false) {
 
   const mobileLinks = pages.map(p => {
     const cls = p.id === activePage
-      ? 'text-xl font-medium text-slate-900'
-      : 'text-xl font-medium text-slate-700';
-    return `<a href="${p.href}" class="${cls}">${p.label}</a>`;
+      ? 'text-2xl font-medium text-slate-900'
+      : 'text-2xl font-medium text-slate-700';
+    return `<a href="${p.href}" class="${cls} py-2 hover:text-brand-blue transition-colors">${p.label}</a>`;
   }).join('');
+
+  window.__mobileLinksHTML = mobileLinks;
 
   return `<header class="relative z-50 px-6 lg:px-12 flex justify-between items-center w-full max-w-7xl mx-auto pt-6 pb-4">
 
@@ -250,41 +252,67 @@ function initNav(activePage = '', darkHero = false) {
     updateNav();
   }
 
-  // Hamburger menu
-  const hamburger = document.getElementById('hamburgerBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
+  // Mobile menu overlay — find or create so it works on every page
+  let mobileMenu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('mobile-menu-btn');
+
+  if (!mobileMenu && typeof window.__mobileLinksHTML === 'string') {
+    mobileMenu = document.createElement('div');
+    mobileMenu.id = 'mobileMenu';
+    mobileMenu.className = 'fixed inset-0 z-40 bg-white/95 backdrop-blur-lg opacity-0 pointer-events-none transition-opacity duration-300 md:hidden flex flex-col items-center justify-center gap-6';
+    mobileMenu.innerHTML = window.__mobileLinksHTML +
+      '<div id="mobile-auth-action-container"></div>';
+    document.body.appendChild(mobileMenu);
+  }
+
   if (hamburger && mobileMenu) {
     let menuOpen = false;
-    hamburger.addEventListener('click', () => {
-      menuOpen = !menuOpen;
-      if (menuOpen) {
-        mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
-        mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
-        hamburger.children[0].classList.add('rotate-45', 'translate-y-2');
-        hamburger.children[1].classList.add('opacity-0');
-        hamburger.children[2].classList.add('-rotate-45', '-translate-y-2');
-        document.body.style.overflow = 'hidden';
-      } else {
-        mobileMenu.classList.add('opacity-0', 'pointer-events-none');
-        mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
-        hamburger.children[0].classList.remove('rotate-45', 'translate-y-2');
-        hamburger.children[1].classList.remove('opacity-0');
-        hamburger.children[2].classList.remove('-rotate-45', '-translate-y-2');
-        document.body.style.overflow = '';
+
+    function openMenu() {
+      menuOpen = true;
+      mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+      // Animate hamburger icon to X
+      const bars = hamburger.querySelectorAll('svg path');
+      if (bars.length >= 3) {
+        bars[0].setAttribute('transform', 'rotate(45 12 12) translate(0, 5)');
+        bars[1].style.opacity = '0';
+        bars[2].setAttribute('transform', 'rotate(-45 12 12) translate(0, -7)');
       }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+      const bars = hamburger.querySelectorAll('svg path');
+      if (bars.length >= 3) {
+        bars[0].removeAttribute('transform');
+        bars[1].style.opacity = '';
+        bars[2].removeAttribute('transform');
+      }
+      document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuOpen ? closeMenu() : openMenu();
     });
 
     // Close on link click
     mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        menuOpen = false;
-        mobileMenu.classList.add('opacity-0', 'pointer-events-none');
-        mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
-        hamburger.children[0].classList.remove('rotate-45', 'translate-y-2');
-        hamburger.children[1].classList.remove('opacity-0');
-        hamburger.children[2].classList.remove('-rotate-45', '-translate-y-2');
-        document.body.style.overflow = '';
-      });
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close when clicking outside the menu links
+    mobileMenu.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) closeMenu();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuOpen) closeMenu();
     });
   }
 

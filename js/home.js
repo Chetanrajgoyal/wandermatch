@@ -48,17 +48,9 @@
     initFAQ();
   }
 
-  /* ---------- Mobile menu for Kibi landing page ---------- */
+  /* ---------- Mobile menu is handled by js/app.js ---------- */
   function initMobileMenu() {
-    const btn = document.getElementById('mobile-menu-btn');
-    const menu = document.getElementById('mobile-menu');
-    if (!btn || !menu) return;
-    btn.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
-    });
-    menu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => menu.classList.add('hidden'));
-    });
+    // app.js creates and wires the full-screen mobile overlay on all pages.
   }
 
   /* ---------- Auth Action (Desktop Header) ---------- */
