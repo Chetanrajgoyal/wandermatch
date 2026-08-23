@@ -1640,3 +1640,62 @@ html.dark body.about-page .glass-card {
   background: rgba(255, 255, 255, 0.05) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
+
+/* Logo white in dark mode */
+html.dark header a[href="index.html"],
+html.dark .logo-kibi {
+  color: #FFFFFF !important;
+}
+
+/* Homepage hero & How It Works in dark mode */
+html.dark .hero-bg::before {
+  background: linear-gradient(to bottom, rgba(0, 10, 25, 0.55) 0%, rgba(0, 0, 0, 0) 35%, rgba(11, 15, 23, 0) 80%, rgba(11, 15, 23, 1) 100%) !important;
+}
+
+html.dark #how-it-works,
+html.dark #services,
+html.dark #pricing {
+  background-color: #0B0F17 !important;
+}
+
+html.dark #how-it-works .bg-white,
+html.dark #services .bg-white,
+html.dark #pricing .bg-white,
+html.dark #how-it-works [class*="rounded-3xl"][class*="bg-white"],
+html.dark #services [class*="rounded-3xl"][class*="bg-white"] {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark #how-it-works h2,
+html.dark #how-it-works h3,
+html.dark #services h2,
+html.dark #services h3,
+html.dark #pricing h2,
+html.dark #pricing h3,
+html.dark #destinations h2,
+html.dark #destinations h3 {
+  color: #F1F3F4 !important;
+}
+
+html.dark #how-it-works p,
+html.dark #services p,
+html.dark #pricing p,
+html.dark #destinations p {
+  color: #BDC1C6 !important;
+}
+
+html.dark #destinations {
+  background-color: #0B0F17 !important;
+}
+
+html.dark .filter-btn.active {
+  background-color: #4A90E2 !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .filter-btn:not(.active) {
+  background-color: #161B22 !important;
+  color: #BDC1C6 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
