@@ -15,10 +15,7 @@ function getNavHTML(activePage = "", darkHero = false) {
 
   const desktopLinks = pages.map(p => {
     const isActive = p.id === activePage;
-    const cls = isActive
-      ? 'bg-white shadow-sm border border-slate-50 text-slate-900 px-5 py-2 rounded-full block transition-colors font-medium'
-      : 'hover:bg-slate-100/50 px-5 py-2 rounded-full transition-colors block text-slate-700 font-medium';
-    return `<li><a href="${p.href}" class="${cls}">${p.label}</a></li>`;
+    return `<li><a href="${p.href}" data-nav-pill-target="${p.id}" class="nav-pill-link relative z-10 block px-5 py-2 rounded-full text-[14px] font-medium transition-colors duration-300 ${isActive ? 'text-slate-900' : 'text-slate-700 hover:text-slate-900'}">${p.label}</a></li>`;
   }).join('');
 
   const mobileLinks = pages.map(p => {
@@ -38,8 +35,9 @@ function getNavHTML(activePage = "", darkHero = false) {
   </a>
 
   <!-- Center Nav Pill -->
-  <nav class="hidden md:flex items-center bg-white/85 backdrop-blur-md rounded-full px-2 py-1.5 border border-white/40 shadow-sm">
-    <ul class="flex items-center gap-1 lg:gap-2 text-[14px]">
+  <nav class="hidden md:flex items-center bg-white/85 backdrop-blur-md rounded-full px-2 py-1.5 border border-white/40 shadow-sm relative">
+    <div id="navActivePill" class="absolute top-1/2 -translate-y-1/2 h-[calc(100%-12px)] rounded-full bg-white shadow-sm border border-slate-50 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0" style="left:0;width:0;opacity:0"></div>
+    <ul class="flex items-center gap-1 lg:gap-2 text-[14px] relative z-10">
       ${desktopLinks}
     </ul>
   </nav>
@@ -209,6 +207,36 @@ function getAuthActionHTML(isMobile = false) {
   `;
 }
 
+/* --- Smooth page transition --- */
+(function initPageTransitions() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyPageTransition);
+  } else {
+    applyPageTransition();
+  }
+
+  function applyPageTransition() {
+    // Fade body in on load
+    document.body.classList.add('page-transition-ready');
+    requestAnimationFrame(() => document.body.classList.add('page-loaded'));
+
+    // Intercept same-origin link clicks for smooth fade-out
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank') return;
+      if (link.hostname && link.hostname !== location.hostname) return;
+
+      e.preventDefault();
+      document.body.classList.remove('page-loaded');
+      setTimeout(() => {
+        window.location.href = link.href;
+      }, 280);
+    }, false);
+  }
+})();
+
 /* --- Initialize Navigation --- */
 function initNav(activePage = '', darkHero = false) {
   // Insert nav at the top
@@ -234,6 +262,9 @@ function initNav(activePage = '', darkHero = false) {
       mobileAuthContainer.innerHTML = getAuthActionHTML(true);
     }
   }
+
+  // Sliding active pill
+  initNavActivePill(activePage);
 
   // Scroll handler — nav background
   const nav = document.getElementById('mainNav');
@@ -406,6 +437,49 @@ function initNav(activePage = '', darkHero = false) {
 
   if (dropdownLogoutBtn) dropdownLogoutBtn.addEventListener('click', handleLogout);
   if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
+}
+
+/* --- Sliding Active Pill --- */
+function initNavActivePill(activePage) {
+  const pill = document.getElementById('navActivePill');
+  const links = document.querySelectorAll('.nav-pill-link');
+  if (!pill || links.length === 0) return;
+
+  function movePillTo(target) {
+    const link = target.closest ? target.closest('.nav-pill-link') : document.querySelector(`.nav-pill-link[data-nav-pill-target="${target}"]`);
+    if (!link) return;
+    const parent = link.closest('nav, ul') || link.parentElement;
+    const parentRect = parent.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    pill.style.width = `${linkRect.width}px`;
+    pill.style.height = `${linkRect.height}px`;
+    pill.style.transform = `translateY(-50%) translateX(${linkRect.left - parentRect.left}px)`;
+    pill.style.opacity = '1';
+  }
+
+  // Initial active position
+  const activeLink = document.querySelector(`.nav-pill-link[data-nav-pill-target="${activePage}"]`) || links[0];
+  if (activeLink) movePillTo(activeLink);
+
+  // Move on hover
+  links.forEach(link => {
+    link.addEventListener('mouseenter', () => movePillTo(link));
+  });
+
+  // Return to active on mouseleave from nav
+  const nav = pill.closest('nav');
+  if (nav) {
+    nav.addEventListener('mouseleave', () => {
+      const current = document.querySelector(`.nav-pill-link[data-nav-pill-target="${activePage}"]`) || links[0];
+      if (current) movePillTo(current);
+    });
+  }
+
+  // Update on resize
+  window.addEventListener('resize', () => {
+    const current = document.querySelector(`.nav-pill-link[data-nav-pill-target="${activePage}"]`) || links[0];
+    if (current) movePillTo(current);
+  });
 }
 
 /* --- Render Notifications --- */
