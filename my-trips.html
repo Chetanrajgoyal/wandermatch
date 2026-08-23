@@ -297,7 +297,7 @@
         : `<span class="bg-surface-container/90 backdrop-blur-md text-slate-600 font-semibold text-xs px-2.5 py-1 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> Completed</span>`;
       const tags = [trip.travelStyle || 'Travel', ...(trip.interests || [])].slice(0, 2);
       return `
-        <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" onclick="window.location.href='itinerary.html?id=${trip.id}'">
+        <div class="glass-card rounded-[16px] overflow-hidden group hover:-translate-y-1 transition-transform duration-300 cursor-pointer" data-trip-id="${trip.id}" onclick="if(event.target.closest('.delete-trip-btn')) return; window.location.href='itinerary.html?id=${trip.id}'">
           <div class="relative h-48 w-full">
             <img alt="${trip.destination || 'Trip'}" class="w-full h-full object-cover" src="${trip.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80'}"/>
             <div class="absolute top-4 right-4">${statusBadge}</div>
@@ -310,7 +310,12 @@
             <div class="flex flex-wrap gap-2 mb-6">
               ${tags.map(tag => `<span class="bg-primary-fixed text-on-primary-fixed text-xs px-3 py-1 rounded-full font-medium">${tag}</span>`).join('')}
             </div>
-            <button class="w-full py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">View Itinerary</button>
+            <div class="flex gap-2">
+              <button class="flex-1 py-3 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">View Itinerary</button>
+              <button class="delete-trip-btn px-4 py-3 rounded-full border border-error text-error font-bold text-sm hover:bg-error/5 transition-colors" title="Delete trip">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -320,7 +325,24 @@
     upcoming.forEach(trip => {
       const div = document.createElement('div');
       div.innerHTML = cardHTML(trip, 'upcoming');
-      grid.insertBefore(div.firstElementChild, cta);
+      const card = div.firstElementChild;
+      grid.insertBefore(card, cta);
+
+      const deleteBtn = card.querySelector('.delete-trip-btn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm(`Delete "${trip.title || trip.destination || 'this trip'}"?`)) {
+            deleteTrip(trip.id);
+            card.remove();
+            showToast('Trip deleted', 'default');
+            if (grid.children.length === 1 && grid.querySelector('[onclick*="plan-trip.html"]')) {
+              grid.classList.add('hidden');
+              empty.classList.remove('hidden');
+            }
+          }
+        });
+      }
     });
 
     // Render past memories
