@@ -150,18 +150,42 @@ function getJoinedTrips(userId) {
 
 function getSavedTrips(userId) {
   const user = getUserById(userId);
-  if (!user || !user.savedTrips) return [];
+  if (!user) return [];
 
-  // Load each saved trip from its isolated key first; fallback to wm_trips for legacy trips.
-  return user.savedTrips.map(tripId => {
+  const byId = new Map();
+
+  // 1. Load from the user's savedTrips list, preferring isolated keys.
+  (user.savedTrips || []).forEach(tripId => {
     try {
       const isolated = localStorage.getItem(`wm_saved_itinerary_${tripId}`);
-      if (isolated) return JSON.parse(isolated);
+      if (isolated) {
+        const trip = JSON.parse(isolated);
+        byId.set(trip.id, trip);
+        return;
+      }
     } catch (e) {
       console.warn('[Storage] Failed to parse isolated saved trip:', tripId, e);
     }
-    return getTripById(tripId);
-  }).filter(Boolean);
+    const legacy = getTripById(tripId);
+    if (legacy) byId.set(legacy.id, legacy);
+  });
+
+  // 2. Recover any orphaned isolated itineraries created by this user
+  // (e.g. when saveTrip returned a duplicate and the new snapshot ID was lost).
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('wm_saved_itinerary_')) continue;
+    try {
+      const trip = JSON.parse(localStorage.getItem(key));
+      if (trip && trip.createdBy === userId && trip.id && !byId.has(trip.id)) {
+        byId.set(trip.id, trip);
+      }
+    } catch (e) {
+      // ignore corrupt entries
+    }
+  }
+
+  return Array.from(byId.values());
 }
 
 function updateTrip(tripId, updates) {
