@@ -1548,6 +1548,43 @@ html.dark body[data-page="itinerary"] body::before {
               radial-gradient(circle at 85% 30%, rgba(0, 93, 167, 0.12) 0%, transparent 50%);
 }
 
+/* ---------- Hamburger Menu Icon ---------- */
+.hamburger-box {
+  width: 18px;
+  height: 14px;
+  position: relative;
+  display: inline-block;
+}
+
+.hamburger-line {
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease, top 0.25s ease;
+}
+
+.hamburger-line:nth-child(1) { top: 0; }
+.hamburger-line:nth-child(2) { top: 6px; }
+.hamburger-line:nth-child(3) { top: 12px; }
+
+#mobile-menu-btn.menu-open .hamburger-line:nth-child(1) {
+  top: 6px;
+  transform: rotate(45deg);
+}
+
+#mobile-menu-btn.menu-open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+#mobile-menu-btn.menu-open .hamburger-line:nth-child(3) {
+  top: 6px;
+  transform: rotate(-45deg);
+}
+
 html.dark body[data-page="itinerary"] .text-gray-900,
 html.dark body[data-page="itinerary"] .text-on-surface,
 html.dark body[data-page="itinerary"] h1,
