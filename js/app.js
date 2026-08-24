@@ -238,7 +238,7 @@ function getAuthActionHTML(isMobile = false) {
               <span id="themeToggleLabel" class="text-[14px] font-semibold">Dark Mode</span>
             </button>
             <button id="dropdownLogoutBtn" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 hover:text-red-600 transition-colors duration-150 group w-full text-left cursor-pointer">
-              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 0 013-3h4a3 3 0 013 3v1"/></svg>
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
               <span class="text-[14px] font-semibold">Logout</span>
             </button>
           </div>
