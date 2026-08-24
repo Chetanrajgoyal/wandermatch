@@ -1039,24 +1039,19 @@ function initMapModal(itinerary) {
     document.body.style.overflow = 'hidden';
 
     if (!initialized) {
-      // Wait for modal to become visible so Leaflet can measure the container.
-      requestAnimationFrame(() => {
+      // Leaflet requires the container to be visible and measured.
+      // Wait for the modal to fully render before initializing.
+      setTimeout(() => {
         ensureCoords().then(() => {
-          // Double rAF ensures layout/paint have run.
-          requestAnimationFrame(() => {
-            initMap();
-            initialized = true;
-            // Leaflet needs a final invalidateSize after the container is visible.
-            requestAnimationFrame(() => {
-              setTimeout(() => { if (map) map.invalidateSize(); }, 50);
-            });
-          });
+          initMap();
+          initialized = true;
+          // Re-measure after tiles start loading.
+          setTimeout(() => { if (map) map.invalidateSize(); }, 150);
+          setTimeout(() => { if (map) map.invalidateSize(); }, 400);
         });
-      });
+      }, 200);
     } else if (map) {
-      requestAnimationFrame(() => {
-        setTimeout(() => map.invalidateSize(), 50);
-      });
+      setTimeout(() => map.invalidateSize(), 200);
     }
   }
 
@@ -1119,12 +1114,16 @@ function initMapModal(itinerary) {
       return;
     }
 
-    // Ensure container has real dimensions before Leaflet measures it.
-    const rect = mapContainer.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) {
-      mapContainer.style.width = '100%';
-      mapContainer.style.height = '100%';
-    }
+    // Leaflet cannot render in a zero-size container. Force explicit dimensions.
+    const dialog = mapContainer.closest('[class*="h-[80vh]"]') || mapContainer.parentElement;
+    const dialogRect = dialog ? dialog.getBoundingClientRect() : { width: 0, height: 0 };
+    const header = dialog ? dialog.querySelector(':scope > div:first-child') : null;
+    const headerHeight = header ? header.getBoundingClientRect().height : 64;
+    const mapWidth = dialogRect.width || mapContainer.parentElement.getBoundingClientRect().width;
+    const mapHeight = (dialogRect.height || 600) - headerHeight;
+
+    mapContainer.style.width = `${mapWidth}px`;
+    mapContainer.style.height = `${Math.max(mapHeight, 300)}px`;
 
     mapContainer.innerHTML = '';
     map = L.map('tripMap', { zoomControl: false }).setView([lat, lon], 13);
