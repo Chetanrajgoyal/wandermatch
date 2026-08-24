@@ -223,8 +223,11 @@
         html.dark body.about-page section:first-of-type .text-on-secondary-fixed-variant { color: #a4c9ff !important; }
         html.dark body.about-page .text-gradient {
           background: linear-gradient(135deg, #a4c9ff 0%, #8bd2fe 100%) !important;
+          -webkit-background-clip: text !important;
           -webkit-text-fill-color: transparent !important;
+          color: transparent !important;
         }
+        html.dark body.about-page h1 span.text-gradient { display: inline-block; }
         html.dark body.about-page section:first-of-type .bg-\[radial-gradient\(ellipse_at_top\,_var\(--tw-gradient-stops\)\)\] { background: radial-gradient(ellipse at top, rgba(27,58,95,0.35) 0%, #0B0F17 60%, #0B0F17 100%) !important; }
         html.dark body.about-page .bg-primary { background-color: #005da7 !important; color: #ffffff !important; }
         html.dark body.about-page .bg-primary:hover { background-color: #2976c7 !important; }
