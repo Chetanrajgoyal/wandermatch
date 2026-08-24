@@ -1284,6 +1284,45 @@ html.dark #navActivePill {
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
+/* Profile dropdown popup - consistent across all pages */
+html.dark #profileDropdown,
+html.dark .profile-dropdown {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45) !important;
+}
+html.dark #profileDropdown #themeToggleBtn,
+html.dark .profile-dropdown #themeToggleBtn,
+html.dark #profileDropdown a[href="dashboard.html"],
+html.dark .profile-dropdown a[href="dashboard.html"] {
+  color: #E8EAED !important;
+}
+html.dark #profileDropdown #themeToggleBtn:hover,
+html.dark .profile-dropdown #themeToggleBtn:hover,
+html.dark #profileDropdown a[href="dashboard.html"]:hover,
+html.dark .profile-dropdown a[href="dashboard.html"]:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #a4c9ff !important;
+}
+html.dark #profileDropdown svg,
+html.dark .profile-dropdown svg {
+  color: #9AA3AF !important;
+}
+html.dark #profileDropdown #themeIconMoon,
+html.dark .profile-dropdown #themeIconMoon,
+html.dark #profileDropdown #themeIconSun,
+html.dark .profile-dropdown #themeIconSun {
+  color: #9AA3AF !important;
+}
+html.dark #profileDropdown #dropdownLogoutBtn,
+html.dark .profile-dropdown #dropdownLogoutBtn {
+  color: #FF6B6B !important;
+}
+html.dark #profileDropdown #dropdownLogoutBtn:hover,
+html.dark .profile-dropdown #dropdownLogoutBtn:hover {
+  background-color: rgba(255, 107, 107, 0.1) !important;
+}
+
 html.dark footer,
 html.dark footer.bg-brand-dark {
   background-color: #05080C !important;
