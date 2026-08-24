@@ -1119,7 +1119,8 @@ function initMapModal(itinerary) {
     }
 
     mapContainer.innerHTML = '';
-    mapContainer.style.position = 'relative';
+    mapContainer.style.position = 'absolute';
+    mapContainer.style.inset = '0';
     mapContainer.style.width = '100%';
     mapContainer.style.height = '100%';
 
