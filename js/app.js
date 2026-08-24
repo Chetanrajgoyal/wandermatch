@@ -83,7 +83,7 @@ function getNavHTML(activePage = "", darkHero = false) {
   return `<header class="relative z-50 px-6 lg:px-12 flex justify-between items-center w-full max-w-7xl mx-auto pt-6 pb-4">
 
   <!-- Logo -->
-  <a href="index.html" class="logo-kibi flex items-center justify-center h-10 px-5 bg-white/90 backdrop-blur-md rounded-full font-heading font-bold text-[1.25rem] tracking-tight text-[#005da7] hover:bg-white transition-colors shadow-sm border border-white/20">
+  <a href="index.html" class="logo-kibi flex items-center justify-center h-10 px-5 bg-white/90 dark:bg-[#161B22] backdrop-blur-md rounded-full font-heading font-bold text-[1.25rem] tracking-tight text-[#005da7] dark:text-white hover:bg-white dark:hover:bg-[#1f2830] transition-colors shadow-sm border border-white/20 dark:border-white/10">
     Kibi
   </a>
 
