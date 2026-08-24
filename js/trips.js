@@ -900,31 +900,31 @@ function renderLoadedItinerary(itinerary) {
 
     budgetEl.innerHTML = `
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-900">Budget Estimate</h3>
-            <span class="text-2xl font-bold text-brand-blue">₹${b.total || 0}</span>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-[#F1F3F4]">Budget Estimate</h3>
+            <span class="text-2xl font-bold text-brand-blue dark:text-[#7EB8FF]">₹${b.total || 0}</span>
         </div>
         <div class="flex h-3 w-full rounded-full overflow-hidden mb-6">
-            <div class="bg-brand-blue" style="width: ${pStay}%"></div>
-            <div class="bg-orange-400" style="width: ${pFood}%"></div>
-            <div class="bg-green-400" style="width: ${pTrans}%"></div>
-            <div class="bg-purple-400" style="width: ${pAct}%"></div>
+            <div class="bg-brand-blue dark:bg-[#5C9CE6]" style="width: ${pStay}%"></div>
+            <div class="bg-orange-400 dark:bg-orange-400" style="width: ${pFood}%"></div>
+            <div class="bg-green-400 dark:bg-green-400" style="width: ${pTrans}%"></div>
+            <div class="bg-purple-400 dark:bg-purple-400" style="width: ${pAct}%"></div>
         </div>
         <ul class="space-y-4">
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-brand-blue"></span> Stay</div>
-                <span class="font-bold text-gray-900">₹${b.stay || 0}</span>
+                <div class="flex items-center gap-2 text-gray-700 dark:text-[#BDC1C6]"><span class="w-3 h-3 rounded-full bg-brand-blue dark:bg-[#5C9CE6]"></span> Stay</div>
+                <span class="font-bold text-gray-900 dark:text-[#F1F3F4]">₹${b.stay || 0}</span>
             </li>
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-orange-400"></span> Food &amp; Dining</div>
-                <span class="font-bold text-gray-900">₹${b.food || 0}</span>
+                <div class="flex items-center gap-2 text-gray-700 dark:text-[#BDC1C6]"><span class="w-3 h-3 rounded-full bg-orange-400"></span> Food &amp; Dining</div>
+                <span class="font-bold text-gray-900 dark:text-[#F1F3F4]">₹${b.food || 0}</span>
             </li>
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-green-400"></span> Transportation</div>
-                <span class="font-bold text-gray-900">₹${b.transport || 0}</span>
+                <div class="flex items-center gap-2 text-gray-700 dark:text-[#BDC1C6]"><span class="w-3 h-3 rounded-full bg-green-400"></span> Transportation</div>
+                <span class="font-bold text-gray-900 dark:text-[#F1F3F4]">₹${b.transport || 0}</span>
             </li>
             <li class="flex justify-between items-center text-sm">
-                <div class="flex items-center gap-2 text-gray-700"><span class="w-3 h-3 rounded-full bg-purple-400"></span> Activities</div>
-                <span class="font-bold text-gray-900">₹${b.activities || 0}</span>
+                <div class="flex items-center gap-2 text-gray-700 dark:text-[#BDC1C6]"><span class="w-3 h-3 rounded-full bg-purple-400"></span> Activities</div>
+                <span class="font-bold text-gray-900 dark:text-[#F1F3F4]">₹${b.activities || 0}</span>
             </li>
         </ul>
     `;
@@ -1039,15 +1039,24 @@ function initMapModal(itinerary) {
     document.body.style.overflow = 'hidden';
 
     if (!initialized) {
-      setTimeout(() => {
+      // Wait for modal to become visible so Leaflet can measure the container.
+      requestAnimationFrame(() => {
         ensureCoords().then(() => {
-          initMap();
-          initialized = true;
-          setTimeout(() => { if (map) map.invalidateSize(); }, 250);
+          // Double rAF ensures layout/paint have run.
+          requestAnimationFrame(() => {
+            initMap();
+            initialized = true;
+            // Leaflet needs a final invalidateSize after the container is visible.
+            requestAnimationFrame(() => {
+              setTimeout(() => { if (map) map.invalidateSize(); }, 50);
+            });
+          });
         });
-      }, 100);
+      });
     } else if (map) {
-      setTimeout(() => map.invalidateSize(), 200);
+      requestAnimationFrame(() => {
+        setTimeout(() => map.invalidateSize(), 50);
+      });
     }
   }
 
@@ -1110,8 +1119,16 @@ function initMapModal(itinerary) {
       return;
     }
 
+    // Ensure container has real dimensions before Leaflet measures it.
+    const rect = mapContainer.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      mapContainer.style.width = '100%';
+      mapContainer.style.height = '100%';
+    }
+
     mapContainer.innerHTML = '';
-    map = L.map('tripMap').setView([lat, lon], 13);
+    map = L.map('tripMap', { zoomControl: false }).setView([lat, lon], 13);
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
