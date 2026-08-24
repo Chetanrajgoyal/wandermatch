@@ -1052,13 +1052,10 @@ function initMapModal(itinerary) {
         ensureCoords().then(() => {
           initMap();
           initialized = true;
-          // Re-measure after tiles start loading.
-          setTimeout(() => { if (map) map.invalidateSize(); }, 150);
-          setTimeout(() => { if (map) map.invalidateSize(); }, 400);
         });
-      }, 200);
+      }, 300);
     } else if (map) {
-      setTimeout(() => map.invalidateSize(), 200);
+      setTimeout(() => map.invalidateSize(), 300);
     }
   }
 
@@ -1121,18 +1118,16 @@ function initMapModal(itinerary) {
       return;
     }
 
-    // Leaflet cannot render in a zero-size container. Force explicit dimensions.
-    const dialog = mapContainer.closest('[class*="h-[80vh]"]') || mapContainer.parentElement;
-    const dialogRect = dialog ? dialog.getBoundingClientRect() : { width: 0, height: 0 };
-    const header = dialog ? dialog.querySelector(':scope > div:first-child') : null;
-    const headerHeight = header ? header.getBoundingClientRect().height : 64;
-    const mapWidth = dialogRect.width || mapContainer.parentElement.getBoundingClientRect().width;
-    const mapHeight = (dialogRect.height || 600) - headerHeight;
-
-    mapContainer.style.width = `${mapWidth}px`;
-    mapContainer.style.height = `${Math.max(mapHeight, 300)}px`;
-
+    // Ensure the container is visible and measured before Leaflet initializes.
+    mapContainer.style.position = 'absolute';
+    mapContainer.style.inset = '0';
+    mapContainer.style.width = '100%';
+    mapContainer.style.height = '100%';
     mapContainer.innerHTML = '';
+
+    console.log('[Kibi Map] initMap called with lat/lon:', lat, lon);
+    console.log('[Kibi Map] container dimensions:', mapContainer.getBoundingClientRect());
+
     map = L.map('tripMap', { zoomControl: false }).setView([lat, lon], 13);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -1140,6 +1135,16 @@ function initMapModal(itinerary) {
       attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19
     }).addTo(map);
+
+    // Re-measure map once tiles start loading and after container settles.
+    setTimeout(() => { if (map) map.invalidateSize(); }, 100);
+    setTimeout(() => { if (map) map.invalidateSize(); }, 400);
+
+    // If the modal resizes (e.g. orientation change), keep map sized correctly.
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => { if (map) map.invalidateSize(); });
+      ro.observe(mapContainer);
+    }
 
     // Destination marker
     const destMarker = L.marker([lat, lon], {
