@@ -1561,10 +1561,14 @@ html.dark body[data-page="itinerary"] body::before {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
-  background-color: currentColor;
+  height: 2.5px;
+  background-color: #0F1419;
   border-radius: 2px;
   transition: transform 0.25s ease, opacity 0.25s ease, top 0.25s ease;
+}
+
+html.dark .hamburger-line {
+  background-color: #F1F3F4;
 }
 
 .hamburger-line:nth-child(1) { top: 0; }

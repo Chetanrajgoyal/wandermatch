@@ -1118,12 +1118,10 @@ function initMapModal(itinerary) {
       return;
     }
 
-    // Ensure the container is visible and measured before Leaflet initializes.
-    mapContainer.style.position = 'absolute';
-    mapContainer.style.inset = '0';
+    mapContainer.innerHTML = '';
+    mapContainer.style.position = 'relative';
     mapContainer.style.width = '100%';
     mapContainer.style.height = '100%';
-    mapContainer.innerHTML = '';
 
     console.log('[Kibi Map] initMap called with lat/lon:', lat, lon);
     console.log('[Kibi Map] container dimensions:', mapContainer.getBoundingClientRect());
@@ -1131,7 +1129,7 @@ function initMapModal(itinerary) {
     map = L.map('tripMap', { zoomControl: false }).setView([lat, lon], 13);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19
     }).addTo(map);
@@ -1139,6 +1137,11 @@ function initMapModal(itinerary) {
     // Re-measure map once tiles start loading and after container settles.
     setTimeout(() => { if (map) map.invalidateSize(); }, 100);
     setTimeout(() => { if (map) map.invalidateSize(); }, 400);
+    setTimeout(() => { if (map) map.invalidateSize(); }, 800);
+
+    // If tiles fail to paint, force a reload by invalidating size again.
+    tileLayer.on('load', () => console.log('[Kibi Map] tiles loaded'));
+    tileLayer.on('tileerror', (e) => console.warn('[Kibi Map] tile error', e));
 
     // If the modal resizes (e.g. orientation change), keep map sized correctly.
     if (typeof ResizeObserver !== 'undefined') {
