@@ -459,7 +459,7 @@ function initPlanTrip() {
 
       // Debounce API calls — 250ms feels snappy while still avoiding spam
       debounceTimer = setTimeout(async () => {
-        showSuggestions('<div class="px-4 py-2 text-text-muted text-sm">Searching...</div>');
+        showSuggestions('<div class="px-4 py-3 text-text-muted dark:text-[#BDC1C6] text-sm">Searching...</div>');
 
         abortController = new AbortController();
         let results;
@@ -472,14 +472,14 @@ function initPlanTrip() {
         }
 
         if (!results || results.length === 0) {
-          showSuggestions('<div class="px-4 py-2 text-text-muted text-sm">No destinations found.</div>');
+          showSuggestions('<div class="px-4 py-3 text-text-muted dark:text-[#BDC1C6] text-sm">No destinations found.</div>');
           return;
         }
 
         showSuggestions(results.map(result => `
-          <div class="suggestion-item px-4 py-2 cursor-pointer border-b border-border-light last:border-b-0 transition-colors hover:bg-cream-dark" data-id="${result.id}" data-lat="${result.latitude}" data-lon="${result.longitude}" data-name="${result.name}">
-            <div class="font-semibold text-sm text-text-main">${result.name}</div>
-            <div class="text-xs text-text-muted">${result.displayName}</div>
+          <div class="suggestion-item px-4 py-3 cursor-pointer border-b border-border-light last:border-b-0 transition-colors hover:bg-cream-dark dark:hover:bg-white/5" data-id="${result.id}" data-lat="${result.latitude}" data-lon="${result.longitude}" data-name="${result.name}">
+            <div class="font-semibold text-sm text-text-main dark:text-[#F1F3F4]">${result.name}</div>
+            <div class="text-xs text-text-muted dark:text-[#BDC1C6]">${result.displayName}</div>
           </div>
         `).join(''));
 
@@ -693,7 +693,8 @@ function renderLoadedItinerary(itinerary) {
 
     function renderHero(imageUrl, description) {
       const currentUser = getCurrentUser();
-      const alreadySaved = currentUser && getSavedTrips(currentUser.id).some(t =>
+      // Check My Trips (wm_trips) for an existing planned trip with same destination + start date.
+      const alreadySaved = currentUser && getUserTrips(currentUser.id).some(t =>
         t.destination === itinerary.destination && t.startDate === itinerary.startDate
       );
       const saveBtnText = alreadySaved ? 'Already Saved' : 'Save Trip';
@@ -728,6 +729,7 @@ function renderLoadedItinerary(itinerary) {
       const saveBtn = document.getElementById('saveItinBtn');
       if (saveBtn) {
         if (alreadySaved) {
+          saveBtn.disabled = true;
           saveBtn.classList.add('opacity-70', 'cursor-not-allowed');
         }
         saveBtn.addEventListener('click', () => {
@@ -737,6 +739,18 @@ function renderLoadedItinerary(itinerary) {
             return;
           }
           if (alreadySaved) return;
+
+          // Re-check in case another tab or action saved it meanwhile.
+          const stillNew = !getUserTrips(currentUser.id).some(t =>
+            t.destination === itinerary.destination && t.startDate === itinerary.startDate
+          );
+          if (!stillNew) {
+            showToast('This trip is already saved.', 'default');
+            saveBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Already Saved';
+            saveBtn.disabled = true;
+            saveBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            return;
+          }
 
           // Guard: don't save if itinerary data is incomplete
           if (!itinerary.destination || !itinerary.startDate || !itinerary.endDate ||
@@ -760,6 +774,7 @@ function renderLoadedItinerary(itinerary) {
             saveTrip(newTrip);
             showToast(`Your ${newTrip.destination} trip has been saved to My Trips!`, 'success');
             saveBtn.innerHTML = '✅ Saved';
+            saveBtn.disabled = true;
             saveBtn.classList.add('opacity-70');
           }, 800);
         });
